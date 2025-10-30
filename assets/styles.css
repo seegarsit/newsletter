@@ -119,10 +119,6 @@ a {
   width: auto;
 }
 
-.logo-text {
-  display: inline-block;
-}
-
 .primary-nav {
   display: flex;
   gap: 1rem;
@@ -151,31 +147,56 @@ a {
 }
 
 .hero {
-  padding: 6rem 0 4rem;
+  position: relative;
+  padding: 8rem 0 7rem;
+  background-image: url("images/hero_image.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
   background: linear-gradient(
-    180deg,
-    var(--ink) 0%,
-    rgba(35, 31, 32, 0.92) 60%,
-    rgba(222, 224, 217, 0.2) 100%
+    rgba(245, 246, 244, 0.88),
+    rgba(245, 246, 244, 0.65)
   );
-  color: var(--text-inverse);
 }
 
-.hero h1,
-.hero h2,
-.hero h3 {
-  color: var(--text-inverse);
+.hero__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 720px;
 }
 
-.hero p {
-  color: rgba(245, 246, 244, 0.85);
+.hero__title {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
 }
 
-.hero-grid {
-  display: grid;
-  gap: 3rem;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  align-items: stretch;
+.hero__subheading {
+  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin: 0.5rem 0 0;
+}
+
+.hero__tagline {
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  color: rgba(35, 31, 32, 0.85);
+  margin: 0.25rem 0 0;
 }
 
 .eyebrow {
@@ -247,41 +268,6 @@ a {
   color: var(--text-inverse);
 }
 
-.hero-card {
-  background: var(--mist);
-  border: 2px solid var(--border-emerald);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  display: grid;
-  grid-template-rows: 200px 1fr;
-  box-shadow: 0 20px 35px rgba(35, 31, 32, 0.3);
-}
-
-.hero-card__image {
-  background: linear-gradient(135deg, rgba(0, 135, 82, 0.8), rgba(188, 213, 49, 0.7)),
-    url('https://images.unsplash.com/photo-1531835551805-16d864c8d3bc?auto=format&fit=crop&w=900&q=80')
-      center/cover;
-}
-
-.hero-card__content {
-  padding: 1.75rem;
-  color: var(--ink);
-}
-
-.hero-card__content h2 {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  color: var(--ink);
-}
-
-.hero-card__content ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.5rem;
-  color: var(--text-secondary);
-}
 
 .highlights {
   background: var(--cloud);

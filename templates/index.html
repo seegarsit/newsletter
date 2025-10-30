@@ -24,7 +24,6 @@
             src="{{ url_for('static', filename='images/logo_nav.png') }}"
             alt="Seegars Fence Company logo"
           />
-          <span class="logo-text">THE FENCE LINE</span>
         </a>
         <nav class="primary-nav" aria-label="Primary">
           <a href="#latest">Latest issue</a>
@@ -37,41 +36,17 @@
 
     <main>
       <section class="hero" aria-labelledby="hero-heading">
-        <div class="container hero-grid">
-          <div>
-            <p class="eyebrow">The Fence Line • Internal Newsletter</p>
-            <h1 id="hero-heading">Stories that bring our yards to life</h1>
-            <p class="lead">
-              Stay in the loop with site wins, safety spotlights, product launches,
-              and the people keeping Seegars Fence Company moving forward. Your
-              Thursday coffee read is right here.
-            </p>
-            <form class="subscribe-form" id="hero-subscribe" novalidate>
-              <label class="sr-only" for="hero-email">Email address</label>
-              <input
-                id="hero-email"
-                type="email"
-                name="email"
-                placeholder="your.name@seegars.com"
-                required
-                autocomplete="email"
-              />
-              <button type="submit">Get the newsletter</button>
-              <p class="form-feedback" aria-live="polite"></p>
-            </form>
-          </div>
-          <div class="hero-card" role="presentation">
-            <div class="hero-card__image" aria-hidden="true"></div>
-            <div class="hero-card__content">
-              <p class="hero-card__eyebrow">Inside this week</p>
-              <h2>New automated gate wins safety award</h2>
-              <ul>
-                <li>Fabrication upgrades roll out in Wilmington</li>
-                <li>How the Raleigh crew cut install times by 18%</li>
-                <li>Employee spotlight: Meet the Thomasville team</li>
-              </ul>
-            </div>
-          </div>
+        <div class="hero__overlay" aria-hidden="true"></div>
+        <div class="container hero__content">
+          <p class="eyebrow">The Fence Line • Internal Newsletter</p>
+          <h1 id="hero-heading" class="hero__title">THE FENCE LINE</h1>
+          <p class="hero__subheading">NOVEMBER 2025</p>
+          <p class="hero__tagline">
+            <em>Changing the world one linear foot at the time.</em>
+          </p>
+          <p class="hero__tagline">
+            <em>A family business distinguished by exceptional values and quality.</em>
+          </p>
         </div>
       </section>
 
