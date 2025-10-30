@@ -22,16 +22,6 @@
             alt="Seegars Fence Company logo"
           />
         </a>
-        <nav class="primary-nav" aria-label="Primary">
-          <a href="#team-letter">Team Letter</a>
-          <a href="#recent-news">Recent News</a>
-          <a href="#hr-corner">HR Corner</a>
-          <a href="#safety-first">Safety</a>
-          <a href="#custom-fab">Custom Fab</a>
-          <a href="#tech-talk">Tech Talk</a>
-          <a href="#celebrations">Celebrations</a>
-          <a href="#resources" class="highlight">Resources</a>
-        </nav>
       </div>
     </header>
 
@@ -39,11 +29,13 @@
       <section id="top" class="hero" aria-labelledby="hero-heading">
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="container hero__content">
-          <p class="hero__eyebrow">Inside Seegars Fence</p>
           <h1 id="hero-heading" class="hero__title">THE FENCE LINE</h1>
           <p class="hero__issue">{{ issue_month }}</p>
           <p class="hero__tagline">
-            Built right. Backed by values. Trusted for generations.
+            <em>
+              <span>Changing the world one linear foot at the time.</span>
+              <span>A family business distinguished by exceptional values and quality.</span>
+            </em>
           </p>
           <div class="hero__actions">
             <a class="button button--primary" href="#team-letter">Read Ben's Letter</a>
@@ -53,21 +45,8 @@
       </section>
 
       <section id="team-letter" class="section section--letter" aria-labelledby="team-letter-heading">
-        <div class="container section__inner letter__grid">
-          <aside class="profile-card" aria-label="Author">
-            <img
-              src="{{ url_for('static', filename='images/ben.png') }}"
-              alt="Portrait of Ben Seegars"
-            />
-            <div class="profile-card__body">
-              <p class="profile-card__role">CEO</p>
-              <h2 class="profile-card__name">Ben Seegars</h2>
-              <p class="profile-card__quote">
-                “Ready is not a feeling — it's the mindset we bring to every job.”
-              </p>
-            </div>
-          </aside>
-          <article class="content-card" aria-labelledby="team-letter-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--full" aria-labelledby="team-letter-heading">
             <header class="section-header">
               <p class="section-eyebrow">From the CEO</p>
               <h2 id="team-letter-heading">A note to the Seegars family</h2>
@@ -127,8 +106,8 @@
       </section>
 
       <section id="recent-news" class="section section--news" aria-labelledby="recent-news-heading">
-        <div class="container section__inner news__grid">
-          <article class="content-card" aria-labelledby="recent-news-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--full" aria-labelledby="recent-news-heading">
             <header class="section-header">
               <p class="section-eyebrow">Marketing spotlight</p>
               <h2 id="recent-news-heading">Recent news by John Seegars</h2>
@@ -162,7 +141,7 @@
               <a class="button button--secondary" href="https://forms.office.com" target="_blank" rel="noreferrer">Share your project</a>
             </footer>
           </article>
-          <div class="carousel" data-carousel>
+          <div class="carousel carousel--compact" data-carousel>
             <div class="carousel__viewport" data-carousel-viewport>
               <figure class="carousel__slide" data-carousel-slide>
                 <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
@@ -190,19 +169,8 @@
       </section>
 
       <section id="hr-corner" class="section section--hr" aria-labelledby="hr-heading">
-        <div class="container section__inner hr__grid">
-          <aside class="profile-card profile-card--horizontal">
-            <img
-              src="{{ url_for('static', filename='images/veronica.png') }}"
-              alt="Portrait of Veronica Aycock"
-            />
-            <div class="profile-card__body">
-              <p class="profile-card__role">Executive VP</p>
-              <h2 class="profile-card__name">Veronica Aycock</h2>
-              <p class="profile-card__quote">Your go-to for benefits, onboarding, and all things people-first.</p>
-            </div>
-          </aside>
-          <article class="content-card" aria-labelledby="hr-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--full" aria-labelledby="hr-heading">
             <header class="section-header">
               <p class="section-eyebrow">HR Corner</p>
               <h2 id="hr-heading">Login cheat sheets and paperless tax forms</h2>
@@ -234,19 +202,8 @@
       </section>
 
       <section id="safety-first" class="section section--safety" aria-labelledby="safety-heading">
-        <div class="container section__inner safety__grid">
-          <aside class="profile-card profile-card--contrast">
-            <img
-              src="{{ url_for('static', filename='images/chanda.png') }}"
-              alt="Portrait of Chanda Best"
-            />
-            <div class="profile-card__body">
-              <p class="profile-card__role">Safety Manager</p>
-              <h2 class="profile-card__name">Chanda Best</h2>
-              <p class="profile-card__quote">Stay alert as we reset our clocks — the darker commute changes everything.</p>
-            </div>
-          </aside>
-          <article class="content-card content-card--contrast" aria-labelledby="safety-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--contrast content-card--full" aria-labelledby="safety-heading">
             <header class="section-header">
               <p class="section-eyebrow">Safety First</p>
               <h2 id="safety-heading">Navigating the end of daylight saving time</h2>
@@ -278,19 +235,8 @@
       </section>
 
       <section id="custom-fab" class="section section--fabrication" aria-labelledby="fabrication-heading">
-        <div class="container section__inner fabrication__grid">
-          <aside class="profile-card profile-card--horizontal">
-            <img
-              src="{{ url_for('static', filename='images/tony.png') }}"
-              alt="Portrait of Tony Ballance"
-            />
-            <div class="profile-card__body">
-              <p class="profile-card__role">Custom Fabrication Manager</p>
-              <h2 class="profile-card__name">Tony Ballance</h2>
-              <p class="profile-card__quote">Accurate forms mean faster quotes and fewer reworks.</p>
-            </div>
-          </aside>
-          <article class="content-card" aria-labelledby="fabrication-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--full" aria-labelledby="fabrication-heading">
             <header class="section-header">
               <p class="section-eyebrow">Custom Fab</p>
               <h2 id="fabrication-heading">Choose the right form, every time</h2>
@@ -324,19 +270,8 @@
       </section>
 
       <section id="tech-talk" class="section section--tech" aria-labelledby="tech-heading">
-        <div class="container section__inner tech__grid">
-          <aside class="profile-card profile-card--contrast">
-            <img
-              src="{{ url_for('static', filename='images/brad.png') }}"
-              alt="Portrait of Brad Wells"
-            />
-            <div class="profile-card__body">
-              <p class="profile-card__role">IT Manager</p>
-              <h2 class="profile-card__name">Brad Wells</h2>
-              <p class="profile-card__quote">Your new one-stop hub for IT support is live.</p>
-            </div>
-          </aside>
-          <article class="content-card content-card--tech" aria-labelledby="tech-heading">
+        <div class="container section__inner section__inner--stacked">
+          <article class="content-card content-card--tech content-card--full" aria-labelledby="tech-heading">
             <header class="section-header">
               <p class="section-eyebrow">Tech Talk</p>
               <h2 id="tech-heading">Welcome to the Seegars Fence IT Workspace</h2>
@@ -401,6 +336,52 @@
         </div>
       </section>
 
+      <section class="section section--contributors" aria-labelledby="contributors-heading">
+        <div class="container">
+          <header class="section-header section-header--center">
+            <p class="section-eyebrow">Contributors</p>
+            <h2 id="contributors-heading">Voices behind this issue</h2>
+          </header>
+          <div class="contributors__grid">
+            <article class="contributor-card">
+              <img src="{{ url_for('static', filename='images/ben.png') }}" alt="Portrait of Ben Seegars" />
+              <div class="contributor-card__body">
+                <h3>Ben Seegars</h3>
+                <p>Chief Executive Officer</p>
+              </div>
+            </article>
+            <article class="contributor-card">
+              <img src="{{ url_for('static', filename='images/veronica.png') }}" alt="Portrait of Veronica Aycock" />
+              <div class="contributor-card__body">
+                <h3>Veronica Aycock</h3>
+                <p>Executive Vice President</p>
+              </div>
+            </article>
+            <article class="contributor-card">
+              <img src="{{ url_for('static', filename='images/chanda.png') }}" alt="Portrait of Chanda Best" />
+              <div class="contributor-card__body">
+                <h3>Chanda Best</h3>
+                <p>Safety Manager</p>
+              </div>
+            </article>
+            <article class="contributor-card">
+              <img src="{{ url_for('static', filename='images/tony.png') }}" alt="Portrait of Tony Ballance" />
+              <div class="contributor-card__body">
+                <h3>Tony Ballance</h3>
+                <p>Custom Fabrication Manager</p>
+              </div>
+            </article>
+            <article class="contributor-card">
+              <img src="{{ url_for('static', filename='images/brad.png') }}" alt="Portrait of Brad Wells" />
+              <div class="contributor-card__body">
+                <h3>Brad Wells</h3>
+                <p>IT Manager</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section id="resources" class="section section--resources" aria-labelledby="resources-heading">
         <div class="container">
           <header class="section-header section-header--center">
@@ -413,32 +394,6 @@
             <a class="resource-button" href="{{ resource.url }}" target="_blank" rel="noreferrer">{{ resource.label }}</a>
             {% endfor %}
           </div>
-        </div>
-      </section>
-
-      <section id="subscribe" class="section section--subscribe" aria-labelledby="subscribe-heading">
-        <div class="container section__inner subscribe__grid">
-          <div>
-            <p class="section-eyebrow">Stay connected</p>
-            <h2 id="subscribe-heading">Get The Fence Line delivered weekly</h2>
-            <p>
-              Branch wins, safety reminders, and team celebrations — curated for your inbox every
-              Thursday morning.
-            </p>
-          </div>
-          <form class="subscribe-form" id="footer-subscribe" novalidate>
-            <label class="sr-only" for="footer-email">Email address</label>
-            <input
-              id="footer-email"
-              type="email"
-              name="email"
-              placeholder="your.name@seegars.com"
-              required
-              autocomplete="email"
-            />
-            <button type="submit">Subscribe</button>
-            <p class="form-feedback" aria-live="polite"></p>
-          </form>
         </div>
       </section>
     </main>
