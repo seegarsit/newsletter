@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
   <body>
     <header class="top-bar">
@@ -122,33 +122,40 @@
 
           <div class="story-grid" role="list">
             <article class="story-card" role="listitem">
-              <p class="eyebrow">Branch update</p>
-              <h3>Greenville breaks ground on airport expansion</h3>
-              <p>
-                Crews kick off a high-visibility commercial project, partnering with
-                aviation officials for a smooth install schedule.
-              </p>
-              <a class="story-link" href="#">Read update</a>
+              <div class="story-card__image" aria-hidden="true"></div>
+              <div class="story-card__content">
+                <p class="eyebrow">Operations</p>
+                <h3>Charlotte yard expands commercial capacity</h3>
+                <p>
+                  How the Charlotte crew is staging large gate installs and
+                  coordinating logistics with local teams.
+                </p>
+                <a class="story-link" href="#">See the rollout</a>
+              </div>
             </article>
-
             <article class="story-card" role="listitem">
-              <p class="eyebrow">Safety spotlight</p>
-              <h3>Four-point harness refresher</h3>
-              <p>
-                A quick video walkthrough and printable checklist to help every crew
-                prep before elevated work.
-              </p>
-              <a class="story-link" href="#">Watch now</a>
+              <div class="story-card__image story-card__image--secondary" aria-hidden="true"></div>
+              <div class="story-card__content">
+                <p class="eyebrow">Safety</p>
+                <h3>Reducing equipment downtime</h3>
+                <p>
+                  Fayetteville's preventative maintenance pilot program kept crews
+                  on schedule during the busiest week this quarter.
+                </p>
+                <a class="story-link" href="#">See the checklist</a>
+              </div>
             </article>
-
             <article class="story-card" role="listitem">
-              <p class="eyebrow">People first</p>
-              <h3>Celebrating 25 years with Denise Wright</h3>
-              <p>
-                From receptionist to regional operations director, Denise shares her
-                journey and the moments that shaped her career.
-              </p>
-              <a class="story-link" href="#">Meet Denise</a>
+              <div class="story-card__image story-card__image--tertiary" aria-hidden="true"></div>
+              <div class="story-card__content">
+                <p class="eyebrow">People</p>
+                <h3>Mentorship program milestone</h3>
+                <p>
+                  From receptionist to regional operations director, Denise shares her
+                  journey and the moments that shaped her career.
+                </p>
+                <a class="story-link" href="#">Meet Denise</a>
+              </div>
             </article>
           </div>
         </div>
@@ -266,6 +273,6 @@
       </div>
     </footer>
 
-    <script src="assets/app.js" defer></script>
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
   </body>
 </html>
