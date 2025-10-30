@@ -180,14 +180,15 @@ a {
 }
 
 .hero__title {
-  font-size: clamp(3rem, 10vw, 5.5rem);
+  font-size: clamp(3.75rem, 12vw, 6.75rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin: 0;
+  text-shadow: 0 10px 30px rgba(35, 31, 32, 0.35);
 }
 
 .hero__subheading {
-  font-size: clamp(1rem, 2.2vw, 1.5rem);
+  font-size: clamp(1.3rem, 3vw, 2rem);
   letter-spacing: 0.3em;
   text-transform: uppercase;
   margin: 0.5rem 0 0;
