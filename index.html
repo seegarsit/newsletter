@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Fence Line Newsletter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <header class="top-bar">
+      <div class="container">
+        <a class="logo" href="#">Fence Line</a>
+        <nav class="primary-nav" aria-label="Primary">
+          <a href="#latest">Latest issue</a>
+          <a href="#archives">Archive</a>
+          <a href="#team">Meet the team</a>
+          <a href="#subscribe" class="highlight">Subscribe</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-heading">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">The Fence Line • Internal Newsletter</p>
+            <h1 id="hero-heading">Stories that bring our yards to life</h1>
+            <p class="lead">
+              Stay in the loop with site wins, safety spotlights, product launches,
+              and the people keeping Seegars Fence Company moving forward. Your
+              Thursday coffee read is right here.
+            </p>
+            <form class="subscribe-form" id="hero-subscribe" novalidate>
+              <label class="sr-only" for="hero-email">Email address</label>
+              <input
+                id="hero-email"
+                type="email"
+                name="email"
+                placeholder="your.name@seegars.com"
+                required
+                autocomplete="email"
+              />
+              <button type="submit">Get the newsletter</button>
+              <p class="form-feedback" aria-live="polite"></p>
+            </form>
+          </div>
+          <div class="hero-card" role="presentation">
+            <div class="hero-card__image" aria-hidden="true"></div>
+            <div class="hero-card__content">
+              <p class="hero-card__eyebrow">Inside this week</p>
+              <h2>New automated gate wins safety award</h2>
+              <ul>
+                <li>Fabrication upgrades roll out in Wilmington</li>
+                <li>How the Raleigh crew cut install times by 18%</li>
+                <li>Employee spotlight: Meet the Thomasville team</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="highlights" aria-label="Highlights">
+        <div class="container">
+          <div class="highlight">
+            <span class="icon" aria-hidden="true">⚙️</span>
+            <h3>Operations wins</h3>
+            <p>
+              Weekly snapshots from branches across the Carolinas, celebrating
+              installs finished ahead of schedule and creative on-site solutions.
+            </p>
+          </div>
+          <div class="highlight">
+            <span class="icon" aria-hidden="true">🛡️</span>
+            <h3>Safety first</h3>
+            <p>
+              Toolbox talks, reminders, and new policies to keep every crew member
+              heading home safe.
+            </p>
+          </div>
+          <div class="highlight">
+            <span class="icon" aria-hidden="true">🌱</span>
+            <h3>People &amp; culture</h3>
+            <p>
+              Milestones, anniversaries, and stories from the people who define
+              Seegars Fence Company.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="latest" class="latest" aria-labelledby="latest-heading">
+        <div class="container">
+          <div class="section-header">
+            <h2 id="latest-heading">This week's issue</h2>
+            <a href="#archives" class="view-all">View archive</a>
+          </div>
+          <article class="feature-story">
+            <div class="feature-story__media" aria-hidden="true"></div>
+            <div class="feature-story__content">
+              <p class="eyebrow">Cover story</p>
+              <h3>Raleigh's rapid install playbook</h3>
+              <p>
+                The Raleigh branch piloted a new pre-fabrication workflow that
+                trimmed install times by nearly a fifth. See how they collaborated
+                with fabrication leads, the tech that made it possible, and the
+                metrics leadership is watching next.
+              </p>
+              <ul class="meta">
+                <li><strong>Reporter:</strong> Alicia Martinez</li>
+                <li><strong>Read time:</strong> 6 minutes</li>
+                <li><strong>Published:</strong> March 14, 2024</li>
+              </ul>
+              <a class="button" href="#">Read the full story</a>
+            </div>
+          </article>
+
+          <div class="story-grid" role="list">
+            <article class="story-card" role="listitem">
+              <p class="eyebrow">Branch update</p>
+              <h3>Greenville breaks ground on airport expansion</h3>
+              <p>
+                Crews kick off a high-visibility commercial project, partnering with
+                aviation officials for a smooth install schedule.
+              </p>
+              <a class="story-link" href="#">Read update</a>
+            </article>
+
+            <article class="story-card" role="listitem">
+              <p class="eyebrow">Safety spotlight</p>
+              <h3>Four-point harness refresher</h3>
+              <p>
+                A quick video walkthrough and printable checklist to help every crew
+                prep before elevated work.
+              </p>
+              <a class="story-link" href="#">Watch now</a>
+            </article>
+
+            <article class="story-card" role="listitem">
+              <p class="eyebrow">People first</p>
+              <h3>Celebrating 25 years with Denise Wright</h3>
+              <p>
+                From receptionist to regional operations director, Denise shares her
+                journey and the moments that shaped her career.
+              </p>
+              <a class="story-link" href="#">Meet Denise</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="archives" class="archive" aria-labelledby="archive-heading">
+        <div class="container">
+          <div class="section-header">
+            <h2 id="archive-heading">Past issues</h2>
+            <p>Catch up on recent stories and announcements.</p>
+          </div>
+          <div class="timeline">
+            <article class="timeline-item">
+              <p class="timeline-date">March 7, 2024</p>
+              <h3>Fabrication upgrades roll out in Wilmington</h3>
+              <p>
+                New CNC capabilities, training takeaways, and the measurable impact
+                on material waste.
+              </p>
+              <a href="#">Read issue</a>
+            </article>
+            <article class="timeline-item">
+              <p class="timeline-date">February 28, 2024</p>
+              <h3>Employee spotlight: Thomasville team</h3>
+              <p>
+                Meet the installers doubling down on mentorship and cross-training.
+              </p>
+              <a href="#">Read issue</a>
+            </article>
+            <article class="timeline-item">
+              <p class="timeline-date">February 21, 2024</p>
+              <h3>Unlocking efficiencies with digital site logs</h3>
+              <p>
+                How centralized reporting reduced follow-up calls by 30% in just one
+                month.
+              </p>
+              <a href="#">Read issue</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="team" class="team" aria-labelledby="team-heading">
+        <div class="container">
+          <div class="section-header">
+            <h2 id="team-heading">Meet the editors</h2>
+            <p>The voices curating the stories that keep Seegars connected.</p>
+          </div>
+          <div class="team-grid" role="list">
+            <article class="team-card" role="listitem">
+              <div class="avatar" aria-hidden="true">AM</div>
+              <h3>Alicia Martinez</h3>
+              <p>Senior Communications Strategist</p>
+              <p class="bio">
+                Oversees editorial planning, features the latest innovations from our
+                branches, and keeps the tone friendly yet focused.
+              </p>
+            </article>
+            <article class="team-card" role="listitem">
+              <div class="avatar" aria-hidden="true">JB</div>
+              <h3>Jordan Brooks</h3>
+              <p>People &amp; Culture Editor</p>
+              <p class="bio">
+                Highlights the stories behind the installs—recognizing the crews and
+                support teams who make it happen.
+              </p>
+            </article>
+            <article class="team-card" role="listitem">
+              <div class="avatar" aria-hidden="true">LK</div>
+              <h3>Lena Kim</h3>
+              <p>Design &amp; Media Producer</p>
+              <p class="bio">
+                Captures visuals from job sites, creates quick training clips, and
+                makes every edition shine.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="subscribe" class="subscribe" aria-labelledby="subscribe-heading">
+        <div class="container">
+          <div>
+            <h2 id="subscribe-heading">Join the Fence Line community</h2>
+            <p>
+              Delivered Thursday mornings, packed with branch wins, safety insights,
+              and stories from the field. No spam, ever.
+            </p>
+          </div>
+          <form class="subscribe-form" id="footer-subscribe" novalidate>
+            <label class="sr-only" for="footer-email">Email address</label>
+            <input
+              id="footer-email"
+              type="email"
+              name="email"
+              placeholder="your.name@seegars.com"
+              required
+              autocomplete="email"
+            />
+            <button type="submit">Subscribe</button>
+            <p class="form-feedback" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; <span id="current-year"></span> Seegars Fence Company. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#">Brand resources</a>
+          <a href="#">Submit a story</a>
+          <a href="mailto:newsletter@seegars.com">Contact the editors</a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>
