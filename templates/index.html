@@ -19,7 +19,13 @@
   <body>
     <header class="top-bar">
       <div class="container">
-        <a class="logo" href="#">Fence Line</a>
+        <a class="logo" href="#">
+          <img
+            src="{{ url_for('static', filename='images/logo_nav.png') }}"
+            alt="Seegars Fence Company logo"
+          />
+          <span class="logo-text">THE FENCE LINE</span>
+        </a>
         <nav class="primary-nav" aria-label="Primary">
           <a href="#latest">Latest issue</a>
           <a href="#archives">Archive</a>
