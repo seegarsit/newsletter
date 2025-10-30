@@ -10,223 +10,420 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.cdnfonts.com/css/cofo-gothic"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.cdnfonts.com/css/cofo-gothic" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
   <body>
     <header class="top-bar">
       <div class="container">
-        <a class="logo" href="#">
+        <a class="logo" href="#top">
           <img
             src="{{ url_for('static', filename='images/logo_nav.png') }}"
             alt="Seegars Fence Company logo"
           />
         </a>
         <nav class="primary-nav" aria-label="Primary">
-          <a href="#latest">Latest issue</a>
-          <a href="#archives">Archive</a>
-          <a href="#team">Meet the team</a>
-          <a href="#subscribe" class="highlight">Subscribe</a>
+          <a href="#team-letter">Team Letter</a>
+          <a href="#recent-news">Recent News</a>
+          <a href="#hr-corner">HR Corner</a>
+          <a href="#safety-first">Safety</a>
+          <a href="#custom-fab">Custom Fab</a>
+          <a href="#tech-talk">Tech Talk</a>
+          <a href="#celebrations">Celebrations</a>
+          <a href="#resources" class="highlight">Resources</a>
         </nav>
       </div>
     </header>
 
     <main>
-      <section class="hero" aria-labelledby="hero-heading">
+      <section id="top" class="hero" aria-labelledby="hero-heading">
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="container hero__content">
+          <p class="hero__eyebrow">Inside Seegars Fence</p>
           <h1 id="hero-heading" class="hero__title">THE FENCE LINE</h1>
-          <p class="hero__subheading">NOVEMBER 2025</p>
+          <p class="hero__issue">{{ issue_month }}</p>
           <p class="hero__tagline">
-            <em>Changing the world one linear foot at the time.</em>
+            Built right. Backed by values. Trusted for generations.
           </p>
-          <p class="hero__tagline">
-            <em>A family business distinguished by exceptional values and quality.</em>
-          </p>
-        </div>
-      </section>
-
-      <section class="highlights" aria-label="Highlights">
-        <div class="container">
-          <div class="highlight">
-            <span class="icon" aria-hidden="true">⚙️</span>
-            <h3>Operations wins</h3>
-            <p>
-              Weekly snapshots from branches across the Carolinas, celebrating
-              installs finished ahead of schedule and creative on-site solutions.
-            </p>
-          </div>
-          <div class="highlight">
-            <span class="icon" aria-hidden="true">🛡️</span>
-            <h3>Safety first</h3>
-            <p>
-              Toolbox talks, reminders, and new policies to keep every crew member
-              heading home safe.
-            </p>
-          </div>
-          <div class="highlight">
-            <span class="icon" aria-hidden="true">🌱</span>
-            <h3>People &amp; culture</h3>
-            <p>
-              Milestones, anniversaries, and stories from the people who define
-              Seegars Fence Company.
-            </p>
+          <div class="hero__actions">
+            <a class="button button--primary" href="#team-letter">Read Ben's Letter</a>
+            <a class="button button--ghost" href="#resources">Visit Resources</a>
           </div>
         </div>
       </section>
 
-      <section id="latest" class="latest" aria-labelledby="latest-heading">
-        <div class="container">
-          <div class="section-header">
-            <h2 id="latest-heading">This week's issue</h2>
-            <a href="#archives" class="view-all">View archive</a>
-          </div>
-          <article class="feature-story">
-            <div class="feature-story__media" aria-hidden="true"></div>
-            <div class="feature-story__content">
-              <p class="eyebrow">Cover story</p>
-              <h3>Raleigh's rapid install playbook</h3>
-              <p>
-                The Raleigh branch piloted a new pre-fabrication workflow that
-                trimmed install times by nearly a fifth. See how they collaborated
-                with fabrication leads, the tech that made it possible, and the
-                metrics leadership is watching next.
+      <section id="team-letter" class="section section--letter" aria-labelledby="team-letter-heading">
+        <div class="container section__inner letter__grid">
+          <aside class="profile-card" aria-label="Author">
+            <img
+              src="{{ url_for('static', filename='images/ben.png') }}"
+              alt="Portrait of Ben Seegars"
+            />
+            <div class="profile-card__body">
+              <p class="profile-card__role">CEO</p>
+              <h2 class="profile-card__name">Ben Seegars</h2>
+              <p class="profile-card__quote">
+                “Ready is not a feeling — it's the mindset we bring to every job.”
               </p>
-              <ul class="meta">
-                <li><strong>Reporter:</strong> Alicia Martinez</li>
-                <li><strong>Read time:</strong> 6 minutes</li>
-                <li><strong>Published:</strong> March 14, 2024</li>
+            </div>
+          </aside>
+          <article class="content-card" aria-labelledby="team-letter-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">From the CEO</p>
+              <h2 id="team-letter-heading">A note to the Seegars family</h2>
+            </header>
+            <div class="content-card__body">
+              <p>Team,</p>
+              <p>
+                As we roll into November, I want to celebrate what we’ve accomplished together and set
+                our sights on the opportunities ahead. We closed out Q3 ahead of goal for both sales and
+                invoices — not only for the quarter but year-to-date as well. That’s a tremendous
+                accomplishment, especially given how challenging the residential market has been this
+                year. The strength of our commercial business, the grit of our teams, and our commitment
+                to doing it right have made the difference. Now we’re off to a strong start in Q4, with
+                sales running ahead of goal and charges only slightly behind. The effort I’m seeing at
+                every level makes me proud to be part of this team.
+              </p>
+              <p>
+                We’re excited to introduce our new company tagline:
+              </p>
+              <blockquote class="callout">
+                “Built right. Backed by values. Trusted for generations.”
+              </blockquote>
+              <p>
+                We believe this perfectly embodies our mission, vision, and values — and communicates
+                them in a way that resonates deeply with our customers. It reflects who we are, what we
+                stand for, and the lasting value people experience when they choose Seegars Fence
+                Company. Our goal is that every customer sees not just a fence, but a promise — one built
+                right, backed by values, and trusted for generations to come.
+              </p>
+              <p>
+                I came across a quote recently that really stuck with me: “Stop waiting to feel ready.
+                Ready is not a feeling — it’s a mindset.” That’s a powerful reminder that success doesn’t
+                come when the conditions are perfect; it comes when we decide to move forward with faith
+                and determination. Here are a few verses that reinforce this mentality:
+              </p>
+              <ul class="accent-list">
+                <li>“Commit to the Lord whatever you do, and He will establish your plans.” — Proverbs 16:3</li>
+                <li>“Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.” — Joshua 1:9</li>
+                <li>“Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.” — Galatians 6:9</li>
               </ul>
-              <a class="button" href="#">Read the full story</a>
+              <p>
+                Each verse reminds us that the path forward requires courage, faith, and steady hands —
+                qualities that this team demonstrates every day.
+              </p>
+              <p>
+                As we enter this season of football, fall weather, and Thanksgiving, let’s carry that
+                “ready mindset” into every job, every estimate, and every interaction. Be thankful for the
+                opportunities before us, the people beside us, and the work we get to do together. We’ve
+                proven that when we stay focused on our values and keep pushing forward — no matter how
+                tough the market — we win together. Let’s finish 2025 strong and keep changing the world
+                one linear foot at a time.
+              </p>
+              <p class="signature">Best,<br />Ben</p>
             </div>
           </article>
+        </div>
+      </section>
 
-          <div class="story-grid" role="list">
-            <article class="story-card" role="listitem">
-              <div class="story-card__image" aria-hidden="true"></div>
-              <div class="story-card__content">
-                <p class="eyebrow">Operations</p>
-                <h3>Charlotte yard expands commercial capacity</h3>
-                <p>
-                  How the Charlotte crew is staging large gate installs and
-                  coordinating logistics with local teams.
-                </p>
-                <a class="story-link" href="#">See the rollout</a>
+      <section id="recent-news" class="section section--news" aria-labelledby="recent-news-heading">
+        <div class="container section__inner news__grid">
+          <article class="content-card" aria-labelledby="recent-news-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">Marketing spotlight</p>
+              <h2 id="recent-news-heading">Recent news by John Seegars</h2>
+            </header>
+            <div class="content-card__body">
+              <p>
+                Filling out our Commercial Use Case Form is one of the easiest and most impactful ways to
+                showcase your hard work and elevate our brand. Each completed form helps us tell the story
+                behind your project, which we feature online, across social media, and in award
+                submissions. These stories build credibility, attract new customers, and position both you
+                and Seegars Fence as leaders in quality, innovation, and craftsmanship.
+              </p>
+              <p>
+                Beyond the marketing value, the form captures lessons learned and best practices we can
+                share across branches. It gives clients the real-world examples they want to see and the
+                proof our industry respects. Taking a few minutes to complete the form ensures your work
+                gets the recognition it deserves — online, in print, and on the awards stage. Let’s show
+                the world what we can do!
+              </p>
+              <div class="news__project">
+                <h3>Spotlight project</h3>
+                <ul>
+                  <li>CMC Recycling Center — Columbia, SC</li>
+                  <li>Project Manager: Evan Corson</li>
+                  <li>Sub Crew: John Grimsley and crew</li>
+                  <li>880' of 8' PBR Panel Fence with (3) 24' cantilever gates</li>
+                </ul>
               </div>
-            </article>
-            <article class="story-card" role="listitem">
-              <div class="story-card__image story-card__image--secondary" aria-hidden="true"></div>
-              <div class="story-card__content">
-                <p class="eyebrow">Safety</p>
-                <h3>Reducing equipment downtime</h3>
-                <p>
-                  Fayetteville's preventative maintenance pilot program kept crews
-                  on schedule during the busiest week this quarter.
-                </p>
-                <a class="story-link" href="#">See the checklist</a>
-              </div>
-            </article>
-            <article class="story-card" role="listitem">
-              <div class="story-card__image story-card__image--tertiary" aria-hidden="true"></div>
-              <div class="story-card__content">
-                <p class="eyebrow">People</p>
-                <h3>Mentorship program milestone</h3>
-                <p>
-                  From receptionist to regional operations director, Denise shares her
-                  journey and the moments that shaped her career.
-                </p>
-                <a class="story-link" href="#">Meet Denise</a>
-              </div>
-            </article>
+            </div>
+            <footer class="card-actions">
+              <a class="button button--secondary" href="https://forms.office.com" target="_blank" rel="noreferrer">Share your project</a>
+            </footer>
+          </article>
+          <div class="carousel" data-carousel>
+            <div class="carousel__viewport" data-carousel-viewport>
+              <figure class="carousel__slide" data-carousel-slide>
+                <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
+              </figure>
+              <figure class="carousel__slide" data-carousel-slide>
+                <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
+              </figure>
+              <figure class="carousel__slide" data-carousel-slide>
+                <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
+              </figure>
+              <figure class="carousel__slide" data-carousel-slide>
+                <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
+              </figure>
+            </div>
+            <button class="carousel__control carousel__control--prev" type="button" data-carousel-prev aria-label="Previous photo"></button>
+            <button class="carousel__control carousel__control--next" type="button" data-carousel-next aria-label="Next photo"></button>
+            <div class="carousel__dots" role="tablist" aria-label="News photos">
+              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 1"></button>
+              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 2"></button>
+              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 3"></button>
+              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 4"></button>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="archives" class="archive" aria-labelledby="archive-heading">
+      <section id="hr-corner" class="section section--hr" aria-labelledby="hr-heading">
+        <div class="container section__inner hr__grid">
+          <aside class="profile-card profile-card--horizontal">
+            <img
+              src="{{ url_for('static', filename='images/veronica.png') }}"
+              alt="Portrait of Veronica Aycock"
+            />
+            <div class="profile-card__body">
+              <p class="profile-card__role">Executive VP</p>
+              <h2 class="profile-card__name">Veronica Aycock</h2>
+              <p class="profile-card__quote">Your go-to for benefits, onboarding, and all things people-first.</p>
+            </div>
+          </aside>
+          <article class="content-card" aria-labelledby="hr-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">HR Corner</p>
+              <h2 id="hr-heading">Login cheat sheets and paperless tax forms</h2>
+            </header>
+            <div class="content-card__body">
+              <p>
+                With our growing list of programs, keeping track of every login can be tricky. The latest
+                Username &amp; Password Cheat Sheet covers the tools you use most: Ascensus 401(k), our
+                three health insurance portals, Podium, Paycor, Guardian, and the SFC Newsletter.
+              </p>
+              <p>
+                It’s also the perfect time to select paperless delivery for your W-2 and 1095 forms in
+                Paycor so you can access them the moment they’re ready in January.
+              </p>
+              <h3>How to choose paperless delivery in Paycor</h3>
+              <ol class="numbered-list">
+                <li>Log in at <a href="https://www.paycor.com" target="_blank" rel="noreferrer">paycor.com</a>.</li>
+                <li>Select <strong>Pay &amp; Taxes</strong> and open the dropdown.</li>
+                <li>Choose <strong>Paperless Options</strong>.</li>
+                <li>Check the boxes for <strong>W-2</strong> and <strong>1095-C</strong>.</li>
+                <li>Review the disclosure, then click <strong>Sign &amp; Continue</strong>.</li>
+              </ol>
+            </div>
+            <footer class="card-actions">
+              <a class="button button--secondary" href="{{ url_for('static', filename='docs/HRCorner_Veronica.txt') }}" download>Download the cheat sheet</a>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section id="safety-first" class="section section--safety" aria-labelledby="safety-heading">
+        <div class="container section__inner safety__grid">
+          <aside class="profile-card profile-card--contrast">
+            <img
+              src="{{ url_for('static', filename='images/chanda.png') }}"
+              alt="Portrait of Chanda Best"
+            />
+            <div class="profile-card__body">
+              <p class="profile-card__role">Safety Manager</p>
+              <h2 class="profile-card__name">Chanda Best</h2>
+              <p class="profile-card__quote">Stay alert as we reset our clocks — the darker commute changes everything.</p>
+            </div>
+          </aside>
+          <article class="content-card content-card--contrast" aria-labelledby="safety-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">Safety First</p>
+              <h2 id="safety-heading">Navigating the end of daylight saving time</h2>
+            </header>
+            <div class="content-card__body">
+              <p>
+                Turning the clock back an hour may feel like a gift, but it disrupts our biological clock
+                and increases safety incidents on the road and at work. Darkness arrives during peak
+                commute hours, drivers and pedestrians adjust slowly, and the fatigue from time changes
+                can last several days.
+              </p>
+              <div class="callout-grid">
+                <div class="callout-tile">
+                  <h3>Watch the fatigue</h3>
+                  <p>Expect sluggishness the first week of November. Prioritize sleep and stay hydrated.</p>
+                </div>
+                <div class="callout-tile">
+                  <h3>Anticipate risk</h3>
+                  <p>Accident rates spike right after the time change. Build extra time into commutes and job briefings.</p>
+                </div>
+                <div class="callout-tile">
+                  <h3>Use the reminder</h3>
+                  <p>Check smoke and CO alarms, refresh vehicle emergency kits, and inspect fire extinguishers.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="custom-fab" class="section section--fabrication" aria-labelledby="fabrication-heading">
+        <div class="container section__inner fabrication__grid">
+          <aside class="profile-card profile-card--horizontal">
+            <img
+              src="{{ url_for('static', filename='images/tony.png') }}"
+              alt="Portrait of Tony Ballance"
+            />
+            <div class="profile-card__body">
+              <p class="profile-card__role">Custom Fabrication Manager</p>
+              <h2 class="profile-card__name">Tony Ballance</h2>
+              <p class="profile-card__quote">Accurate forms mean faster quotes and fewer reworks.</p>
+            </div>
+          </aside>
+          <article class="content-card" aria-labelledby="fabrication-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">Custom Fab</p>
+              <h2 id="fabrication-heading">Choose the right form, every time</h2>
+            </header>
+            <div class="content-card__body">
+              <p>
+                Grabbing the Misc Custom Quote Form is quick, but it often leaves out details our
+                estimators and fabricators need. The right form captures deductions, hardware, finishes,
+                and gate styles so the floor can build exactly what you envisioned.
+              </p>
+              <div class="card-highlights">
+                <div class="highlight-card">
+                  <h3>Ornamental gates</h3>
+                  <p>Use the Ornamental Aluminum Gate form when height or style changes — it answers the deductions question instantly.</p>
+                </div>
+                <div class="highlight-card">
+                  <h3>Decking gates</h3>
+                  <p>The Square Gate Frame form ensures we capture gate height and structural requirements for decking projects.</p>
+                </div>
+              </div>
+              <p>
+                Thank you for simplifying the process so we can deliver pricing faster and fabrications
+                with as few mistakes as possible.
+              </p>
+            </div>
+            <footer class="card-actions">
+              <a class="button button--secondary" href="{{ url_for('static', filename='docs/AORN-with-kickplate.pdf') }}" target="_blank" rel="noreferrer">Download the ornamental gate template</a>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section id="tech-talk" class="section section--tech" aria-labelledby="tech-heading">
+        <div class="container section__inner tech__grid">
+          <aside class="profile-card profile-card--contrast">
+            <img
+              src="{{ url_for('static', filename='images/brad.png') }}"
+              alt="Portrait of Brad Wells"
+            />
+            <div class="profile-card__body">
+              <p class="profile-card__role">IT Manager</p>
+              <h2 class="profile-card__name">Brad Wells</h2>
+              <p class="profile-card__quote">Your new one-stop hub for IT support is live.</p>
+            </div>
+          </aside>
+          <article class="content-card content-card--tech" aria-labelledby="tech-heading">
+            <header class="section-header">
+              <p class="section-eyebrow">Tech Talk</p>
+              <h2 id="tech-heading">Welcome to the Seegars Fence IT Workspace</h2>
+            </header>
+            <div class="content-card__body">
+              <p>
+                We’ve rolled out a centralized IT workspace to make support smoother and faster. Submit
+                tickets, track progress, and explore a knowledge base built from real requests — all in
+                one place.
+              </p>
+              <ul class="accent-list accent-list--icons">
+                <li><strong>Sign in</strong> with your Microsoft 365 account.</li>
+                <li><strong>Submit a ticket</strong> for issues, questions, or project requests.</li>
+                <li><strong>Track your history</strong> with a personal dashboard of open and past tickets.</li>
+                <li><strong>Browse quick fixes</strong> as the knowledge base grows with every solution.</li>
+              </ul>
+              <p>
+                All IT requests should now be submitted through the workspace at
+                <a href="https://www.seegarsit.app" target="_blank" rel="noreferrer">www.seegarsit.app</a>.
+                Please use the site instead of calls, emails, or texts so every request is tracked and
+                prioritized.
+              </p>
+            </div>
+            <footer class="card-actions">
+              <a class="button button--primary" href="https://www.seegarsit.app" target="_blank" rel="noreferrer">Open the IT Workspace</a>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section id="celebrations" class="section section--celebrations" aria-labelledby="celebrations-heading">
         <div class="container">
-          <div class="section-header">
-            <h2 id="archive-heading">Past issues</h2>
-            <p>Catch up on recent stories and announcements.</p>
-          </div>
-          <div class="timeline">
-            <article class="timeline-item">
-              <p class="timeline-date">March 7, 2024</p>
-              <h3>Fabrication upgrades roll out in Wilmington</h3>
-              <p>
-                New CNC capabilities, training takeaways, and the measurable impact
-                on material waste.
-              </p>
-              <a href="#">Read issue</a>
-            </article>
-            <article class="timeline-item">
-              <p class="timeline-date">February 28, 2024</p>
-              <h3>Employee spotlight: Thomasville team</h3>
-              <p>
-                Meet the installers doubling down on mentorship and cross-training.
-              </p>
-              <a href="#">Read issue</a>
-            </article>
-            <article class="timeline-item">
-              <p class="timeline-date">February 21, 2024</p>
-              <h3>Unlocking efficiencies with digital site logs</h3>
-              <p>
-                How centralized reporting reduced follow-up calls by 30% in just one
-                month.
-              </p>
-              <a href="#">Read issue</a>
-            </article>
+          <header class="section-header section-header--center">
+            <p class="section-eyebrow">Celebrations</p>
+            <h2 id="celebrations-heading">Birthdays &amp; anniversaries</h2>
+            <p>Join us in celebrating this month’s milestones across the Seegars family.</p>
+          </header>
+          <div class="celebrations__grid">
+            <div class="content-card celebrations__column" aria-labelledby="birthdays-heading">
+              <h3 id="birthdays-heading">Birthdays</h3>
+              <ul class="celebrations-list">
+                {% for birthday in birthdays %}
+                <li>
+                  <span class="celebrations-list__primary">{{ birthday.name }}</span>
+                  <span class="celebrations-list__meta">{{ birthday.date }} · {{ birthday.weekday }} · {{ birthday.office }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="content-card celebrations__column" aria-labelledby="anniversaries-heading">
+              <h3 id="anniversaries-heading">Anniversaries</h3>
+              <ul class="celebrations-list">
+                {% for anniversary in anniversaries %}
+                <li>
+                  <span class="celebrations-list__primary">{{ anniversary.name }}</span>
+                  <span class="celebrations-list__meta">{{ anniversary.tenure }} · {{ anniversary.office }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="team" class="team" aria-labelledby="team-heading">
+      <section id="resources" class="section section--resources" aria-labelledby="resources-heading">
         <div class="container">
-          <div class="section-header">
-            <h2 id="team-heading">Meet the editors</h2>
-            <p>The voices curating the stories that keep Seegars connected.</p>
-          </div>
-          <div class="team-grid" role="list">
-            <article class="team-card" role="listitem">
-              <div class="avatar" aria-hidden="true">AM</div>
-              <h3>Alicia Martinez</h3>
-              <p>Senior Communications Strategist</p>
-              <p class="bio">
-                Oversees editorial planning, features the latest innovations from our
-                branches, and keeps the tone friendly yet focused.
-              </p>
-            </article>
-            <article class="team-card" role="listitem">
-              <div class="avatar" aria-hidden="true">JB</div>
-              <h3>Jordan Brooks</h3>
-              <p>People &amp; Culture Editor</p>
-              <p class="bio">
-                Highlights the stories behind the installs—recognizing the crews and
-                support teams who make it happen.
-              </p>
-            </article>
-            <article class="team-card" role="listitem">
-              <div class="avatar" aria-hidden="true">LK</div>
-              <h3>Lena Kim</h3>
-              <p>Design &amp; Media Producer</p>
-              <p class="bio">
-                Captures visuals from job sites, creates quick training clips, and
-                makes every edition shine.
-              </p>
-            </article>
+          <header class="section-header section-header--center">
+            <p class="section-eyebrow">Resources</p>
+            <h2 id="resources-heading">Quick links for the team</h2>
+            <p>All the essentials, one tap away.</p>
+          </header>
+          <div class="resource-buttons">
+            {% for resource in resources %}
+            <a class="resource-button" href="{{ resource.url }}" target="_blank" rel="noreferrer">{{ resource.label }}</a>
+            {% endfor %}
           </div>
         </div>
       </section>
 
-      <section id="subscribe" class="subscribe" aria-labelledby="subscribe-heading">
-        <div class="container">
+      <section id="subscribe" class="section section--subscribe" aria-labelledby="subscribe-heading">
+        <div class="container section__inner subscribe__grid">
           <div>
-            <h2 id="subscribe-heading">Join the Fence Line community</h2>
+            <p class="section-eyebrow">Stay connected</p>
+            <h2 id="subscribe-heading">Get The Fence Line delivered weekly</h2>
             <p>
-              Delivered Thursday mornings, packed with branch wins, safety insights,
-              and stories from the field. No spam, ever.
+              Branch wins, safety reminders, and team celebrations — curated for your inbox every
+              Thursday morning.
             </p>
           </div>
           <form class="subscribe-form" id="footer-subscribe" novalidate>
@@ -250,9 +447,9 @@
       <div class="container">
         <p>&copy; <span id="current-year"></span> Seegars Fence Company. All rights reserved.</p>
         <div class="footer-links">
-          <a href="#">Brand resources</a>
-          <a href="#">Submit a story</a>
-          <a href="mailto:newsletter@seegars.com">Contact the editors</a>
+          <a href="#team-letter">Top of page</a>
+          <a href="mailto:newsletter@seegars.com">Share a story</a>
+          <a href="#resources">Team resources</a>
         </div>
       </div>
     </footer>
