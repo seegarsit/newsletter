@@ -1,0 +1,24 @@
+Tech Talk: The New Seegars Fence IT Workspace
+
+We’ve rolled out something new to make IT communication smoother and faster. The 
+Seegars Fence IT Workspace is your new one-stop spot for submitting IT tickets, checking 
+updates, and browsing a growing knowledge base built from real support requests.
+
+The goal is simple: to keep things organized and help you get solutions quicker without all 
+the back-and-forth emails.
+
+Here’s how it works:
+
+- Authentication: Sign in using your regular Microsoft 365 account (your Seegars email and password).
+- Submit a Ticket: Report an issue, ask a question, or request help directly from the “New Ticket” page.
+- Track Your Requests: Your personal dashboard shows all your open and past tickets at a glance.
+- Knowledge Base: Browse articles and quick fixes. It gets smarter as more tickets come in.
+
+As part of our commitment to providing exceptional support, this new workspace is designed to make your IT experience simpler, faster, and more transparent.
+
+All IT requests should now be submitted through the Seegars Fence IT Workspace at www.seegarsit.app.
+
+Please use the site instead of calling, emailing, or texting when you need help. Submitting tickets through the workspace ensures every request is tracked, prioritized, and resolved as quickly as possible.
+
+Bookmark www.seegarsit.app for quick access anytime you need IT help.
+
