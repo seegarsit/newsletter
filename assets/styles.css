@@ -104,11 +104,23 @@ a {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--lime);
   font-size: 1rem;
+}
+
+.logo img {
+  height: 2.5rem;
+  width: auto;
+}
+
+.logo-text {
+  display: inline-block;
 }
 
 .primary-nav {
