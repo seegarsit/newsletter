@@ -22,6 +22,9 @@
             alt="Seegars Fence Company logo"
           />
         </a>
+        <nav class="primary-nav" aria-label="Primary navigation">
+          <a class="home-link" href="#top">HOME</a>
+        </nav>
       </div>
     </header>
 
@@ -138,6 +141,18 @@
                 >Share your project</a
               >
             </footer>
+            <div class="news-spotlight" aria-labelledby="spotlight-heading">
+              <h3 id="spotlight-heading">SPOTLIGHT</h3>
+              <p class="news-spotlight__project">CMC Recycling Center - Columbia, SC</p>
+              <p class="news-spotlight__meta">Project Manager – Evan Corson</p>
+              <ul class="news-spotlight__list">
+                <li>Sub Crew – John Grimsley and crew</li>
+                <li>
+                  880’ with (3) 24’ Cantilever Gates – 8’ tall PBR Panel Fence in Gallery Blue and
+                  Ash Grey Trim, 3” square posts with C-Purlin runners
+                </li>
+              </ul>
+            </div>
             <div class="news-gallery" data-news-gallery>
               <div class="news-gallery__grid">
                 <figure class="news-gallery__item">
@@ -147,7 +162,6 @@
                     data-news-trigger
                     data-news-image="{{ url_for('static', filename='images/fence_1.jpg') }}"
                     data-news-alt="Crew installing metal fencing at a commercial site"
-                    data-news-caption="Crew installing metal fencing at a commercial site"
                     aria-label="Enlarge photo of crew installing metal fencing"
                   >
                     <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
@@ -160,7 +174,6 @@
                     data-news-trigger
                     data-news-image="{{ url_for('static', filename='images/fence_2.jpg') }}"
                     data-news-alt="Completed fence line with bright blue paneling"
-                    data-news-caption="Completed fence line with bright blue paneling"
                     aria-label="Enlarge photo of completed fence line"
                   >
                     <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
@@ -173,7 +186,6 @@
                     data-news-trigger
                     data-news-image="{{ url_for('static', filename='images/fence_3.jpg') }}"
                     data-news-alt="Cantilever gate in front of a recycling facility"
-                    data-news-caption="Cantilever gate in front of a recycling facility"
                     aria-label="Enlarge photo of cantilever gate"
                   >
                     <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
@@ -186,7 +198,6 @@
                     data-news-trigger
                     data-news-image="{{ url_for('static', filename='images/fence_4.jpg') }}"
                     data-news-alt="Team members reviewing plans beside a fence installation"
-                    data-news-caption="Team members reviewing plans beside a fence installation"
                     aria-label="Enlarge photo of team members reviewing plans"
                   >
                     <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
