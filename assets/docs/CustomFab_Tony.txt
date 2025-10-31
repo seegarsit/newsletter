@@ -6,7 +6,7 @@ In the example below, I know we’re quoting an ornamental gate, that has previo
 
 (place holder screenshot2.png)
 
-(place holder AORN-with-kickplate.pdf)
+(place holder AOK.png)
 
 In the next example, we have a decking gate, a SQ Gate Frame form would be the correct form below.  Instead, we have a complete sheet from the plans section, which fails to include the gate height.   
 
