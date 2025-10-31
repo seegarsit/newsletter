@@ -48,7 +48,6 @@
               <h2 id="team-letter-heading">A note to the Seegars family</h2>
             </header>
             <div class="content-card__body">
-              <p>Team,</p>
               <p>
                 As we roll into November, I want to celebrate what we’ve accomplished together and set
                 our sights on the opportunities ahead. We closed out Q3 ahead of goal for both sales and
@@ -104,7 +103,7 @@
 
       <section id="recent-news" class="section section--news" aria-labelledby="recent-news-heading">
         <div class="container section__inner section__inner--stacked">
-          <article class="content-card content-card--full" aria-labelledby="recent-news-heading">
+          <article class="content-card content-card--full content-card--tech content-card--news" aria-labelledby="recent-news-heading">
             <header class="section-header">
               <p class="section-eyebrow">Recent News</p>
               <h2 id="recent-news-heading">Project Spotlight</h2>
@@ -132,70 +131,70 @@
             </div>
             <footer class="card-actions">
               <a
-                class="button button--secondary"
+                class="button button--primary"
                 href="https://docs.google.com/forms/d/e/1FAIpQLSejeb70RfhBnyxojRwzuQ2vzDzlzWde1wM4YgBvkwnMSWgUow/viewform"
                 target="_blank"
                 rel="noreferrer"
                 >Share your project</a
               >
             </footer>
-          </article>
-          <div class="news-gallery" data-news-gallery>
-            <div class="news-gallery__stack">
-              <figure class="news-gallery__item news-gallery__item--one">
-                <button
-                  type="button"
-                  class="news-gallery__trigger"
-                  data-news-trigger
-                  data-news-image="{{ url_for('static', filename='images/fence_1.jpg') }}"
-                  data-news-alt="Crew installing metal fencing at a commercial site"
-                  data-news-caption="Crew installing metal fencing at a commercial site"
-                  aria-label="Enlarge photo of crew installing metal fencing"
-                >
-                  <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
-                </button>
-              </figure>
-              <figure class="news-gallery__item news-gallery__item--two">
-                <button
-                  type="button"
-                  class="news-gallery__trigger"
-                  data-news-trigger
-                  data-news-image="{{ url_for('static', filename='images/fence_2.jpg') }}"
-                  data-news-alt="Completed fence line with bright blue paneling"
-                  data-news-caption="Completed fence line with bright blue paneling"
-                  aria-label="Enlarge photo of completed fence line"
-                >
-                  <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
-                </button>
-              </figure>
-              <figure class="news-gallery__item news-gallery__item--three">
-                <button
-                  type="button"
-                  class="news-gallery__trigger"
-                  data-news-trigger
-                  data-news-image="{{ url_for('static', filename='images/fence_3.jpg') }}"
-                  data-news-alt="Cantilever gate in front of a recycling facility"
-                  data-news-caption="Cantilever gate in front of a recycling facility"
-                  aria-label="Enlarge photo of cantilever gate"
-                >
-                  <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
-                </button>
-              </figure>
-              <figure class="news-gallery__item news-gallery__item--four">
-                <button
-                  type="button"
-                  class="news-gallery__trigger"
-                  data-news-trigger
-                  data-news-image="{{ url_for('static', filename='images/fence_4.jpg') }}"
-                  data-news-alt="Team members reviewing plans beside a fence installation"
-                  data-news-caption="Team members reviewing plans beside a fence installation"
-                  aria-label="Enlarge photo of team members reviewing plans"
-                >
-                  <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
-                </button>
-              </figure>
+            <div class="news-gallery" data-news-gallery>
+              <div class="news-gallery__grid">
+                <figure class="news-gallery__item">
+                  <button
+                    type="button"
+                    class="news-gallery__trigger"
+                    data-news-trigger
+                    data-news-image="{{ url_for('static', filename='images/fence_1.jpg') }}"
+                    data-news-alt="Crew installing metal fencing at a commercial site"
+                    data-news-caption="Crew installing metal fencing at a commercial site"
+                    aria-label="Enlarge photo of crew installing metal fencing"
+                  >
+                    <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
+                  </button>
+                </figure>
+                <figure class="news-gallery__item">
+                  <button
+                    type="button"
+                    class="news-gallery__trigger"
+                    data-news-trigger
+                    data-news-image="{{ url_for('static', filename='images/fence_2.jpg') }}"
+                    data-news-alt="Completed fence line with bright blue paneling"
+                    data-news-caption="Completed fence line with bright blue paneling"
+                    aria-label="Enlarge photo of completed fence line"
+                  >
+                    <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
+                  </button>
+                </figure>
+                <figure class="news-gallery__item">
+                  <button
+                    type="button"
+                    class="news-gallery__trigger"
+                    data-news-trigger
+                    data-news-image="{{ url_for('static', filename='images/fence_3.jpg') }}"
+                    data-news-alt="Cantilever gate in front of a recycling facility"
+                    data-news-caption="Cantilever gate in front of a recycling facility"
+                    aria-label="Enlarge photo of cantilever gate"
+                  >
+                    <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
+                  </button>
+                </figure>
+                <figure class="news-gallery__item">
+                  <button
+                    type="button"
+                    class="news-gallery__trigger"
+                    data-news-trigger
+                    data-news-image="{{ url_for('static', filename='images/fence_4.jpg') }}"
+                    data-news-alt="Team members reviewing plans beside a fence installation"
+                    data-news-caption="Team members reviewing plans beside a fence installation"
+                    aria-label="Enlarge photo of team members reviewing plans"
+                  >
+                    <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
+                  </button>
+                </figure>
+              </div>
             </div>
-          </div>
+          </article>
           <div class="news-lightbox" data-news-lightbox hidden role="dialog" aria-modal="true">
             <div class="news-lightbox__backdrop" data-news-close></div>
             <figure class="news-lightbox__figure">
@@ -245,7 +244,7 @@
               </ol>
             </div>
             <footer class="card-actions">
-              <a class="button button--secondary" href="{{ url_for('static', filename='docs/HRCorner_Veronica.txt') }}" download>Download the cheat sheet</a>
+              <a class="button button--secondary" href="{{ url_for('static', filename='docs/cheat_sheet.pdf') }}" target="_blank" rel="noreferrer">Download the cheat sheet</a>
             </footer>
           </article>
         </div>
@@ -256,99 +255,39 @@
           <article class="content-card content-card--contrast content-card--full" aria-labelledby="safety-heading">
             <header class="section-header">
               <p class="section-eyebrow">Safety First</p>
-              <h2 id="safety-heading">Navigating the end of daylight saving time</h2>
+              <h2 id="safety-heading">Stay safe as we fall back</h2>
             </header>
             <div class="content-card__body">
               <p>
-                Early next Sunday morning most of those in the United States will turn their clocks back
-                one hour for the end of Daylight-Saving Time. Most of us think: “Fantastic! I get another
-                hour of sleep”; and yes, you will. However, there is a huge difference between the
-                “society clock” and the “biological clock” we all work from. During such time changes there
-                is statistically an increase in safety incidents.
+                This Sunday marks the end of Daylight Saving Time — don’t forget to turn your clocks back
+                one hour! While the extra sleep is nice, the time change can increase the risk of fatigue
+                and accidents both on the road and at work.
               </p>
-              <div class="safety-grid">
-                <div class="safety-card">
-                  <p>
-                    With the end of daylight savings time comes an increase of darkness around the time of
-                    rush hour, when traffic is at a peak, and many are making our way home from work.
-                    Drivers aren’t used to the decreased visibility – nor are pedestrians, who might take
-                    chances crossing roads when they shouldn’t.
-                  </p>
-                </div>
-                <div class="safety-card">
-                  <p>
-                    Pedestrians walking around at dusk are nearly three times more likely to be struck and
-                    killed by cars in the days following the end of daylight-saving time than just before
-                    the time change. A study of seven years of nationwide traffic fatalities were
-                    conducted at Carnegie Mellon University, calculating the risk per mile walked for
-                    pedestrians. The study found that the per-mile risk jumps 186 percent from October to
-                    November.
-                  </p>
-                </div>
-              </div>
-              <div class="safety-card safety-card--accent">
-                <p>
-                  The National Road Safety Foundation (NRSF) has done studies proving that auto accidents
-                  increase after the clocks fall back an hour. Besides the lack of visibility, the NRSF
-                  notes that commuting in the dark can also make drivers drowsier than usual. According to
-                  some health studies, changes in waking time coupled with the earlier onset of darkness
-                  throws off our internal clocks. This increases driving risks, primarily because in our
-                  24/7 society, we have a fundamental problem of already being sleep deprived.
-                </p>
-              </div>
               <p>
-                The end of daylight-saving time can leave many feeling fatigued, which can pose safety
-                risks both at home and in the workplace. Some things to keep in mind when switching back to
-                standard time are:
+                As evening darkness arrives earlier, visibility decreases right around rush hour. Studies
+                show a spike in traffic accidents and pedestrian injuries in the days following the switch.
+                The change also disrupts our sleep schedules, leaving many people drowsier than usual.
               </p>
-              <div class="safety-grid">
-                <div class="safety-card">
-                  <h3>Fatigue</h3>
-                  <p>
-                    Studies suggest that it takes people who work traditional hours several days to fully
-                    readjust their sleep schedule after the time change. While it may seem a welcome gift
-                    to get an extra hour of sleep as opposed to losing an hour in the spring, there is a
-                    physiological consequence to changing our clocks. Don’t be surprised if you feel a bit
-                    sluggish during the first week or so of November.
-                  </p>
-                </div>
-                <div class="safety-card">
-                  <h3>Accidents</h3>
-                  <p>
-                    Evidence suggests that time changes increase safety problems both at work and at home.
-                    Just being aware of the increased risk of accidents in the period immediately
-                    following the time change may help you stay alert. Try to avoid building up a sleep
-                    debt in the days before the change.
-                  </p>
-                </div>
-              </div>
-              <p>
-                Safety professionals have long used the start and end of daylight-saving time as reminders
-                for performing recurring safety tasks. Use the occasion of setting your clocks back as a
-                cue to:
-              </p>
-              <ul class="safety-task-list">
+              <p>Keep these safety tips in mind as we “fall back”:</p>
+              <ul class="safety-reminders">
                 <li>
-                  Check and replace the batteries in your smoke and carbon monoxide (CO) alarms. Ensure
-                  they are working properly and replace the batteries. As the cold sets in and many start
-                  up their gas-fired furnaces, fireplaces, portable unit heaters and the like for the first
-                  time, carbon monoxide poisoning risks increase dramatically during this time of year.
-                  Replace any smoke alarm unit that is older than 10 years. Replace any CO alarm unit that
-                  is older than 5 years.
+                  <strong>Stay alert on the road.</strong> Watch for pedestrians and adjust to darker evening commutes.
                 </li>
                 <li>
-                  Prepare a winter emergency kit for your automobile. Such kits can be a lifesaver if you
-                  are stuck out in bad weather while driving. They should include items such as warm
-                  clothes, blanket, flashlight, batteries, water, non-perishable snacks, shovel, flares,
-                  reflective hazard triangle, jumper cables, cat litter or sand for traction, ski hat and
-                  gloves.
+                  <strong>Check smoke and CO alarms.</strong> Replace batteries and outdated units (smoke alarms older than 10
+                  years, CO alarms older than 5).
                 </li>
                 <li>
-                  Check to see if your fire extinguishers need recharging. Check the small gauge at the top
-                  of the extinguisher. If the needle in that gauge is in the green, chances are, the
-                  extinguisher is okay. If it is in the red, you need to have the extinguisher recharged.
+                  <strong>Prepare your vehicle.</strong> Stock a winter emergency kit with warm clothing, snacks, a flashlight,
+                  and jumper cables.
+                </li>
+                <li>
+                  <strong>Inspect fire extinguishers.</strong> Make sure the gauge is in the green zone.
                 </li>
               </ul>
+              <p>
+                A little preparation and awareness go a long way in keeping everyone safe this season.
+              </p>
             </div>
           </article>
         </div>
@@ -388,7 +327,7 @@
                   data-media-label="Ornamental gate examples"
                   data-media-items='[
                     {"src": "{{ url_for('static', filename='images/screenshot2.png') }}", "alt": "Screenshot of the ornamental gate request details"},
-                    {"src": "{{ url_for('static', filename='docs/AORN-with-kickplate.pdf') }}", "alt": "Ornamental gate form with kickplate", "type": "pdf"}
+                    {"src": "{{ url_for('static', filename='images/AOK.png') }}", "alt": "Example of the Ornamental Aluminum Gate form"}
                   ]'
                 >
                   Examples
@@ -467,7 +406,7 @@
         <div class="container">
           <header class="section-header section-header--center">
             <p class="section-eyebrow">Celebrations</p>
-            <h2 id="celebrations-heading">Birthdays &amp; anniversaries</h2>
+            <h2 id="celebrations-heading">Birthdays &amp; Anniversaries</h2>
             <p>Join us in celebrating this month’s milestones across the Seegars family.</p>
           </header>
           <div class="celebrations__grid">
