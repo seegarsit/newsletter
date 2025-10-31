@@ -37,72 +37,90 @@
     yearEl.textContent = new Date().getFullYear();
   }
 
-  function initCarousel(carousel) {
-    const viewport = carousel.querySelector('[data-carousel-viewport]');
-    const slides = Array.from(carousel.querySelectorAll('[data-carousel-slide]'));
-    const dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
-    const prev = carousel.querySelector('[data-carousel-prev]');
-    const next = carousel.querySelector('[data-carousel-next]');
+  const gallery = document.querySelector('[data-news-gallery]');
+  const lightbox = document.querySelector('[data-news-lightbox]');
 
-    if (!viewport || slides.length === 0) {
-      return;
-    }
+  if (gallery && lightbox) {
+    const triggers = Array.from(gallery.querySelectorAll('[data-news-trigger]'));
+    const lightboxImage = lightbox.querySelector('[data-news-lightbox-image]');
+    const lightboxCaption = lightbox.querySelector('[data-news-lightbox-caption]');
+    const closeElements = Array.from(lightbox.querySelectorAll('[data-news-close]'));
+    let activeTrigger = null;
 
-    let activeIndex = 0;
-    let timerId;
-    const slideCount = slides.length;
+    lightbox.setAttribute('aria-hidden', 'true');
 
-    function goTo(index) {
-      activeIndex = (index + slideCount) % slideCount;
-      viewport.style.transform = `translateX(-${activeIndex * 100}%)`;
-      dots.forEach((dot, dotIndex) => {
-        const isActive = dotIndex === activeIndex;
-        dot.classList.toggle('is-active', isActive);
-        dot.setAttribute('aria-selected', String(isActive));
-      });
-    }
-
-    function stopAutoRotate() {
-      if (timerId) {
-        clearInterval(timerId);
-        timerId = undefined;
+    function showLightbox(trigger) {
+      if (!lightboxImage || !trigger.dataset.newsImage) {
+        return;
       }
-    }
 
-    function startAutoRotate() {
-      stopAutoRotate();
-      timerId = setInterval(() => {
-        goTo(activeIndex + 1);
-      }, 6000);
-    }
+      const { newsImage, newsAlt, newsCaption } = trigger.dataset;
+      lightboxImage.src = newsImage;
+      lightboxImage.alt = newsAlt || '';
 
-    if (prev) {
-      prev.addEventListener('click', () => {
-        goTo(activeIndex - 1);
-        startAutoRotate();
+      if (lightboxCaption) {
+        if (newsCaption) {
+          lightboxCaption.textContent = newsCaption;
+          lightboxCaption.hidden = false;
+        } else {
+          lightboxCaption.textContent = '';
+          lightboxCaption.hidden = true;
+        }
+      }
+
+      lightbox.removeAttribute('hidden');
+      requestAnimationFrame(() => {
+        lightbox.classList.add('is-active');
       });
+      lightbox.setAttribute('aria-hidden', 'false');
+      activeTrigger = trigger;
     }
 
-    if (next) {
-      next.addEventListener('click', () => {
-        goTo(activeIndex + 1);
-        startAutoRotate();
-      });
+    function hideLightbox() {
+      if (lightbox.hasAttribute('hidden')) {
+        return;
+      }
+
+      lightbox.classList.remove('is-active');
+      lightbox.setAttribute('aria-hidden', 'true');
+
+      const onTransitionEnd = () => {
+        lightbox.setAttribute('hidden', '');
+        lightbox.removeEventListener('transitionend', onTransitionEnd);
+        if (activeTrigger) {
+          activeTrigger.focus();
+          activeTrigger = null;
+        }
+      };
+
+      lightbox.addEventListener('transitionend', onTransitionEnd);
+
+      // Fallback in case transitionend doesn't fire.
+      setTimeout(() => {
+        if (!lightbox.hasAttribute('hidden')) {
+          lightbox.setAttribute('hidden', '');
+          if (activeTrigger) {
+            activeTrigger.focus();
+            activeTrigger = null;
+          }
+        }
+      }, 350);
     }
 
-    dots.forEach((dot, dotIndex) => {
-      dot.addEventListener('click', () => {
-        goTo(dotIndex);
-        startAutoRotate();
+    triggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        showLightbox(trigger);
       });
     });
 
-    carousel.addEventListener('mouseenter', stopAutoRotate);
-    carousel.addEventListener('mouseleave', startAutoRotate);
+    closeElements.forEach((closeEl) => {
+      closeEl.addEventListener('click', hideLightbox);
+    });
 
-    goTo(0);
-    startAutoRotate();
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        hideLightbox();
+      }
+    });
   }
-
-  document.querySelectorAll('[data-carousel]').forEach(initCarousel);
 })();

@@ -37,10 +37,6 @@
               <span>A family business distinguished by exceptional values and quality.</span>
             </em>
           </p>
-          <div class="hero__actions">
-            <a class="button button--primary" href="#team-letter">Read Ben's Letter</a>
-            <a class="button button--ghost" href="#resources">Visit Resources</a>
-          </div>
         </div>
       </section>
 
@@ -141,29 +137,69 @@
               <a class="button button--secondary" href="https://forms.office.com" target="_blank" rel="noreferrer">Share your project</a>
             </footer>
           </article>
-          <div class="carousel carousel--compact" data-carousel>
-            <div class="carousel__viewport" data-carousel-viewport>
-              <figure class="carousel__slide" data-carousel-slide>
-                <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
+          <div class="news-gallery" data-news-gallery>
+            <div class="news-gallery__stack">
+              <figure class="news-gallery__item news-gallery__item--one">
+                <button
+                  type="button"
+                  class="news-gallery__trigger"
+                  data-news-trigger
+                  data-news-image="{{ url_for('static', filename='images/fence_1.jpg') }}"
+                  data-news-alt="Crew installing metal fencing at a commercial site"
+                  data-news-caption="Crew installing metal fencing at a commercial site"
+                  aria-label="Enlarge photo of crew installing metal fencing"
+                >
+                  <img src="{{ url_for('static', filename='images/fence_1.jpg') }}" alt="Crew installing metal fencing at a commercial site" />
+                </button>
               </figure>
-              <figure class="carousel__slide" data-carousel-slide>
-                <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
+              <figure class="news-gallery__item news-gallery__item--two">
+                <button
+                  type="button"
+                  class="news-gallery__trigger"
+                  data-news-trigger
+                  data-news-image="{{ url_for('static', filename='images/fence_2.jpg') }}"
+                  data-news-alt="Completed fence line with bright blue paneling"
+                  data-news-caption="Completed fence line with bright blue paneling"
+                  aria-label="Enlarge photo of completed fence line"
+                >
+                  <img src="{{ url_for('static', filename='images/fence_2.jpg') }}" alt="Completed fence line with bright blue paneling" />
+                </button>
               </figure>
-              <figure class="carousel__slide" data-carousel-slide>
-                <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
+              <figure class="news-gallery__item news-gallery__item--three">
+                <button
+                  type="button"
+                  class="news-gallery__trigger"
+                  data-news-trigger
+                  data-news-image="{{ url_for('static', filename='images/fence_3.jpg') }}"
+                  data-news-alt="Cantilever gate in front of a recycling facility"
+                  data-news-caption="Cantilever gate in front of a recycling facility"
+                  aria-label="Enlarge photo of cantilever gate"
+                >
+                  <img src="{{ url_for('static', filename='images/fence_3.jpg') }}" alt="Cantilever gate in front of a recycling facility" />
+                </button>
               </figure>
-              <figure class="carousel__slide" data-carousel-slide>
-                <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
+              <figure class="news-gallery__item news-gallery__item--four">
+                <button
+                  type="button"
+                  class="news-gallery__trigger"
+                  data-news-trigger
+                  data-news-image="{{ url_for('static', filename='images/fence_4.jpg') }}"
+                  data-news-alt="Team members reviewing plans beside a fence installation"
+                  data-news-caption="Team members reviewing plans beside a fence installation"
+                  aria-label="Enlarge photo of team members reviewing plans"
+                >
+                  <img src="{{ url_for('static', filename='images/fence_4.jpg') }}" alt="Team members reviewing plans beside a fence installation" />
+                </button>
               </figure>
             </div>
-            <button class="carousel__control carousel__control--prev" type="button" data-carousel-prev aria-label="Previous photo"></button>
-            <button class="carousel__control carousel__control--next" type="button" data-carousel-next aria-label="Next photo"></button>
-            <div class="carousel__dots" role="tablist" aria-label="News photos">
-              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 1"></button>
-              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 2"></button>
-              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 3"></button>
-              <button type="button" class="carousel__dot" data-carousel-dot aria-label="Show photo 4"></button>
-            </div>
+          </div>
+          <div class="news-lightbox" data-news-lightbox hidden role="dialog" aria-modal="true">
+            <div class="news-lightbox__backdrop" data-news-close></div>
+            <figure class="news-lightbox__figure">
+              <img src="" alt="" data-news-lightbox-image />
+              <figcaption data-news-lightbox-caption></figcaption>
+            </figure>
+            <button type="button" class="news-lightbox__close" data-news-close aria-label="Close enlarged photo"></button>
           </div>
         </div>
       </section>
@@ -340,39 +376,54 @@
         <div class="container">
           <header class="section-header section-header--center">
             <p class="section-eyebrow">Contributors</p>
-            <h2 id="contributors-heading">Voices behind this issue</h2>
+            <h2 id="contributors-heading">Bringing you The Fence Line</h2>
           </header>
           <div class="contributors__grid">
             <article class="contributor-card">
-              <img src="{{ url_for('static', filename='images/ben.png') }}" alt="Portrait of Ben Seegars" />
+              <p class="contributor-card__section">Team Letter</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/ben.png') }}" alt="Portrait of Ben Seegars" />
+              </div>
               <div class="contributor-card__body">
                 <h3>Ben Seegars</h3>
                 <p>Chief Executive Officer</p>
               </div>
             </article>
             <article class="contributor-card">
-              <img src="{{ url_for('static', filename='images/veronica.png') }}" alt="Portrait of Veronica Aycock" />
+              <p class="contributor-card__section">HR Corner</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/veronica.png') }}" alt="Portrait of Veronica Aycock" />
+              </div>
               <div class="contributor-card__body">
                 <h3>Veronica Aycock</h3>
                 <p>Executive Vice President</p>
               </div>
             </article>
             <article class="contributor-card">
-              <img src="{{ url_for('static', filename='images/chanda.png') }}" alt="Portrait of Chanda Best" />
+              <p class="contributor-card__section">Safety First</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/chanda.png') }}" alt="Portrait of Chanda Best" />
+              </div>
               <div class="contributor-card__body">
                 <h3>Chanda Best</h3>
                 <p>Safety Manager</p>
               </div>
             </article>
             <article class="contributor-card">
-              <img src="{{ url_for('static', filename='images/tony.png') }}" alt="Portrait of Tony Ballance" />
+              <p class="contributor-card__section">Custom Fab</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/tony.png') }}" alt="Portrait of Tony Ballance" />
+              </div>
               <div class="contributor-card__body">
                 <h3>Tony Ballance</h3>
                 <p>Custom Fabrication Manager</p>
               </div>
             </article>
             <article class="contributor-card">
-              <img src="{{ url_for('static', filename='images/brad.png') }}" alt="Portrait of Brad Wells" />
+              <p class="contributor-card__section">Tech Talk</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/brad.png') }}" alt="Portrait of Brad Wells" />
+              </div>
               <div class="contributor-card__body">
                 <h3>Brad Wells</h3>
                 <p>IT Manager</p>
@@ -403,8 +454,6 @@
         <p>&copy; <span id="current-year"></span> Seegars Fence Company. All rights reserved.</p>
         <div class="footer-links">
           <a href="#team-letter">Top of page</a>
-          <a href="mailto:newsletter@seegars.com">Share a story</a>
-          <a href="#resources">Team resources</a>
         </div>
       </div>
     </footer>
