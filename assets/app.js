@@ -123,4 +123,132 @@
       }
     });
   }
+
+  const mediaLightbox = document.querySelector('[data-media-lightbox]');
+  const mediaTriggers = document.querySelectorAll('[data-media-trigger]');
+
+  if (mediaLightbox && mediaTriggers.length) {
+    const mediaContent = mediaLightbox.querySelector('[data-media-content]');
+    const mediaTitle = mediaLightbox.querySelector('[data-media-title]');
+    const mediaCloseEls = Array.from(mediaLightbox.querySelectorAll('[data-media-close]'));
+    let activeMediaTrigger = null;
+
+    mediaLightbox.setAttribute('aria-hidden', 'true');
+
+    function openMedia(trigger) {
+      if (!mediaContent) {
+        return;
+      }
+
+      let items = [];
+      const data = trigger.getAttribute('data-media-items');
+
+      if (data) {
+        try {
+          items = JSON.parse(data);
+        } catch (error) {
+          console.error('Unable to parse media items:', error);
+        }
+      }
+
+      if (!Array.isArray(items) || items.length === 0) {
+        return;
+      }
+
+      mediaContent.innerHTML = '';
+
+      const heading = trigger.getAttribute('data-media-label') || 'Media preview';
+
+      if (mediaTitle) {
+        mediaTitle.textContent = heading;
+      }
+
+      items.forEach((item, index) => {
+        const figure = document.createElement('figure');
+        let element;
+
+        if (item.type === 'pdf') {
+          element = document.createElement('iframe');
+          element.src = item.src;
+          element.title = item.alt || `${heading} document ${index + 1}`;
+          element.loading = 'lazy';
+        } else {
+          element = document.createElement('img');
+          element.src = item.src;
+          element.alt = item.alt || '';
+          element.loading = 'lazy';
+        }
+
+        figure.appendChild(element);
+
+        const captionText = item.caption || item.alt;
+        if (captionText) {
+          const figcaption = document.createElement('figcaption');
+          figcaption.textContent = captionText;
+          figure.appendChild(figcaption);
+        }
+
+        mediaContent.appendChild(figure);
+      });
+
+      mediaLightbox.removeAttribute('hidden');
+      requestAnimationFrame(() => {
+        mediaLightbox.classList.add('is-active');
+      });
+      mediaLightbox.setAttribute('aria-hidden', 'false');
+      activeMediaTrigger = trigger;
+    }
+
+    function closeMedia() {
+      if (mediaLightbox.hasAttribute('hidden')) {
+        return;
+      }
+
+      mediaLightbox.classList.remove('is-active');
+      mediaLightbox.setAttribute('aria-hidden', 'true');
+
+      const onTransitionEnd = () => {
+        mediaLightbox.setAttribute('hidden', '');
+        mediaLightbox.removeEventListener('transitionend', onTransitionEnd);
+        if (mediaContent) {
+          mediaContent.innerHTML = '';
+        }
+        if (activeMediaTrigger) {
+          activeMediaTrigger.focus();
+          activeMediaTrigger = null;
+        }
+      };
+
+      mediaLightbox.addEventListener('transitionend', onTransitionEnd);
+
+      setTimeout(() => {
+        if (!mediaLightbox.hasAttribute('hidden')) {
+          mediaLightbox.setAttribute('hidden', '');
+          if (mediaContent) {
+            mediaContent.innerHTML = '';
+          }
+          if (activeMediaTrigger) {
+            activeMediaTrigger.focus();
+            activeMediaTrigger = null;
+          }
+        }
+      }, 350);
+    }
+
+    mediaTriggers.forEach((trigger) => {
+      trigger.addEventListener('click', () => {
+        openMedia(trigger);
+      });
+    });
+
+    mediaCloseEls.forEach((closer) => {
+      closer.addEventListener('click', closeMedia);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeMedia();
+      }
+    });
+  }
 })();
