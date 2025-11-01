@@ -1143,7 +1143,7 @@ ul li::before {
 }
 
 .footer-easter-egg {
-  font-size: 2px;
+  font-size: 3px;
   letter-spacing: 0.3em;
   opacity: 0.08;
   color: rgba(245, 246, 244, 0.9);
