@@ -16,13 +16,65 @@
   <body>
     <header class="top-bar">
       <div class="container">
-        <a class="logo" href="#top">
+        <a class="logo" href="https://www.seegarsfence.com/">
           <img
             src="{{ url_for('static', filename='images/logo_nav.png') }}"
             alt="Seegars Fence Company logo"
           />
         </a>
         <nav class="primary-nav" aria-label="Primary navigation">
+          <a
+            class="primary-nav__icon-link"
+            href="https://www.facebook.com/seegarsfencecompany/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="visually-hidden">Seegars Fence Company on Facebook</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path
+                d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-3h2.5V9.5c0-2.5 1.5-3.9 3.7-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.7-1.6 1.5V11H18l-.4 3h-2.8v7A10 10 0 0 0 22 12Z"
+              />
+            </svg>
+          </a>
+          <a
+            class="primary-nav__icon-link"
+            href="https://www.instagram.com/seegarsfence/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="visually-hidden">Seegars Fence Company on Instagram</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path
+                d="M8 3h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm4 3.3A3.7 3.7 0 1 1 8.3 12 3.7 3.7 0 0 1 12 8.3Zm0 2a1.7 1.7 0 1 0 1.7 1.7A1.7 1.7 0 0 0 12 10.3Zm4.6-2.6a.9.9 0 1 1-.9.9.9.9 0 0 1 .9-.9Z"
+              />
+            </svg>
+          </a>
+          <a
+            class="primary-nav__icon-link"
+            href="https://www.youtube.com/user/SeegarsFence/videos"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="visually-hidden">Seegars Fence Company on YouTube</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path
+                d="M21.6 7.2a2.6 2.6 0 0 0-1.8-1.8C18 5 12 5 12 5s-6 0-7.8.4A2.6 2.6 0 0 0 2.4 7.2 27.7 27.7 0 0 0 2 12a27.7 27.7 0 0 0 .4 4.8 2.6 2.6 0 0 0 1.8 1.8C6 19 12 19 12 19s6 0 7.8-.4a2.6 2.6 0 0 0 1.8-1.8A27.7 27.7 0 0 0 22 12a27.7 27.7 0 0 0-.4-4.8ZM10.5 14.7V9.3L15.2 12Z"
+              />
+            </svg>
+          </a>
+          <a
+            class="primary-nav__icon-link"
+            href="https://www.linkedin.com/company/seegars-fence-company/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span class="visually-hidden">Seegars Fence Company on LinkedIn</span>
+            <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+              <path
+                d="M6.3 9.3H3.4V21h2.9ZM4.9 3a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm6.2 6.3H8.4V21h2.7v-5.7c0-2 1.6-2.2 1.8-2.2s1.7.2 1.7 2.2V21h2.8v-6.5c0-3.7-2-5.3-4.3-5.3a3.7 3.7 0 0 0-1.9.5Z"
+              />
+            </svg>
+          </a>
           <a class="home-link" href="#top">HOME</a>
         </nav>
       </div>
@@ -465,6 +517,16 @@
               </div>
             </article>
             <article class="contributor-card">
+              <p class="contributor-card__section">Recent News</p>
+              <div class="contributor-card__media">
+                <img src="{{ url_for('static', filename='images/john.png') }}" alt="Portrait of John Seegars" />
+              </div>
+              <div class="contributor-card__body">
+                <h3>John Seegars</h3>
+                <p>Chief Marketing Officer</p>
+              </div>
+            </article>
+            <article class="contributor-card">
               <p class="contributor-card__section">HR Corner</p>
               <div class="contributor-card__media">
                 <img src="{{ url_for('static', filename='images/veronica.png') }}" alt="Portrait of Veronica Aycock" />
@@ -492,16 +554,6 @@
               <div class="contributor-card__body">
                 <h3>Tony Ballance</h3>
                 <p>Custom Fabrication Manager</p>
-              </div>
-            </article>
-            <article class="contributor-card">
-              <p class="contributor-card__section">Recent News</p>
-              <div class="contributor-card__media">
-                <img src="{{ url_for('static', filename='images/john.png') }}" alt="Portrait of John Seegars" />
-              </div>
-              <div class="contributor-card__body">
-                <h3>John Seegars</h3>
-                <p>Chief Marketing Officer</p>
               </div>
             </article>
             <article class="contributor-card">
