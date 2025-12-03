@@ -7,16 +7,20 @@
   --mist: #dee0d9;
   --stone: #9aa09b;
   --charcoal: #1f2933;
-  --shadow: 0 24px 48px rgba(16, 20, 23, 0.18);
-  --radius-xl: 32px;
-  --radius-lg: 24px;
-  --radius-md: 16px;
-  --radius-sm: 10px;
-  --max-width: min(1120px, 92vw);
+  --shadow: 0 19px 38px rgba(16, 20, 23, 0.18);
+  --radius-xl: 26px;
+  --radius-lg: 19px;
+  --radius-md: 13px;
+  --radius-sm: 8px;
+  --max-width: min(896px, 92vw);
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  font-size: 80%;
 }
 
 html,
@@ -141,7 +145,7 @@ ul li::before {
 }
 
 .logo img {
-  height: 40px;
+  height: 32px;
   width: auto;
 }
 
@@ -200,7 +204,7 @@ ul li::before {
 .primary-nav .highlight {
   background: linear-gradient(135deg, var(--emerald), var(--lime));
   color: var(--charcoal);
-  box-shadow: 0 14px 22px rgba(14, 161, 92, 0.35);
+  box-shadow: 0 11px 18px rgba(14, 161, 92, 0.35);
 }
 
 .hero {
@@ -299,14 +303,14 @@ ul li::before {
 .button--primary {
   background: linear-gradient(135deg, var(--emerald), #24d08a);
   color: #f5f6f4;
-  box-shadow: 0 16px 30px rgba(14, 161, 92, 0.25);
+  box-shadow: 0 13px 24px rgba(14, 161, 92, 0.25);
 }
 
 .button--secondary {
   background: #ffffff;
   border-color: rgba(14, 161, 92, 0.3);
   color: var(--forest);
-  box-shadow: 0 12px 24px rgba(16, 20, 23, 0.12);
+  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.12);
 }
 
 .button--ghost {
@@ -355,11 +359,11 @@ ul li::before {
 }
 
 .profile-card img {
-  width: 120px;
-  height: 120px;
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 14px 28px rgba(16, 20, 23, 0.25);
+  box-shadow: 0 11px 22px rgba(16, 20, 23, 0.25);
 }
 
 .profile-card__role {
@@ -388,8 +392,8 @@ ul li::before {
 }
 
 .profile-card--horizontal img {
-  width: 96px;
-  height: 96px;
+  width: 77px;
+  height: 77px;
 }
 
 .profile-card--contrast {
@@ -518,8 +522,8 @@ ul li::before {
   position: absolute;
   left: 0;
   top: 0;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 1.68rem;
+  height: 1.68rem;
   border-radius: 50%;
   background: rgba(14, 161, 92, 0.12);
   color: var(--forest);
@@ -535,7 +539,7 @@ ul li::before {
   border-radius: var(--radius-lg);
   background: linear-gradient(135deg, rgba(16, 20, 23, 0.95), rgba(12, 56, 86, 0.88));
   color: #f5f6f4;
-  box-shadow: var(--shadow), 0 0 18px rgba(188, 213, 49, 0.25);
+  box-shadow: var(--shadow), 0 0 14px rgba(188, 213, 49, 0.25);
   overflow: hidden;
 }
 
@@ -602,7 +606,7 @@ ul li::before {
 .news-gallery {
   margin: 2rem 0 0;
   border-radius: var(--radius-lg);
-  box-shadow: 0 16px 28px rgba(16, 20, 23, 0.18);
+  box-shadow: 0 13px 22px rgba(16, 20, 23, 0.18);
   background: rgba(12, 56, 86, 0.35);
   padding: 0.75rem;
 }
@@ -676,7 +680,7 @@ ul li::before {
 .news-lightbox__figure {
   position: relative;
   z-index: 1;
-  max-width: min(800px, 90vw);
+  max-width: min(640px, 90vw);
   width: 100%;
   background: #ffffff;
   border-radius: var(--radius-lg);
@@ -699,8 +703,8 @@ ul li::before {
   position: absolute;
   top: 1.5rem;
   right: 1.5rem;
-  width: 44px;
-  height: 44px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
   border: 2px solid #ffffff;
   background: rgba(16, 20, 23, 0.7);
@@ -741,7 +745,7 @@ ul li::before {
   border: 1px solid rgba(14, 161, 92, 0.28);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  box-shadow: 0 10px 24px rgba(16, 20, 23, 0.08);
+  box-shadow: 0 8px 19px rgba(16, 20, 23, 0.08);
 }
 
 .safety-card h3 {
@@ -788,7 +792,7 @@ ul li::before {
   background: rgba(12, 56, 86, 0.28);
   position: relative;
   line-height: 1.6;
-  box-shadow: 0 0 18px rgba(188, 213, 49, 0.25);
+  box-shadow: 0 0 14px rgba(188, 213, 49, 0.25);
 }
 
 .safety-reminders li::before {
@@ -933,16 +937,16 @@ ul li::before {
 .contributor-card {
   background: #ffffff;
   border-radius: var(--radius-lg);
-  box-shadow: 0 12px 24px rgba(16, 20, 23, 0.12);
+  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.12);
   padding: 2.25rem 1.75rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
   text-align: center;
-  max-width: 260px;
+  max-width: 208px;
   width: 100%;
-  min-height: 320px;
+  min-height: 256px;
 }
 
 .contributor-card__section {
@@ -966,12 +970,12 @@ ul li::before {
 }
 
 .contributor-card__media img {
-  width: min(152px, 100%);
+  width: min(122px, 100%);
   height: auto;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  filter: drop-shadow(0 18px 32px rgba(16, 20, 23, 0.22));
+  filter: drop-shadow(0 14px 26px rgba(16, 20, 23, 0.22));
 }
 
 .contributor-card__body {
@@ -1024,7 +1028,7 @@ ul li::before {
 .media-lightbox__panel {
   position: relative;
   z-index: 1;
-  width: min(880px, 92vw);
+  width: min(704px, 92vw);
   max-height: 90vh;
   background: #ffffff;
   border-radius: var(--radius-lg);
@@ -1048,8 +1052,8 @@ ul li::before {
 }
 
 .media-lightbox__close {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 2px solid rgba(16, 20, 23, 0.12);
   background: #ffffff;
@@ -1063,7 +1067,7 @@ ul li::before {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 16px;
+  width: 13px;
   height: 2px;
   background: var(--charcoal);
   transform-origin: center;
@@ -1096,12 +1100,12 @@ ul li::before {
   width: 100%;
   border: 2px solid rgba(14, 161, 92, 0.35);
   border-radius: var(--radius-md);
-  box-shadow: 0 18px 32px rgba(16, 20, 23, 0.2);
+  box-shadow: 0 14px 26px rgba(16, 20, 23, 0.2);
   background: #ffffff;
 }
 
 .media-lightbox__content iframe {
-  min-height: 420px;
+  min-height: 336px;
 }
 
 .media-lightbox__content figcaption {
@@ -1116,8 +1120,8 @@ ul li::before {
 .resource-buttons {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-auto-rows: minmax(74px, auto);
+  grid-template-columns: repeat(auto-fit, minmax(192px, 1fr));
+  grid-auto-rows: minmax(59px, auto);
   justify-items: stretch;
 }
 
@@ -1130,10 +1134,10 @@ ul li::before {
   background: #ffffff;
   color: var(--forest);
   font-weight: 600;
-  box-shadow: 0 12px 24px rgba(16, 20, 23, 0.15);
+  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.15);
   border: 1px solid var(--lime);
   text-align: center;
-  min-height: 74px;
+  min-height: 59px;
   height: 100%;
   width: 100%;
 }
