@@ -123,7 +123,7 @@ def index():
         birthdays=birthdays,
         anniversaries=anniversaries,
         resources=resources,
-        issue_month="November 2025",
+        issue_month="December 2025",
     )
 
 

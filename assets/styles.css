@@ -1,13 +1,18 @@
 :root {
   --ink: #101417;
-  --forest: #065f46;
-  --emerald: #0ea15c;
-  --lime: #bcd531;
-  --cloud: #f5f6f4;
-  --mist: #dee0d9;
+  --forest: #a22522;
+  --emerald: #c33149;
+  --lime: #a8c256;
+  --cloud: #f3d9b1;
+  --mist: #c29979;
   --stone: #9aa09b;
   --charcoal: #1f2933;
-  --shadow: 0 19px 38px rgba(16, 20, 23, 0.18);
+  --christmas-red: #c33149;
+  --christmas-green: #a8c256;
+  --christmas-cream: #f3d9b1;
+  --christmas-tan: #c29979;
+  --christmas-red-dark: #a22522;
+  --shadow: 0 19px 38px rgba(195, 49, 73, 0.25);
   --radius-xl: 26px;
   --radius-lg: 19px;
   --radius-md: 13px;
@@ -123,17 +128,17 @@ ul li::before {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: var(--lime);
+  background: var(--christmas-red);
   transform: translateY(-50%);
 }
 
 .top-bar {
-  background: rgba(16, 20, 23, 0.92);
+  background: linear-gradient(135deg, rgba(195, 49, 73, 0.95), rgba(162, 37, 34, 0.95));
   position: sticky;
   top: 0;
   z-index: 20;
   backdrop-filter: blur(10px);
-  border-bottom: 3px solid var(--emerald);
+  border-bottom: 3px solid var(--christmas-green);
 }
 
 .top-bar .container {
@@ -183,12 +188,12 @@ ul li::before {
 
 .primary-nav a:hover,
 .primary-nav a:focus-visible {
-  background: rgba(188, 213, 49, 0.18);
-  border-color: rgba(188, 213, 49, 0.45);
+  background: rgba(168, 194, 86, 0.22);
+  border-color: rgba(168, 194, 86, 0.5);
 }
 
 .primary-nav .home-link {
-  color: var(--lime);
+  color: var(--christmas-green);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -197,8 +202,8 @@ ul li::before {
 .primary-nav .home-link:hover,
 .primary-nav .home-link:focus-visible {
   color: #ffffff;
-  background: rgba(188, 213, 49, 0.25);
-  border-color: rgba(188, 213, 49, 0.6);
+  background: rgba(168, 194, 86, 0.3);
+  border-color: rgba(168, 194, 86, 0.65);
 }
 
 .primary-nav .highlight {
@@ -222,7 +227,7 @@ ul li::before {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(245, 246, 244, 0.9), rgba(245, 246, 244, 0.75));
+  background: linear-gradient(180deg, rgba(243, 217, 177, 0.92), rgba(194, 153, 121, 0.88));
 }
 
 .hero__content {
@@ -245,9 +250,9 @@ ul li::before {
   font-size: clamp(3.5rem, 12vw, 6.5rem);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  text-shadow: 0 18px 50px rgba(16, 20, 23, 0.35), 0 3px 12px rgba(16, 20, 23, 0.25);
-  -webkit-text-stroke: 1px var(--lime);
-  text-stroke: 1px var(--lime);
+  text-shadow: 0 18px 50px rgba(195, 49, 73, 0.4), 0 3px 12px rgba(162, 37, 34, 0.3);
+  -webkit-text-stroke: 1px var(--christmas-red);
+  text-stroke: 1px var(--christmas-red);
 }
 
 .hero__issue {
@@ -301,16 +306,16 @@ ul li::before {
 }
 
 .button--primary {
-  background: linear-gradient(135deg, var(--emerald), #24d08a);
-  color: #f5f6f4;
-  box-shadow: 0 13px 24px rgba(14, 161, 92, 0.25);
+  background: linear-gradient(135deg, var(--christmas-red), var(--christmas-red-dark));
+  color: #ffffff;
+  box-shadow: 0 13px 24px rgba(195, 49, 73, 0.35);
 }
 
 .button--secondary {
   background: #ffffff;
-  border-color: rgba(14, 161, 92, 0.3);
-  color: var(--forest);
-  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.12);
+  border-color: rgba(195, 49, 73, 0.4);
+  color: var(--christmas-red);
+  box-shadow: 0 10px 19px rgba(195, 49, 73, 0.15);
 }
 
 .button--ghost {
@@ -413,6 +418,7 @@ ul li::before {
   padding: clamp(2rem, 4vw, 2.75rem);
   box-shadow: var(--shadow);
   width: 100%;
+  border: 2px solid rgba(195, 49, 73, 0.15);
 }
 
 .content-card--full {
@@ -426,7 +432,7 @@ ul li::before {
 }
 
 .content-card--contrast {
-  background: linear-gradient(135deg, #12202a, #233849);
+  background: linear-gradient(135deg, var(--christmas-red-dark), var(--christmas-red));
   color: #f5f6f4;
 }
 
@@ -437,15 +443,15 @@ ul li::before {
 }
 
 .content-card--tech {
-  background: linear-gradient(135deg, #0a2f4a, #124d71);
-  color: #f5f6f4;
+  background: linear-gradient(135deg, var(--christmas-green), #8ba046);
+  color: #1f2933;
 }
 
 .content-card--tech h2,
 .content-card--tech p,
 .content-card--tech li,
 .content-card--tech a {
-  color: #f5f6f4;
+  color: #1f2933;
 }
 
 .content-card--news {
@@ -458,7 +464,7 @@ ul li::before {
 
 .content-card--tech .section-eyebrow,
 .content-card--news .section-eyebrow {
-  color: var(--lime);
+  color: var(--christmas-red-dark);
 }
 
 .section__inner--stacked {
@@ -471,15 +477,15 @@ ul li::before {
   font-style: italic;
   margin: 0 0 0.67rem;
   padding: 1.5rem;
-  border-left: 6px solid var(--emerald);
-  background: rgba(14, 161, 92, 0.08);
+  border-left: 6px solid var(--christmas-red);
+  background: rgba(195, 49, 73, 0.12);
   border-radius: var(--radius-md);
 }
 
 .callout--center {
   text-align: center;
   border-left: none;
-  border-top: 6px solid var(--emerald);
+  border-top: 6px solid var(--christmas-red);
 }
 
 .accent-list {
@@ -525,8 +531,8 @@ ul li::before {
   width: 1.68rem;
   height: 1.68rem;
   border-radius: 50%;
-  background: rgba(14, 161, 92, 0.12);
-  color: var(--forest);
+  background: rgba(168, 194, 86, 0.25);
+  color: var(--christmas-red-dark);
   font-weight: 600;
   display: grid;
   place-items: center;
@@ -789,10 +795,10 @@ ul li::before {
 .safety-reminders li {
   padding: 1rem 1.25rem 1rem 1.75rem;
   border-radius: var(--radius-md);
-  background: rgba(12, 56, 86, 0.28);
+  background: rgba(194, 153, 121, 0.35);
   position: relative;
   line-height: 1.6;
-  box-shadow: 0 0 14px rgba(188, 213, 49, 0.25);
+  box-shadow: 0 0 14px rgba(168, 194, 86, 0.3);
 }
 
 .safety-reminders li::before {
@@ -801,7 +807,7 @@ ul li::before {
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
-  background: var(--lime);
+  background: var(--christmas-green);
   left: 1rem;
   top: 1.25rem;
 }
@@ -809,12 +815,12 @@ ul li::before {
 .safety-reminders strong {
   display: block;
   margin-bottom: 0.25rem;
-  color: var(--lime);
+  color: var(--christmas-cream);
   letter-spacing: 0.01em;
 }
 
 #safety-first .section-eyebrow {
-  color: var(--lime);
+  color: var(--christmas-green);
 }
 
 .card-highlights {
@@ -871,7 +877,7 @@ ul li::before {
 }
 
 .section--celebrations {
-  background: #ffffff;
+  background: linear-gradient(135deg, rgba(243, 217, 177, 0.35), rgba(194, 153, 121, 0.25));
 }
 
 .celebrations__grid {
@@ -880,13 +886,17 @@ ul li::before {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.celebrations__column {
+  border: 2px solid rgba(195, 49, 73, 0.2);
+}
+
 .celebrations__column h3 {
   font-size: 1.4rem;
   margin-bottom: 1rem;
 }
 
 .celebrations__column h3 {
-  color: var(--forest);
+  color: var(--christmas-red);
 }
 
 .celebrations-list {
@@ -914,11 +924,11 @@ ul li::before {
 
 .celebrations-list__meta {
   font-size: 0.9rem;
-  color: var(--emerald);
+  color: var(--christmas-red);
 }
 
 .section--contributors {
-  background: linear-gradient(135deg, rgba(14, 161, 92, 0.08), rgba(6, 95, 70, 0.08));
+  background: linear-gradient(135deg, rgba(195, 49, 73, 0.12), rgba(162, 37, 34, 0.08));
 }
 
 .contributors__grid {
@@ -937,7 +947,7 @@ ul li::before {
 .contributor-card {
   background: #ffffff;
   border-radius: var(--radius-lg);
-  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.12);
+  box-shadow: 0 10px 19px rgba(195, 49, 73, 0.18);
   padding: 2.25rem 1.75rem;
   display: flex;
   flex-direction: column;
@@ -947,6 +957,7 @@ ul li::before {
   max-width: 208px;
   width: 100%;
   min-height: 256px;
+  border: 2px solid rgba(168, 194, 86, 0.25);
 }
 
 .contributor-card__section {
@@ -1114,7 +1125,7 @@ ul li::before {
 }
 
 .section--resources {
-  background: linear-gradient(135deg, rgba(14, 161, 92, 0.12), rgba(6, 95, 70, 0.12));
+  background: linear-gradient(135deg, rgba(168, 194, 86, 0.2), rgba(243, 217, 177, 0.3));
 }
 
 .resource-buttons {
@@ -1132,10 +1143,10 @@ ul li::before {
   padding: 1rem 1.25rem;
   border-radius: var(--radius-md);
   background: #ffffff;
-  color: var(--forest);
+  color: var(--christmas-red);
   font-weight: 600;
-  box-shadow: 0 10px 19px rgba(16, 20, 23, 0.15);
-  border: 1px solid var(--lime);
+  box-shadow: 0 10px 19px rgba(195, 49, 73, 0.2);
+  border: 2px solid var(--christmas-green);
   text-align: center;
   min-height: 59px;
   height: 100%;
