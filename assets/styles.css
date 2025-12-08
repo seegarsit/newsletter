@@ -342,6 +342,10 @@ ul li::before {
   margin-bottom: 2.5rem;
 }
 
+.section-header h2 {
+  font-size: 2.4rem;
+}
+
 .section-eyebrow {
   font-size: 0.85rem;
   font-weight: 600;
@@ -940,7 +944,7 @@ ul li::before {
 
 @media (min-width: 900px) {
   .contributors__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -961,7 +965,7 @@ ul li::before {
 }
 
 .contributor-card__section {
-  font-size: 0.8rem;
+  font-size: 0.96rem;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
