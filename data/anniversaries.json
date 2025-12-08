@@ -1,37 +1,67 @@
 [
     {
-        "Name":"Sheree Price",
-        "Length of Service":"19 years",
-        "Office":"Wayne County"
+        "Name": "Tony Ballance",
+        "Length of Service": "6 years",
+        "Office": "Goldsboro"
     },
     {
-        "Name":"Joseph Langston II",
-        "Length of Service":"8 years",
-        "Office":"Allison"
+        "Name": "Raekwon Barnes",
+        "Length of Service": "3 years",
+        "Office": "Goldsboro"
     },
     {
-        "Name":"Jose Rangel",
-        "Length of Service":"7 years",
-        "Office":"Goldsboro"
+        "Name": "Amanda D. Carpenter",
+        "Length of Service": "2 years",
+        "Office": "Rocky Mount"
     },
     {
-        "Name":"Lester Faison",
-        "Length of Service":"5 years",
-        "Office":"Goldsboro"
+        "Name": "Jeffrey A. Crubbrest",
+        "Length of Service": "1 year",
+        "Office": "Jacksonville"
     },
     {
-        "Name":"Anthony Lazo",
-        "Length of Service":"3 years",
-        "Office":"Raleigh"
+        "Name": "Jordan M. Green",
+        "Length of Service": "1 year",
+        "Office": "Columbia"
     },
     {
-        "Name":"Steven Eury",
-        "Length of Service":"2 years",
-        "Office":"New Hanover"
+        "Name": "Ja'Den E. Kilpatrick",
+        "Length of Service": "1 year",
+        "Office": "Greenville"
     },
     {
-        "Name":"Lawson Reeder",
-        "Length of Service":"1 year",
-        "Office":"Allison"
+        "Name": "Russell D. Kornegay",
+        "Length of Service": "1 year",
+        "Office": "Goldsboro"
+    },
+    {
+        "Name": "Jessica S. McEntire",
+        "Length of Service": "6 years",
+        "Office": "Columbia"
+    },
+    {
+        "Name": "Jeremy Moore",
+        "Length of Service": "6 years",
+        "Office": "Cary"
+    },
+    {
+        "Name": "Julian Moore",
+        "Length of Service": "12 years",
+        "Office": "Greensboro"
+    },
+    {
+        "Name": "Jermaine Smith",
+        "Length of Service": "1 year",
+        "Office": "Allison"
+    },
+    {
+        "Name": "Nickolas J. Whitley",
+        "Length of Service": "3 years",
+        "Office": "Goldsboro"
+    },
+    {
+        "Name": "Christina M. Williams",
+        "Length of Service": "1 year",
+        "Office": "Goldsboro"
     }
 ]
