@@ -1218,6 +1218,61 @@ ul li::before {
   }
 }
 
+.peeking-character {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+  user-select: none;
+}
+
+.peeking-character img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 16px rgba(16, 20, 23, 0.3));
+}
+
+.section {
+  position: relative;
+  overflow: visible;
+}
+
+.peeking-character--santa {
+  top: -30px;
+  right: 5%;
+  width: clamp(80px, 12vw, 140px);
+}
+
+.peeking-character--clark {
+  top: 20%;
+  right: -20px;
+  width: clamp(70px, 10vw, 120px);
+}
+
+.peeking-character--elf {
+  top: 10%;
+  left: -15px;
+  width: clamp(70px, 10vw, 110px);
+}
+
+.peeking-character--grinch {
+  bottom: -40px;
+  right: 3%;
+  width: clamp(90px, 13vw, 150px);
+}
+
+.peeking-character--kevin {
+  top: 15%;
+  left: -10px;
+  width: clamp(60px, 9vw, 100px);
+}
+
+.peeking-character--ralphie {
+  bottom: -20px;
+  left: 4%;
+  width: clamp(70px, 10vw, 110px);
+}
+
 @media (max-width: 720px) {
   .top-bar .container {
     flex-direction: column;
@@ -1258,5 +1313,36 @@ ul li::before {
   .news-gallery__item--four {
     bottom: -2%;
     right: 16%;
+  }
+
+  .peeking-character--santa {
+    top: -20px;
+    right: 2%;
+    width: 70px;
+  }
+
+  .peeking-character--clark {
+    right: -10px;
+    width: 60px;
+  }
+
+  .peeking-character--elf {
+    left: -8px;
+    width: 60px;
+  }
+
+  .peeking-character--grinch {
+    bottom: -30px;
+    width: 80px;
+  }
+
+  .peeking-character--kevin {
+    left: -5px;
+    width: 50px;
+  }
+
+  .peeking-character--ralphie {
+    bottom: -15px;
+    width: 60px;
   }
 }
