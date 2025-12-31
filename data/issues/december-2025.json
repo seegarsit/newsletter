@@ -1,0 +1,348 @@
+{
+  "issue_month": "December 2025",
+  "hero": {
+    "title": "THE FENCE LINE",
+    "tagline": [
+      "Changing the world one linear foot at the time.",
+      "A family business distinguished by exceptional values and quality."
+    ],
+    "image": "images/hero_image.jpg"
+  },
+  "modules": [
+    {
+      "type": "featured_story",
+      "enabled": false,
+      "id": "featured-story",
+      "eyebrow": "Featured Story",
+      "title": "",
+      "body_html": ""
+    },
+    {
+      "type": "editorial_grid",
+      "enabled": true,
+      "id": "editorial",
+      "eyebrow": "Editorial Desk",
+      "title": "Monthly perspectives",
+      "intro": "",
+      "cards": [
+        {
+          "id": "team-letter",
+          "eyebrow": "Team Letter",
+          "title": "A note to the Seegars family",
+          "collapsible": true,
+          "body_html": "<p>\n  As we look back on November, it was another solid month for the company. We continue to see strong performance across our markets, and that's a credit to the dedication and professionalism each of you brings to the job every day. At the same time, we've seen leads soften a bit heading into December. Add to that the uncertainty and misconceptions surrounding recent US Immigration and Customs Enforcement efforts, which have understandably caused concern for some of our subcontract installation partners. It's frustrating that, as a nation built on opportunity, we still don't have a clear and consistent path for hardworking immigrants who want to contribute, build a life, and chase the same American opportunity the rest of us have been blessed with. These issues affect real people in our industry, and we'll continue to navigate them with integrity, clarity, and respect.\n</p>\n<p>\n  For our devotional this month, I've been reflecting on 2 Timothy 4:6\u20137: \"For I am already being poured out like a drink offering, and the time for my departure is near. I have fought the good fight, I have finished the race, I have kept the faith.\" This is a picture of tenacity. It's about giving all you have, not more than you have \u2014 and doing it with purpose. It reminds us to work with determination instead of waiting on destiny. Trying times are no time to quit trying!! Whether in our personal lives or in our work at Seegars, we're called to stay the course, keep the faith, and finish the race with intention and courage.\n</p>\n<p>\n  As we push through December and head into the new year, we're still on track to finish the year above goal. We'll need to grind through this tougher stretch and focus on banking opportunities. We need to build momentum to carry us into January and February, which traditionally run slower. A strong finish now sets us up for a great start to the new year.\n</p>\n<p>\n  And one more thought: if you set some personal goals back in January that you haven't quite reached yet, there's still time. The fourth quarter has a way of revealing what we're really made of. Let's go after those goals with the same grit we bring to every jobsite.\n</p>\n<p>\n  I hope all of you have a meaningful December as we celebrate the birth of our Lord and Savior Jesus Christ. Thank you for what you do, for how you serve our customers, and for the way you support one another. Let's finish strong.\n</p>\n<p class=\"signature signature--valediction\">Best,</p>\n<p class=\"signature signature--name\">Ben</p>"
+        },
+        {
+          "id": "hr-corner",
+          "eyebrow": "HR Corner",
+          "title": "Understanding Beneficiaries for Life Insurance and 401k",
+          "collapsible": false,
+          "body_html": "<p>\n  Should you put minor children as beneficiaries on life insurance or for your 401k plan?\n</p>\n<p>\n  Naming a minor as the beneficiary on your policy is not a good idea because it will delay the payout in case of your death. Life insurance companies cannot pay funds directly to anyone who has not reached the age of 18.\n</p>\n<p>\n  If you believe that your family will need immediate access to these funds following your death, please be sure to name a beneficiary over 18 years old who can fulfill your wishes and take care of your final arrangements.\n</p>\n<p>\n  If you name a minor as a beneficiary on your life insurance policy, they may have to settle the matter in probate court in which an adult will be delegated to manage the money until the minor is old enough to be responsible for it themselves.\n</p>\n<p>\n  If you are married, you must name your spouse as your beneficiary of your 401k account unless he/she signs a release.\n</p>\n<p>\n  If you cannot remember who your beneficiaries are or need to change them, please contact me directly. I will be happy to help you.\n</p>\n<p class=\"signature signature--name\">Veronica</p>"
+        },
+        {
+          "id": "tech-talk",
+          "eyebrow": "Tech Talk",
+          "title": "When Technology Panics\u2026 and People Panic Even Faster",
+          "collapsible": true,
+          "body_html": "<p>\n  If there's one universal truth in the office, it's this: When technology hiccups, panic spreads faster than a paper jam.\n</p>\n<p>\n  Every week I hear the classics. A printer refuses to cooperate. A computer that worked perfectly yesterday suddenly won't power on. A screen goes black at the worst possible moment. And the person calling is usually convinced the entire world is falling apart.\n</p>\n<p>\n  I get it. When your tech stops in the middle of something important, it feels urgent. But here's the part a lot of people don't realize:\n</p>\n<div class=\"numbered-section\">\n  <h3>1. Most problems look scarier than they are.</h3>\n  <p>\n    A frozen screen or a strange pop-up can feel huge, but the fix is often something small. A restart. An unplugged cable. A dead mouse battery. Nothing dramatic.\n  </p>\n</div>\n<div class=\"numbered-section\">\n  <h3>2. Details are what get us to the solution faster.</h3>\n  <p>\n    Saying \"my computer won't come on\" helps, but it's like telling a mechanic \"my car won't go.\" What really makes the difference is the small stuff:\n  </p>\n  <ul class=\"accent-list accent-list--icons\">\n    <li>When it last worked</li>\n    <li>What you were doing right before it happened</li>\n    <li>If anything popped up on the screen</li>\n    <li>Whether you already restarted it</li>\n    <li>Any beeps, clicks, or odd behavior</li>\n    <li>If someone else used the computer</li>\n    <li>If an update ran recently</li>\n  </ul>\n  <p>\n    These details turn guesswork into an actual direction. And the best place to share them is in a ticket, where you can type everything out and attach screenshots or photos. That gives me a head start before I even get to your office.\n  </p>\n</div>\n<div class=\"numbered-section\">\n  <h3>3. Staying calm actually helps.</h3>\n  <p>\n    You don't have to troubleshoot everything. Just take a breath, look at what's happening, and let me know. Calm information beats panic every time.\n  </p>\n</div>\n<div class=\"numbered-section\">\n  <h3>4. Trust that I will work the issue until we get you going again.</h3>\n  <p>\n    This is what I do all day. Whether it's something simple or something more involved, I'll walk through the steps and work the problem until things are back on track.\n  </p>\n</div>\n<div class=\"final-thought\">\n  <h3>Final Thought</h3>\n  <p>\n    Technology is going to act up from time to time, but you don't have to panic with it. Share the details, submit a ticket, and I'll take it from there.\n  </p>\n  <p><strong>I've got you covered.</strong></p>\n</div>",
+          "cta": {
+            "label": "Submit a Ticket",
+            "url": "https://www.seegarsit.app"
+          }
+        }
+      ]
+    },
+    {
+      "type": "highlight_panel",
+      "enabled": true,
+      "id": "safety-first",
+      "eyebrow": "Safety First",
+      "title": "Cold Weather Safety: What Employees Need to Know",
+      "label": "Safety/Policy Highlight",
+      "body_html": "<p>\n  When temperatures drop, the risk of cold-related illnesses increases\u2014especially for anyone working outdoors. Cold, wind, rain, and snow cause the body to lose heat quickly, and long exposure can lead to serious health issues.\n</p>\n<p><strong>Key Health Risks:</strong></p>\n<ul class=\"safety-reminders\">\n  <li>\n    <strong>Hypothermia:</strong> Uncontrollable shivering, tiredness, confusion, loss of coordination, or even unconsciousness.\n  </li>\n  <li>\n    <strong>Frostbite:</strong> Skin becomes numb, pale, or blistered as tissues begin to freeze.\n  </li>\n  <li>\n    <strong>Trench Foot:</strong> Feet become red, swollen, numb, or tingly after prolonged exposure to cold and wet conditions.\n  </li>\n</ul>\n<p><strong>Protect Yourself in 3 Steps:</strong></p>\n<ol class=\"numbered-list\">\n  <li><strong>Dress for the weather</strong> \u2013 Wear warm, dry layers; cover your head and ears; and use insulated gloves and boots. Carry extra clothing in case anything gets wet.</li>\n  <li><strong>Drink smart</strong> \u2013 Stay hydrated with warm, sweet drinks like sports drinks or soups. Avoid caffeine and alcohol because they speed up heat loss.</li>\n  <li><strong>Be alert and proactive</strong> \u2013 Take warm-up breaks, work with a partner, recognize symptoms early, and get medical help right away if something feels wrong.</li>\n</ol>\n<p>\n  Employees with certain health conditions\u2014or those taking specific medications\u2014may have a higher risk of cold stress and should take extra precautions.\n</p>\n<p class=\"signature signature--name\">Chanda</p>"
+    },
+    {
+      "type": "celebrations",
+      "enabled": true,
+      "id": "celebrations",
+      "eyebrow": "Celebrations",
+      "title": "Birthdays & Anniversaries",
+      "intro": "Join us in celebrating this month's milestones across the Seegars family.",
+      "birthdays": [
+        {
+          "name": "Tyger B. Drake",
+          "office": "Columbia",
+          "date": "December 2",
+          "weekday": "Tuesday"
+        },
+        {
+          "name": "Joshua K. Hines",
+          "office": "Goldsboro",
+          "date": "December 3",
+          "weekday": "Wednesday"
+        },
+        {
+          "name": "Robert J. Houlihan",
+          "office": "Cary",
+          "date": "December 3",
+          "weekday": "Wednesday"
+        },
+        {
+          "name": "Veronica Aycock",
+          "office": "Goldsboro",
+          "date": "December 6",
+          "weekday": "Saturday"
+        },
+        {
+          "name": "Joe H. Marks",
+          "office": "Rocky Mount",
+          "date": "December 6",
+          "weekday": "Saturday"
+        },
+        {
+          "name": "Daniel Rosenbaum",
+          "office": "Jacksonville",
+          "date": "December 7",
+          "weekday": "Sunday"
+        },
+        {
+          "name": "Dwight Knapp",
+          "office": "Newport",
+          "date": "December 8",
+          "weekday": "Monday"
+        },
+        {
+          "name": "Jacob A. Mcfann",
+          "office": "Jacksonville",
+          "date": "December 12",
+          "weekday": "Friday"
+        },
+        {
+          "name": "Brad Wells",
+          "office": "Goldsboro",
+          "date": "December 16",
+          "weekday": "Tuesday"
+        },
+        {
+          "name": "Nathaniel T. McDonald",
+          "office": "Goldsboro",
+          "date": "December 18",
+          "weekday": "Thursday"
+        },
+        {
+          "name": "Carolyn M. Hoffman",
+          "office": "Jacksonville",
+          "date": "December 21",
+          "weekday": "Sunday"
+        },
+        {
+          "name": "Caleb Blood",
+          "office": "Rocky Mount",
+          "date": "December 23",
+          "weekday": "Tuesday"
+        },
+        {
+          "name": "B S. Goins",
+          "office": "Allison",
+          "date": "December 24",
+          "weekday": "Wednesday"
+        },
+        {
+          "name": "Kristi S. Aycock",
+          "office": "Goldsboro",
+          "date": "December 25",
+          "weekday": "Thursday"
+        },
+        {
+          "name": "Kevin E. Buck",
+          "office": "Rocky Mount",
+          "date": "December 25",
+          "weekday": "Thursday"
+        },
+        {
+          "name": "Jaquez Q. Clark",
+          "office": "Columbia",
+          "date": "December 26",
+          "weekday": "Friday"
+        },
+        {
+          "name": "Larry A. Jones",
+          "office": "Newport",
+          "date": "December 27",
+          "weekday": "Saturday"
+        },
+        {
+          "name": "Jose Garcia",
+          "office": "Goldsboro",
+          "date": "December 28",
+          "weekday": "Sunday"
+        },
+        {
+          "name": "Kevin Thompson",
+          "office": "Spartanburg",
+          "date": "December 30",
+          "weekday": "Tuesday"
+        }
+      ],
+      "anniversaries": [
+        {
+          "name": "Tony Ballance",
+          "office": "Goldsboro",
+          "tenure": "6 years"
+        },
+        {
+          "name": "Raekwon Barnes",
+          "office": "Goldsboro",
+          "tenure": "3 years"
+        },
+        {
+          "name": "Amanda D. Carpenter",
+          "office": "Rocky Mount",
+          "tenure": "2 years"
+        },
+        {
+          "name": "Jeffrey A. Crubbrest",
+          "office": "Jacksonville",
+          "tenure": "1 year"
+        },
+        {
+          "name": "Jordan M. Green",
+          "office": "Columbia",
+          "tenure": "1 year"
+        },
+        {
+          "name": "Ja'Den E. Kilpatrick",
+          "office": "Greenville",
+          "tenure": "1 year"
+        },
+        {
+          "name": "Russell D. Kornegay",
+          "office": "Goldsboro",
+          "tenure": "1 year"
+        },
+        {
+          "name": "Jessica S. McEntire",
+          "office": "Columbia",
+          "tenure": "6 years"
+        },
+        {
+          "name": "Jeremy Moore",
+          "office": "Cary",
+          "tenure": "6 years"
+        },
+        {
+          "name": "Julian Moore",
+          "office": "Greensboro",
+          "tenure": "12 years"
+        },
+        {
+          "name": "Jermaine Smith",
+          "office": "Allison",
+          "tenure": "1 year"
+        },
+        {
+          "name": "Nickolas J. Whitley",
+          "office": "Goldsboro",
+          "tenure": "3 years"
+        },
+        {
+          "name": "Christina M. Williams",
+          "office": "Goldsboro",
+          "tenure": "1 year"
+        }
+      ]
+    },
+    {
+      "type": "contributors",
+      "enabled": true,
+      "id": "contributors",
+      "eyebrow": "Contributors",
+      "title": "Bringing you The Fence Line",
+      "people": [
+        {
+          "section": "Team Letter",
+          "name": "Ben Seegars",
+          "title": "Chief Executive Officer",
+          "image": "images/ben.png"
+        },
+        {
+          "section": "HR Corner",
+          "name": "Veronica Aycock",
+          "title": "Executive Vice President",
+          "image": "images/veronica.png"
+        },
+        {
+          "section": "Safety First",
+          "name": "Chanda Best",
+          "title": "Safety Manager",
+          "image": "images/chanda.png"
+        },
+        {
+          "section": "Tech Talk",
+          "name": "Brad Wells",
+          "title": "IT Manager",
+          "image": "images/brad.png"
+        }
+      ]
+    },
+    {
+      "type": "resource_hub",
+      "enabled": true,
+      "id": "resources",
+      "eyebrow": "Resources",
+      "title": "Quick links for the team",
+      "intro": "All the essentials, one tap away.",
+      "groups": [
+        {
+          "title": "Quick Links",
+          "links": [
+            {
+              "label": "Success and Seegars",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgAFyJ8mnRz3QZUE5CxgBgGFAe_8fKEQeMEfdvI_jRS6ISI"
+            },
+            {
+              "label": "401k Files",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgD_t5uAH_-VS4QCMeaK32m3Aejm8kt1UV0d_mNDa-EdkeI"
+            },
+            {
+              "label": "Podium Files",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgCDo31IQ-_qSoU8jOu151G7AVRra2cTnpJBXLv1haN5TwI"
+            },
+            {
+              "label": "Safety Manuals",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgCwK1-guhStQpiScEy8SXpgAWyAOUoIqE14rKq0XMco3fw"
+            },
+            {
+              "label": "OneDrive Media Folder",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/media/IgAPyDIzcOgTR69k-sy-P7m7AVTej9yHyawv1-Yu9byHKRU"
+            },
+            {
+              "label": "Microsoft Teams Download",
+              "url": "https://www.microsoft.com/en-us/microsoft-teams/download-app"
+            },
+            {
+              "label": "Seegars Outlook",
+              "url": "https://outlook.office.com/mail/"
+            },
+            {
+              "label": "Seegars OneDrive",
+              "url": "https://onedrive.live.com/login"
+            },
+            {
+              "label": "Seegars Merchandise",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgA39AlcrSTqRK-SqZXPfSweATZxxvska6z5vGOH-D-7oYw"
+            },
+            {
+              "label": "Seegars Email Signature",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgAwm8s6iJJFR6SCtfjNrAVLAV6kOfH8uRUlVSATzHfY_qY"
+            },
+            {
+              "label": "The Fence Line Archives",
+              "url": "https://seegarsfence-my.sharepoint.com/:f:/p/thefenceline/IgCcEHWoF9kKQKhW8zFgLhVEAf0N0STjReDICakuXLETOn4"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
