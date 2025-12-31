@@ -1,0 +1,562 @@
+{% extends 'admin/base.html' %}
+{% set title = 'Edit issue' %}
+
+{% block content %}
+<section class="card">
+  <div class="card__header">
+    <div>
+      <h2>Edit {{ issue.issue_month }}</h2>
+      <p class="muted">Slug: {{ issue.slug }}</p>
+    </div>
+    <a class="button button--ghost" href="{{ url_for('admin_issues') }}">Back to issues</a>
+  </div>
+  <form method="post" class="stack" data-editor-form>
+    <label class="field">
+      <span>Issue month label</span>
+      <input type="text" name="issue_month" value="{{ issue.issue_month }}" required />
+    </label>
+
+    <div class="section">
+      <h3>Hero module</h3>
+      <div class="grid-two">
+        <label class="field">
+          <span>Hero headline</span>
+          <input type="text" name="hero_title" value="{{ issue.hero.title }}" />
+        </label>
+        <label class="field">
+          <span>Hero image path</span>
+          <input type="text" name="hero_image" value="{{ issue.hero.image }}" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Hero subtitle (one line per line break)</span>
+        <textarea name="hero_subtitle" rows="3">{{ issue.hero.subtitle | default('') }}</textarea>
+      </label>
+      <div class="grid-two">
+        <label class="field">
+          <span>Hero CTA label</span>
+          <input type="text" name="hero_cta_label" value="{{ issue.hero.cta.label | default('') }}" />
+        </label>
+        <label class="field">
+          <span>Hero CTA link</span>
+          <input type="text" name="hero_cta_url" value="{{ issue.hero.cta.url | default('') }}" />
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Modules</h3>
+      <input type="hidden" name="module-count" value="{{ issue.modules | length }}" />
+      <div class="module-list" data-module-list>
+        {% for module in issue.modules %}
+        <div class="module-card" data-module data-module-index="{{ loop.index0 }}">
+          <div class="module-card__header">
+            <div>
+              <h4>{{ module.type.replace('_', ' ') | title }}</h4>
+              <p class="muted">Module ID: {{ module.id }}</p>
+            </div>
+            <div class="module-card__controls">
+              <label class="checkbox">
+                <input type="checkbox" name="module-{{ loop.index0 }}-enabled" {% if module.enabled %}checked{% endif %} />
+                <span>Enabled</span>
+              </label>
+              <label class="field field--inline">
+                <span>Order</span>
+                <input type="number" name="module-{{ loop.index0 }}-order" value="{{ loop.index0 }}" />
+              </label>
+            </div>
+          </div>
+
+          <input type="hidden" name="module-{{ loop.index0 }}-type" value="{{ module.type }}" />
+          <div class="grid-two">
+            <label class="field">
+              <span>Module ID</span>
+              <input type="text" name="module-{{ loop.index0 }}-id" value="{{ module.id }}" />
+            </label>
+            <label class="field">
+              <span>Style preset</span>
+              <select name="module-{{ loop.index0 }}-preset">
+                {% for preset in ['default','featured','compact','highlight','warning'] %}
+                <option value="{{ preset }}" {% if module.style_preset == preset %}selected{% endif %}>{{ preset | title }}</option>
+                {% endfor %}
+              </select>
+            </label>
+          </div>
+          <div class="grid-two">
+            <label class="field">
+              <span>Eyebrow label</span>
+              <input type="text" name="module-{{ loop.index0 }}-eyebrow" value="{{ module.eyebrow }}" />
+            </label>
+            <label class="field">
+              <span>Module title</span>
+              <input type="text" name="module-{{ loop.index0 }}-title" value="{{ module.title }}" />
+            </label>
+          </div>
+
+          {% if module.type == 'featured_story' %}
+          <div class="field-group">
+            <label class="field">
+              <span>Body text</span>
+              <textarea name="module-{{ loop.index0 }}-body" rows="8">{{ module.body.content }}</textarea>
+            </label>
+            <label class="field field--inline">
+              <span>Body mode</span>
+              <select name="module-{{ loop.index0 }}-body_mode">
+                <option value="plain" {% if module.body.mode == 'plain' %}selected{% endif %}>Plain</option>
+                <option value="rich" {% if module.body.mode == 'rich' %}selected{% endif %}>Rich</option>
+              </select>
+            </label>
+          </div>
+          {% elif module.type == 'editorial_grid' %}
+          <label class="field">
+            <span>Intro text</span>
+            <input type="text" name="module-{{ loop.index0 }}-intro" value="{{ module.intro }}" />
+          </label>
+          <input type="hidden" name="module-{{ loop.index0 }}-cards-count" value="{{ module.cards | length }}" />
+          <div class="sub-list" data-card-list>
+            {% for card in module.cards %}
+            <div class="sub-card" data-card data-card-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h5>{{ card.title or 'Editorial card' }}</h5>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Card ID</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-id" value="{{ card.id }}" />
+                </label>
+                <label class="field">
+                  <span>Style preset</span>
+                  <select name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-preset">
+                    {% for preset in ['default','featured','compact','highlight','warning'] %}
+                    <option value="{{ preset }}" {% if card.style_preset == preset %}selected{% endif %}>{{ preset | title }}</option>
+                    {% endfor %}
+                  </select>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Category label</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-eyebrow" value="{{ card.eyebrow }}" />
+                </label>
+                <label class="field">
+                  <span>Headline</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-title" value="{{ card.title }}" />
+                </label>
+              </div>
+              <label class="field">
+                <span>Body text</span>
+                <textarea name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-body" rows="6">{{ card.body.content }}</textarea>
+              </label>
+              <label class="field field--inline">
+                <span>Body mode</span>
+                <select name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-body_mode">
+                  <option value="plain" {% if card.body.mode == 'plain' %}selected{% endif %}>Plain</option>
+                  <option value="rich" {% if card.body.mode == 'rich' %}selected{% endif %}>Rich</option>
+                </select>
+              </label>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Button label</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-cta_label" value="{{ card.cta.label | default('') }}" />
+                </label>
+                <label class="field">
+                  <span>Button link</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-cta_url" value="{{ card.cta.url | default('') }}" />
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-card>Add editorial card</button>
+          {% elif module.type == 'highlight_panel' %}
+          <label class="field">
+            <span>Label badge</span>
+            <input type="text" name="module-{{ loop.index0 }}-label" value="{{ module.label }}" />
+          </label>
+          <label class="field">
+            <span>Body text</span>
+            <textarea name="module-{{ loop.index0 }}-body" rows="8">{{ module.body.content }}</textarea>
+          </label>
+          <label class="field field--inline">
+            <span>Body mode</span>
+            <select name="module-{{ loop.index0 }}-body_mode">
+              <option value="plain" {% if module.body.mode == 'plain' %}selected{% endif %}>Plain</option>
+              <option value="rich" {% if module.body.mode == 'rich' %}selected{% endif %}>Rich</option>
+            </select>
+          </label>
+          {% elif module.type == 'celebrations' %}
+          <label class="field">
+            <span>Intro text</span>
+            <input type="text" name="module-{{ loop.index0 }}-intro" value="{{ module.intro }}" />
+          </label>
+          <input type="hidden" name="module-{{ loop.index0 }}-birthdays-count" value="{{ module.birthdays | length }}" />
+          <input type="hidden" name="module-{{ loop.index0 }}-anniversaries-count" value="{{ module.anniversaries | length }}" />
+          <div class="sub-list" data-birthday-list>
+            <h5>Birthdays</h5>
+            {% for item in module.birthdays %}
+            <div class="sub-card" data-birthday data-birthday-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h6>{{ item.name or 'Birthday' }}</h6>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Name</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-name" value="{{ item.name }}" />
+                </label>
+                <label class="field">
+                  <span>Date</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-date" value="{{ item.date }}" />
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Weekday</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-weekday" value="{{ item.weekday }}" />
+                </label>
+                <label class="field">
+                  <span>Office</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-office" value="{{ item.office }}" />
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-birthday>Add birthday</button>
+          <div class="sub-list" data-anniversary-list>
+            <h5>Anniversaries</h5>
+            {% for item in module.anniversaries %}
+            <div class="sub-card" data-anniversary data-anniversary-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h6>{{ item.name or 'Anniversary' }}</h6>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Name</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-name" value="{{ item.name }}" />
+                </label>
+                <label class="field">
+                  <span>Tenure</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-tenure" value="{{ item.tenure }}" />
+                </label>
+              </div>
+              <label class="field">
+                <span>Office</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-office" value="{{ item.office }}" />
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-anniversary>Add anniversary</button>
+          {% elif module.type == 'contributors' %}
+          <input type="hidden" name="module-{{ loop.index0 }}-people-count" value="{{ module.people | length }}" />
+          <div class="sub-list" data-contributor-list>
+            {% for person in module.people %}
+            <div class="sub-card" data-contributor data-contributor-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h5>{{ person.name or 'Contributor' }}</h5>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Name</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-name" value="{{ person.name }}" />
+                </label>
+                <label class="field">
+                  <span>Title</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-title" value="{{ person.title }}" />
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Section</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-section" value="{{ person.section }}" />
+                </label>
+                <label class="field">
+                  <span>Image path</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-image" value="{{ person.image }}" />
+                </label>
+              </div>
+              <label class="field">
+                <span>Secondary text</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-secondary" value="{{ person.secondary }}" />
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-contributor>Add contributor</button>
+          {% elif module.type == 'resource_hub' %}
+          <label class="field">
+            <span>Intro text</span>
+            <input type="text" name="module-{{ loop.index0 }}-intro" value="{{ module.intro }}" />
+          </label>
+          <input type="hidden" name="module-{{ loop.index0 }}-groups-count" value="{{ module.groups | length }}" />
+          <div class="sub-list" data-group-list>
+            {% for group in module.groups %}
+            <div class="sub-card" data-group data-group-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h5>{{ group.title or 'Resource group' }}</h5>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <label class="field">
+                <span>Group title</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-title" value="{{ group.title }}" />
+              </label>
+              <input type="hidden" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-links-count" value="{{ group.links | length }}" />
+              <div class="sub-list" data-link-list>
+                {% for link in group.links %}
+                <div class="sub-card sub-card--tight" data-link data-link-index="{{ loop.index0 }}">
+                  <div class="sub-card__header">
+                    <h6>{{ link.label or 'Resource link' }}</h6>
+                    <label class="checkbox">
+                      <input type="checkbox" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-remove" />
+                      <span>Remove</span>
+                    </label>
+                  </div>
+                  <div class="grid-two">
+                    <label class="field">
+                      <span>Label</span>
+                      <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-label" value="{{ link.label }}" />
+                    </label>
+                    <label class="field">
+                      <span>URL</span>
+                      <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-url" value="{{ link.url }}" />
+                    </label>
+                  </div>
+                  <label class="field">
+                    <span>Icon path (optional)</span>
+                    <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-icon" value="{{ link.icon }}" />
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+              <button class="button button--ghost" type="button" data-add-link>Add link</button>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-group>Add group</button>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <button class="button" type="submit">Save changes</button>
+  </form>
+</section>
+
+<template id="editorial-card-template">
+  <div class="sub-card" data-card data-card-index="__index__">
+    <div class="sub-card__header">
+      <h5>Editorial card</h5>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-cards-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Card ID</span>
+        <input type="text" name="module-__module__-cards-__index__-id" />
+      </label>
+      <label class="field">
+        <span>Style preset</span>
+        <select name="module-__module__-cards-__index__-preset">
+          <option value="default" selected>Default</option>
+          <option value="featured">Featured</option>
+          <option value="compact">Compact</option>
+          <option value="highlight">Highlight</option>
+          <option value="warning">Warning</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Category label</span>
+        <input type="text" name="module-__module__-cards-__index__-eyebrow" />
+      </label>
+      <label class="field">
+        <span>Headline</span>
+        <input type="text" name="module-__module__-cards-__index__-title" />
+      </label>
+    </div>
+    <label class="field">
+      <span>Body text</span>
+      <textarea name="module-__module__-cards-__index__-body" rows="6"></textarea>
+    </label>
+    <label class="field field--inline">
+      <span>Body mode</span>
+      <select name="module-__module__-cards-__index__-body_mode">
+        <option value="plain" selected>Plain</option>
+        <option value="rich">Rich</option>
+      </select>
+    </label>
+    <div class="grid-two">
+      <label class="field">
+        <span>Button label</span>
+        <input type="text" name="module-__module__-cards-__index__-cta_label" />
+      </label>
+      <label class="field">
+        <span>Button link</span>
+        <input type="text" name="module-__module__-cards-__index__-cta_url" />
+      </label>
+    </div>
+  </div>
+</template>
+
+<template id="birthday-template">
+  <div class="sub-card" data-birthday data-birthday-index="__index__">
+    <div class="sub-card__header">
+      <h6>Birthday</h6>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-birthday-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="module-__module__-birthday-__index__-name" />
+      </label>
+      <label class="field">
+        <span>Date</span>
+        <input type="text" name="module-__module__-birthday-__index__-date" />
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Weekday</span>
+        <input type="text" name="module-__module__-birthday-__index__-weekday" />
+      </label>
+      <label class="field">
+        <span>Office</span>
+        <input type="text" name="module-__module__-birthday-__index__-office" />
+      </label>
+    </div>
+  </div>
+</template>
+
+<template id="anniversary-template">
+  <div class="sub-card" data-anniversary data-anniversary-index="__index__">
+    <div class="sub-card__header">
+      <h6>Anniversary</h6>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-anniversary-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="module-__module__-anniversary-__index__-name" />
+      </label>
+      <label class="field">
+        <span>Tenure</span>
+        <input type="text" name="module-__module__-anniversary-__index__-tenure" />
+      </label>
+    </div>
+    <label class="field">
+      <span>Office</span>
+      <input type="text" name="module-__module__-anniversary-__index__-office" />
+    </label>
+  </div>
+</template>
+
+<template id="contributor-template">
+  <div class="sub-card" data-contributor data-contributor-index="__index__">
+    <div class="sub-card__header">
+      <h5>Contributor</h5>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-person-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" name="module-__module__-person-__index__-name" />
+      </label>
+      <label class="field">
+        <span>Title</span>
+        <input type="text" name="module-__module__-person-__index__-title" />
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Section</span>
+        <input type="text" name="module-__module__-person-__index__-section" />
+      </label>
+      <label class="field">
+        <span>Image path</span>
+        <input type="text" name="module-__module__-person-__index__-image" />
+      </label>
+    </div>
+    <label class="field">
+      <span>Secondary text</span>
+      <input type="text" name="module-__module__-person-__index__-secondary" />
+    </label>
+  </div>
+</template>
+
+<template id="group-template">
+  <div class="sub-card" data-group data-group-index="__index__">
+    <div class="sub-card__header">
+      <h5>Resource group</h5>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-group-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <label class="field">
+      <span>Group title</span>
+      <input type="text" name="module-__module__-group-__index__-title" />
+    </label>
+    <input type="hidden" name="module-__module__-group-__index__-links-count" value="0" />
+    <div class="sub-list" data-link-list></div>
+    <button class="button button--ghost" type="button" data-add-link>Add link</button>
+  </div>
+</template>
+
+<template id="link-template">
+  <div class="sub-card sub-card--tight" data-link data-link-index="__index__">
+    <div class="sub-card__header">
+      <h6>Resource link</h6>
+      <label class="checkbox">
+        <input type="checkbox" name="module-__module__-group-__group__-link-__index__-remove" />
+        <span>Remove</span>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
+        <span>Label</span>
+        <input type="text" name="module-__module__-group-__group__-link-__index__-label" />
+      </label>
+      <label class="field">
+        <span>URL</span>
+        <input type="text" name="module-__module__-group-__group__-link-__index__-url" />
+      </label>
+    </div>
+    <label class="field">
+      <span>Icon path (optional)</span>
+      <input type="text" name="module-__module__-group-__group__-link-__index__-icon" />
+    </label>
+  </div>
+</template>
+{% endblock %}

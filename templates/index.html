@@ -7,15 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link href="https://fonts.cdnfonts.com/css/cofo-gothic" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
   <body>
     <header class="top-bar">
-      <div class="container">
+      <div class="container top-bar__content">
         <a class="logo" href="https://www.seegarsfence.com/">
           <img
             src="{{ url_for('static', filename='images/logo_nav.png') }}"
@@ -81,6 +80,7 @@
     </header>
 
     <main>
+      {% if issue %}
       <section
         id="top"
         class="hero"
@@ -89,34 +89,48 @@
       >
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="container hero__content">
-          <h1 id="hero-heading" class="hero__title">{{ issue.hero.title }}</h1>
           <p class="hero__issue">{{ issue.issue_month }}</p>
+          <h1 id="hero-heading" class="hero__title">{{ issue.hero.title }}</h1>
+          {% if issue.hero.subtitle %}
+          {% set hero_lines = issue.hero.subtitle.split('\n') %}
           <p class="hero__tagline">
-            <em>
-              {% for line in issue.hero.tagline %}
-              <span>{{ line }}</span>
-              {% endfor %}
-            </em>
+            {% for line in hero_lines %}
+            <span>{{ line }}</span>
+            {% endfor %}
           </p>
+          {% endif %}
+          {% if issue.hero.cta.label and issue.hero.cta.url %}
+          <a class="button button--primary" href="{{ issue.hero.cta.url }}" target="_blank" rel="noreferrer">
+            {{ issue.hero.cta.label }}
+          </a>
+          {% endif %}
         </div>
       </section>
 
       {% for module in issue.modules %}
       {% if module.enabled %}
       {% if module.type == "featured_story" %}
-      <section id="{{ module.id }}" class="module module--featured" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--featured module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <article class="featured-story">
             <header class="module__header">
               <p class="module__eyebrow">{{ module.eyebrow }}</p>
               <h2 id="{{ module.id }}-heading">{{ module.title }}</h2>
             </header>
-            <div class="featured-story__body">{{ module.body_html | safe }}</div>
+            <div class="featured-story__body">{{ render_body(module.body) }}</div>
           </article>
         </div>
       </section>
       {% elif module.type == "editorial_grid" %}
-      <section id="{{ module.id }}" class="module module--editorial" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--editorial module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <header class="module__header">
             <p class="module__eyebrow">{{ module.eyebrow }}</p>
@@ -127,22 +141,21 @@
           </header>
           <div class="editorial-grid">
             {% for card in module.cards %}
-            <article class="editorial-card" id="{{ card.id }}" aria-labelledby="{{ card.id }}-title">
+            <article
+              class="editorial-card editorial-card--preset-{{ card.style_preset | default('default') }}"
+              id="{{ card.id }}"
+              aria-labelledby="{{ card.id }}-title"
+            >
               <header class="editorial-card__header">
                 <p class="editorial-card__eyebrow">{{ card.eyebrow }}</p>
                 <h3 id="{{ card.id }}-title">{{ card.title }}</h3>
               </header>
-              {% if card.collapsible %}
-              <details class="editorial-card__details">
-                <summary>Read more</summary>
-                <div class="editorial-card__body">{{ card.body_html | safe }}</div>
-              </details>
-              {% else %}
-              <div class="editorial-card__body">{{ card.body_html | safe }}</div>
-              {% endif %}
-              {% if card.cta %}
+              <div class="editorial-card__body">{{ render_body(card.body) }}</div>
+              {% if card.cta.label and card.cta.url %}
               <div class="editorial-card__actions">
-                <a class="button button--primary" href="{{ card.cta.url }}" target="_blank" rel="noreferrer">{{ card.cta.label }}</a>
+                <a class="button button--primary" href="{{ card.cta.url }}" target="_blank" rel="noreferrer">
+                  {{ card.cta.label }}
+                </a>
               </div>
               {% endif %}
             </article>
@@ -151,7 +164,11 @@
         </div>
       </section>
       {% elif module.type == "highlight_panel" %}
-      <section id="{{ module.id }}" class="module module--highlight" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--highlight module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <article class="highlight-panel">
             <header class="module__header module__header--tight">
@@ -163,12 +180,16 @@
                 {% endif %}
               </div>
             </header>
-            <div class="highlight-panel__body">{{ module.body_html | safe }}</div>
+            <div class="highlight-panel__body">{{ render_body(module.body) }}</div>
           </article>
         </div>
       </section>
       {% elif module.type == "celebrations" %}
-      <section id="{{ module.id }}" class="module module--celebrations" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--celebrations module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <header class="module__header module__header--center">
             <p class="module__eyebrow">{{ module.eyebrow }}</p>
@@ -202,7 +223,11 @@
         </div>
       </section>
       {% elif module.type == "contributors" %}
-      <section id="{{ module.id }}" class="module module--contributors" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--contributors module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <header class="module__header module__header--center">
             <p class="module__eyebrow">{{ module.eyebrow }}</p>
@@ -228,7 +253,11 @@
         </div>
       </section>
       {% elif module.type == "resource_hub" %}
-      <section id="{{ module.id }}" class="module module--resources" aria-labelledby="{{ module.id }}-heading">
+      <section
+        id="{{ module.id }}"
+        class="module module--resources module--preset-{{ module.style_preset | default('default') }}"
+        aria-labelledby="{{ module.id }}-heading"
+      >
         <div class="container">
           <header class="module__header module__header--center">
             <p class="module__eyebrow">{{ module.eyebrow }}</p>
@@ -257,13 +286,21 @@
       {% endif %}
       {% endif %}
       {% endfor %}
+      {% else %}
+      <section class="module">
+        <div class="container">
+          <h1>No issue configured.</h1>
+          <p>Please add an issue in the admin dashboard.</p>
+        </div>
+      </section>
+      {% endif %}
     </main>
 
     <footer class="site-footer">
       <div class="container">
         <p>&copy; <span id="current-year"></span> Seegars Fence Company. All rights reserved.</p>
         <div class="footer-links">
-          <a href="#team-letter">Top of page</a>
+          <a href="#top">Top of page</a>
         </div>
         <span class="footer-easter-egg" aria-hidden="true">WE BUILD FENCES!</span>
       </div>

@@ -1,0 +1,64 @@
+{% extends 'admin/base.html' %}
+{% set title = 'Issues' %}
+
+{% block content %}
+<section class="grid">
+  <div class="card">
+    <h2>Issues</h2>
+    <div class="issue-list">
+      {% for issue in issues %}
+      <div class="issue-row">
+        <div>
+          <h3>{{ issue.issue_month }}</h3>
+          <p class="muted">Slug: {{ issue.slug }}</p>
+          {% if issue.is_active %}
+          <span class="pill">Active issue</span>
+          {% endif %}
+        </div>
+        <div class="issue-actions">
+          <a class="button button--ghost" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}">Edit</a>
+          {% if not issue.is_active %}
+          <form method="post" action="{{ url_for('admin_activate_issue', issue_slug=issue.slug) }}">
+            <button class="button" type="submit">Set active</button>
+          </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('admin_duplicate_issue', issue_slug=issue.slug) }}" class="inline-form">
+            <input type="text" name="new_issue_month" placeholder="New issue month" required />
+            <input type="text" name="new_slug" placeholder="new-slug" required />
+            <button class="button button--ghost" type="submit">Duplicate</button>
+          </form>
+          {% if not issue.is_active %}
+          <form method="post" action="{{ url_for('admin_delete_issue', issue_slug=issue.slug) }}">
+            <button class="button button--danger" type="submit">Delete</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <h2>Create new issue</h2>
+    <form method="post" action="{{ url_for('admin_create_issue') }}" class="stack">
+      <label class="field">
+        <span>Issue month</span>
+        <input type="text" name="issue_month" placeholder="January 2026" required />
+      </label>
+      <label class="field">
+        <span>Slug</span>
+        <input type="text" name="slug" placeholder="january-2026" required />
+      </label>
+      <label class="field">
+        <span>Duplicate from (optional)</span>
+        <select name="source_issue">
+          <option value="">Blank template</option>
+          {% for issue in issues %}
+          <option value="{{ issue.slug }}">{{ issue.issue_month }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="button" type="submit">Create issue</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
