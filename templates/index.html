@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
-  <body>
+  <body {% if issue %}style="{{ theme_style(issue.hero.get('theme', {})) }}"{% endif %}>
     <header class="top-bar">
       <div class="container top-bar__content">
         <a class="logo" href="https://www.seegarsfence.com/">
@@ -140,9 +140,9 @@
             {% endif %}
           </header>
           <div class="editorial-grid">
-            {% for card in module.cards %}
+            {% for card in sort_editorial_cards(module.cards) %}
             <article
-              class="editorial-card editorial-card--preset-{{ card.style_preset | default('default') }}"
+              class="editorial-card editorial-card--preset-{{ card.style_preset | default('default') }} editorial-card--align-{{ card.alignment | default('left') }}"
               id="{{ card.id }}"
               aria-labelledby="{{ card.id }}-title"
             >
@@ -164,13 +164,17 @@
         </div>
       </section>
       {% elif module.type == "highlight_panel" %}
+      {% set highlight_style = {
+        '--highlight-panel-bg': module.background_color,
+        '--highlight-panel-text': module.text_color
+      } %}
       <section
         id="{{ module.id }}"
         class="module module--highlight module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
       >
         <div class="container">
-          <article class="highlight-panel">
+          <article class="highlight-panel" style="{{ style_vars(highlight_style) }}">
             <header class="module__header module__header--tight">
               <p class="module__eyebrow">{{ module.eyebrow }}</p>
               <div class="highlight-panel__title">

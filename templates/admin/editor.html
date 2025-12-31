@@ -11,6 +11,7 @@
     <a class="button button--ghost" href="{{ url_for('admin_issues') }}">Back to issues</a>
   </div>
   <form method="post" class="stack" data-editor-form>
+    {% set theme = issue.hero.get('theme', default_theme()) %}
     <label class="field">
       <span>Issue month label</span>
       <input type="text" name="issue_month" value="{{ issue.issue_month }}" required />
@@ -40,6 +41,61 @@
         <label class="field">
           <span>Hero CTA link</span>
           <input type="text" name="hero_cta_url" value="{{ issue.hero.cta.url | default('') }}" />
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Site theme</h3>
+      <p class="muted">Update these colors to change the overall newsletter palette.</p>
+      <div class="grid-two">
+        <label class="field">
+          <span>Primary accent</span>
+          <input type="text" name="theme_accent" value="{{ theme.get('accent', '') }}" placeholder="#a5463a" />
+        </label>
+        <label class="field">
+          <span>Accent strong</span>
+          <input type="text" name="theme_accent_strong" value="{{ theme.get('accent_strong', '') }}" placeholder="#8b352a" />
+        </label>
+      </div>
+      <div class="grid-two">
+        <label class="field">
+          <span>Ink (primary text)</span>
+          <input type="text" name="theme_ink" value="{{ theme.get('ink', '') }}" placeholder="#1c1b18" />
+        </label>
+        <label class="field">
+          <span>Ink muted</span>
+          <input type="text" name="theme_ink_muted" value="{{ theme.get('ink_muted', '') }}" placeholder="#5a5955" />
+        </label>
+      </div>
+      <div class="grid-two">
+        <label class="field">
+          <span>Ink soft</span>
+          <input type="text" name="theme_ink_soft" value="{{ theme.get('ink_soft', '') }}" placeholder="#7c7a74" />
+        </label>
+        <label class="field">
+          <span>Card background</span>
+          <input type="text" name="theme_card" value="{{ theme.get('card', '') }}" placeholder="#ffffff" />
+        </label>
+      </div>
+      <div class="grid-two">
+        <label class="field">
+          <span>Surface background</span>
+          <input type="text" name="theme_surface" value="{{ theme.get('surface', '') }}" placeholder="#f6f0ea" />
+        </label>
+        <label class="field">
+          <span>Surface alt</span>
+          <input type="text" name="theme_surface_alt" value="{{ theme.get('surface_alt', '') }}" placeholder="#efe7de" />
+        </label>
+      </div>
+      <div class="grid-two">
+        <label class="field">
+          <span>Highlight background</span>
+          <input type="text" name="theme_highlight" value="{{ theme.get('highlight', '') }}" placeholder="#12314f" />
+        </label>
+        <label class="field">
+          <span>Highlight text</span>
+          <input type="text" name="theme_highlight_text" value="{{ theme.get('highlight_text', '') }}" placeholder="#fefcfb" />
         </label>
       </div>
     </div>
@@ -139,6 +195,20 @@
               </div>
               <div class="grid-two">
                 <label class="field">
+                  <span>Card order</span>
+                  <input type="number" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-order" value="{{ card.order | default(loop.index0) }}" />
+                </label>
+                <label class="field">
+                  <span>Text alignment</span>
+                  <select name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-alignment">
+                    {% for align in ['left','center','right'] %}
+                    <option value="{{ align }}" {% if card.alignment == align %}selected{% endif %}>{{ align | title }}</option>
+                    {% endfor %}
+                  </select>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
                   <span>Category label</span>
                   <input type="text" name="module-{{ loop.prevloop.index0 }}-cards-{{ loop.index0 }}-eyebrow" value="{{ card.eyebrow }}" />
                 </label>
@@ -158,6 +228,7 @@
                   <option value="rich" {% if card.body.mode == 'rich' %}selected{% endif %}>Rich</option>
                 </select>
               </label>
+              <p class="muted">Use rich mode to add bullet lists or sub-sections inside this card.</p>
               <div class="grid-two">
                 <label class="field">
                   <span>Button label</span>
@@ -177,6 +248,16 @@
             <span>Label badge</span>
             <input type="text" name="module-{{ loop.index0 }}-label" value="{{ module.label }}" />
           </label>
+          <div class="grid-two">
+            <label class="field">
+              <span>Background color</span>
+              <input type="text" name="module-{{ loop.index0 }}-background_color" value="{{ module.background_color | default('') }}" placeholder="#12314f" />
+            </label>
+            <label class="field">
+              <span>Text color</span>
+              <input type="text" name="module-{{ loop.index0 }}-text_color" value="{{ module.text_color | default('') }}" placeholder="#fefcfb" />
+            </label>
+          </div>
           <label class="field">
             <span>Body text</span>
             <textarea name="module-{{ loop.index0 }}-body" rows="8">{{ module.body.content }}</textarea>
@@ -389,6 +470,20 @@
     </div>
     <div class="grid-two">
       <label class="field">
+        <span>Card order</span>
+        <input type="number" name="module-__module__-cards-__index__-order" value="__index__" />
+      </label>
+      <label class="field">
+        <span>Text alignment</span>
+        <select name="module-__module__-cards-__index__-alignment">
+          <option value="left" selected>Left</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid-two">
+      <label class="field">
         <span>Category label</span>
         <input type="text" name="module-__module__-cards-__index__-eyebrow" />
       </label>
@@ -408,6 +503,7 @@
         <option value="rich">Rich</option>
       </select>
     </label>
+    <p class="muted">Use rich mode to add bullet lists or sub-sections inside this card.</p>
     <div class="grid-two">
       <label class="field">
         <span>Button label</span>

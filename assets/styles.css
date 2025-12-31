@@ -9,6 +9,7 @@
   --card: #ffffff;
   --highlight: #12314f;
   --highlight-soft: #e0e8f1;
+  --highlight-text: #fefcfb;
   --shadow: 0 26px 60px rgba(22, 18, 15, 0.12);
   --shadow-soft: 0 14px 32px rgba(22, 18, 15, 0.08);
   --radius-xl: 26px;
@@ -32,6 +33,17 @@ body {
   color: var(--ink);
   background: var(--surface);
   line-height: 1.7;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
 }
 
 a {
@@ -151,7 +163,7 @@ ul li::before {
 }
 
 .logo img {
-  height: 32px;
+  height: 40px;
 }
 
 .primary-nav {
@@ -277,6 +289,11 @@ ul li::before {
   text-align: center;
 }
 
+.module__header--center .module__intro {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .module__header--tight {
   margin-bottom: 1.2rem;
 }
@@ -343,16 +360,34 @@ ul li::before {
   margin-top: auto;
 }
 
+.editorial-card--align-center {
+  text-align: center;
+}
+
+.editorial-card--align-right {
+  text-align: right;
+}
+
+.editorial-card--align-center .editorial-card__actions {
+  display: flex;
+  justify-content: center;
+}
+
+.editorial-card--align-right .editorial-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 
 .highlight-panel {
   padding: 2.7rem;
-  background: var(--highlight);
-  color: #fefcfb;
+  background: var(--highlight-panel-bg, var(--highlight));
+  color: var(--highlight-panel-text, var(--highlight-text));
 }
 
 .highlight-panel h2,
 .highlight-panel p {
-  color: #fefcfb;
+  color: var(--highlight-panel-text, var(--highlight-text));
 }
 
 .highlight-panel__label {
@@ -364,7 +399,7 @@ ul li::before {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #fefcfb;
+  color: var(--highlight-panel-text, var(--highlight-text));
 }
 
 .celebrations-grid {
@@ -375,6 +410,7 @@ ul li::before {
 
 .celebration-card {
   padding: 2rem;
+  text-align: center;
 }
 
 .celebrations-list li {
@@ -383,6 +419,10 @@ ul li::before {
 
 .celebrations-list li::before {
   display: none;
+}
+
+.celebrations-list {
+  text-align: center;
 }
 
 .celebrations-list__primary {
@@ -442,12 +482,14 @@ ul li::before {
 .resource-button {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
   padding: 0.85rem 1rem;
   border-radius: 16px;
   background: var(--surface-alt);
   color: var(--ink);
   font-weight: 600;
+  text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

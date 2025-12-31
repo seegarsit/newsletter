@@ -24,6 +24,12 @@ DATA_DIR = Path("data")
 ISSUES_DIR = DATA_DIR / "issues"
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
+app.config["ADMIN_EMAIL"] = os.environ.get(
+    "ADMIN_EMAIL", "brad@seegarsfence.com"
+)
+app.config["ADMIN_PASSWORD"] = os.environ.get(
+    "ADMIN_PASSWORD", "1C0ntr0lTh1sS1te!"
+)
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
     if database_url.startswith("postgres://"):
@@ -51,12 +57,43 @@ ALLOWED_TAGS = [
     "span",
     "div",
     "h3",
+    "h4",
+    "h5",
 ]
 ALLOWED_ATTRS = {
     "a": ["href", "target", "rel"],
     "*": ["class"],
 }
 ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
+THEME_TOKENS = {
+    "ink": "--ink",
+    "ink_muted": "--ink-muted",
+    "ink_soft": "--ink-soft",
+    "accent": "--accent",
+    "accent_strong": "--accent-strong",
+    "surface": "--surface",
+    "surface_alt": "--surface-alt",
+    "card": "--card",
+    "highlight": "--highlight",
+    "highlight_text": "--highlight-text",
+}
+
+
+def _default_theme() -> dict[str, str]:
+    """Return the default site theme colors."""
+
+    return {
+        "ink": "#1c1b18",
+        "ink_muted": "#5a5955",
+        "ink_soft": "#7c7a74",
+        "accent": "#a5463a",
+        "accent_strong": "#8b352a",
+        "surface": "#f6f0ea",
+        "surface_alt": "#efe7de",
+        "card": "#ffffff",
+        "highlight": "#12314f",
+        "highlight_text": "#fefcfb",
+    }
 
 
 class AdminUser(UserMixin, db.Model):
@@ -94,6 +131,51 @@ def _read_json(path: Path) -> Any:
     """Load JSON data from ``path`` and return its decoded payload."""
 
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _theme_style(theme: dict[str, Any] | None) -> str:
+    """Build an inline theme style string."""
+
+    if not theme:
+        return ""
+
+    segments = []
+    for key, css_var in THEME_TOKENS.items():
+        value = str(theme.get(key, "")).strip()
+        if value:
+            segments.append(f"{css_var}: {value}")
+    return "; ".join(segments)
+
+
+def _style_vars(values: dict[str, Any] | None) -> str:
+    """Build inline CSS variables from a dictionary."""
+
+    if not values:
+        return ""
+
+    segments = []
+    for key, value in values.items():
+        cleaned = str(value or "").strip()
+        if cleaned:
+            segments.append(f"{key}: {cleaned}")
+    return "; ".join(segments)
+
+
+def _sort_editorial_cards(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Sort editorial cards so the team letter is always first."""
+
+    def sort_key(item: dict[str, Any]) -> tuple[int, int]:
+        order_value = item.get("order", 0)
+        try:
+            order = int(order_value)
+        except (TypeError, ValueError):
+            order = 0
+        return (
+            0 if item.get("id") == "team-letter" else 1,
+            order,
+        )
+
+    return sorted(cards or [], key=sort_key)
 
 
 def _sanitize_html(content: str) -> str:
@@ -210,6 +292,7 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
         "subtitle": "\n".join(issue["hero"].get("tagline", [])),
         "image": issue["hero"]["image"],
         "cta": {"label": "", "url": ""},
+        "theme": _default_theme(),
     }
 
     modules: list[dict[str, Any]] = []
@@ -350,6 +433,10 @@ def inject_helpers() -> dict[str, Any]:
     return {
         "render_body": _render_body,
         "body_length": _text_length,
+        "theme_style": _theme_style,
+        "style_vars": _style_vars,
+        "default_theme": _default_theme,
+        "sort_editorial_cards": _sort_editorial_cards,
     }
 
 
@@ -380,8 +467,8 @@ def admin_login() -> str | Response:
             login_user(user)
             return redirect(url_for("admin_issues"))
 
-        env_email = os.environ.get("ADMIN_EMAIL")
-        env_password = os.environ.get("ADMIN_PASSWORD")
+        env_email = app.config.get("ADMIN_EMAIL")
+        env_password = app.config.get("ADMIN_PASSWORD")
         if not user and env_email and env_password:
             if email == env_email and password == env_password:
                 user = AdminUser(
@@ -419,6 +506,12 @@ def admin_issues() -> str:
 def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:
     """Parse issue data from admin form payload."""
 
+    theme: dict[str, str] = {}
+    for key in THEME_TOKENS:
+        value = form.get(f"theme_{key}", "").strip()
+        if value:
+            theme[key] = value
+
     hero = {
         "title": form.get("hero_title", ""),
         "subtitle": form.get("hero_subtitle", ""),
@@ -427,6 +520,7 @@ def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:
             "label": form.get("hero_cta_label", ""),
             "url": form.get("hero_cta_url", ""),
         },
+        "theme": theme,
     }
 
     modules: list[dict[str, Any]] = []
@@ -460,6 +554,11 @@ def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:
                 card_prefix = f"{prefix}cards-{card_index}-"
                 if form.get(card_prefix + "remove") == "on":
                     continue
+                order_value = form.get(card_prefix + "order", str(card_index))
+                try:
+                    order = int(order_value)
+                except ValueError:
+                    order = card_index
                 cards.append(
                     {
                         "id": form.get(card_prefix + "id", ""),
@@ -476,11 +575,21 @@ def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:
                         "style_preset": form.get(
                             card_prefix + "preset", "default"
                         ),
+                        "alignment": form.get(
+                            card_prefix + "alignment", "left"
+                        ),
+                        "order": order,
                     }
                 )
-            module["cards"] = cards
+            module["cards"] = _sort_editorial_cards(cards)
         elif module_type == "highlight_panel":
             module["label"] = form.get(prefix + "label", "")
+            module["background_color"] = form.get(
+                prefix + "background_color", ""
+            ).strip()
+            module["text_color"] = form.get(
+                prefix + "text_color", ""
+            ).strip()
             module["body"] = {
                 "content": form.get(prefix + "body", ""),
                 "mode": form.get(prefix + "body_mode", "plain"),
@@ -591,6 +700,7 @@ def admin_create_issue() -> Response:
     source_issue = Issue.query.filter_by(slug=source_slug).first()
     if source_issue:
         hero = json.loads(json.dumps(source_issue.hero))
+        hero.setdefault("theme", _default_theme())
         modules = json.loads(json.dumps(source_issue.modules))
     else:
         hero = {
@@ -598,6 +708,7 @@ def admin_create_issue() -> Response:
             "subtitle": "",
             "image": "",
             "cta": {"label": "", "url": ""},
+            "theme": _default_theme(),
         }
         modules = _default_modules()
 
