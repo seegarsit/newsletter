@@ -15,12 +15,37 @@ A modern, single-page internal newsletter experience for the Seegars Fence Compa
    ```
 4. Visit [http://localhost:5000](http://localhost:5000) in your browser to view the newsletter.
 
+## Admin dashboard
+
+The modular editorial editor is available at `/admin/login`.
+
+### Required environment variables
+
+Set these before the first login to bootstrap the initial admin user:
+
+- `ADMIN_EMAIL` – Email address for the first admin login.
+- `ADMIN_PASSWORD` – Password for the first admin login.
+
+Optional configuration:
+
+- `DATABASE_URL` – SQLAlchemy database URL (defaults to `sqlite:///data/newsletter.db`).
+- `SECRET_KEY` – Flask secret key for sessions.
+
+### Admin pages
+
+- `/admin/login` – Sign in with the admin credentials.
+- `/admin/issues` – Create, duplicate, delete, and activate issues.
+- `/admin/editor/<issue_slug>` – Edit hero content, module order, and module data.
+
 ## Structure
 
-- `app.py` – Flask entry point that renders the newsletter template and serves static assets.
+- `app.py` – Flask entry point, admin routes, and database integration.
 - `templates/index.html` – Landing page markup rendered by Flask.
-- `assets/styles.css` – Global styling, responsive layout, and theming.
-- `assets/app.js` – Interactive enhancements for the subscription forms and footer year.
+- `templates/admin/` – Admin dashboard templates.
+- `assets/styles.css` – Editorial styling and responsive layout.
+- `assets/admin.css` – Admin dashboard styling.
+- `assets/app.js` – Front-end interactions and editorial card collapse logic.
+- `assets/admin.js` – Admin editor UI helpers.
 - `requirements.txt` – Python dependencies for running the application.
 
 Feel free to adapt the content and imagery to match the latest edition of *The Fence Line*.

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title or 'Editorial Admin' }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}" />
+  </head>
+  <body>
+    <header class="admin-header">
+      <div class="admin-header__content">
+        <div>
+          <h1>Modular Editorial Dashboard</h1>
+          <p>Internal Newsletter Administration</p>
+        </div>
+        {% if current_user.is_authenticated %}
+        <nav class="admin-nav">
+          <a href="{{ url_for('admin_issues') }}">Issues</a>
+          <a href="{{ url_for('index') }}" target="_blank" rel="noreferrer">View site</a>
+          <a href="{{ url_for('admin_logout') }}">Log out</a>
+        </nav>
+        {% endif %}
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="admin-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-stack">
+          {% for category, message in messages %}
+          <div class="flash flash--{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+    <script src="{{ url_for('static', filename='admin.js') }}" defer></script>
+  </body>
+</html>
