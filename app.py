@@ -24,9 +24,13 @@ DATA_DIR = Path("data")
 ISSUES_DIR = DATA_DIR / "issues"
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL", "sqlite:///data/newsletter.db"
-)
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/newsletter.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 login_manager = LoginManager()
@@ -331,6 +335,14 @@ def _ensure_seed_data() -> None:
         db.session.commit()
 
 
+@app.cli.command("init-db")
+def init_db() -> None:
+    """Create database tables and seed initial data."""
+
+    db.create_all()
+    _ensure_seed_data()
+
+
 @app.context_processor
 def inject_helpers() -> dict[str, Any]:
     """Provide template helpers."""
@@ -339,17 +351,6 @@ def inject_helpers() -> dict[str, Any]:
         "render_body": _render_body,
         "body_length": _text_length,
     }
-
-
-@app.before_request
-def _initialize_database() -> None:
-    """Initialize the database on first request."""
-
-    if not getattr(app, "_db_initialized", False):
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        db.create_all()
-        _ensure_seed_data()
-        app._db_initialized = True
 
 
 @app.route("/")
