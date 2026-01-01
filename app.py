@@ -10,13 +10,21 @@ from pathlib import Path
 from typing import Any
 
 import bleach
-from flask import (Flask, Response, flash, redirect, render_template, request,
-                   url_for)
+from flask import (
+    Flask,
+    Response,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
 from flask_sqlalchemy import SQLAlchemy
 from markupsafe import Markup, escape
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__, static_folder="assets", static_url_path="/assets")
 
@@ -24,14 +32,10 @@ DATA_DIR = Path("data")
 ISSUES_DIR = DATA_DIR / "issues"
 
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
-app.config["ADMIN_EMAIL"] = os.environ.get(
-    "ADMIN_EMAIL", "brad@seegarsfence.com"
-)
-app.config["ADMIN_PASSWORD"] = os.environ.get(
-    "ADMIN_PASSWORD", "1C0ntr0lTh1sS1te!"
-)
-app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME", "SEEGARS")
-app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD", "Sfc1949!")
+app.config["ADMIN_EMAIL"] = os.environ.get("ADMIN_EMAIL")
+app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD")
+app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME")
+app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD")
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
     if database_url.startswith("postgres://"):
@@ -212,80 +216,6 @@ def _text_length(body: dict[str, Any]) -> int:
     return len(content.strip())
 
 
-def _normalize_slug(value: str) -> str:
-    """Normalize a slug entry."""
-
-    slug = value.strip().lower().replace(" ", "-")
-    slug = re.sub(r"[^a-z0-9-]", "", slug)
-    return slug
-
-
-def _default_modules() -> list[dict[str, Any]]:
-    """Return a default module configuration."""
-
-    return [
-        {
-            "type": "featured_story",
-            "enabled": False,
-            "id": "featured-story",
-            "eyebrow": "Featured Story",
-            "title": "",
-            "body": {"content": "", "mode": "plain"},
-            "style_preset": "featured",
-        },
-        {
-            "type": "editorial_grid",
-            "enabled": True,
-            "id": "editorial",
-            "eyebrow": "Editorial Desk",
-            "title": "Monthly perspectives",
-            "intro": "",
-            "style_preset": "default",
-            "cards": [],
-        },
-        {
-            "type": "highlight_panel",
-            "enabled": True,
-            "id": "highlight",
-            "eyebrow": "Safety",
-            "title": "",
-            "label": "",
-            "body": {"content": "", "mode": "plain"},
-            "style_preset": "highlight",
-        },
-        {
-            "type": "celebrations",
-            "enabled": True,
-            "id": "celebrations",
-            "eyebrow": "Celebrations",
-            "title": "",
-            "intro": "",
-            "style_preset": "default",
-            "birthdays": [],
-            "anniversaries": [],
-        },
-        {
-            "type": "contributors",
-            "enabled": True,
-            "id": "contributors",
-            "eyebrow": "Contributors",
-            "title": "",
-            "style_preset": "default",
-            "people": [],
-        },
-        {
-            "type": "resource_hub",
-            "enabled": True,
-            "id": "resources",
-            "eyebrow": "Resource Hub",
-            "title": "",
-            "intro": "",
-            "style_preset": "default",
-            "groups": [],
-        },
-    ]
-
-
 def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
     """Convert file-based issue JSON to the database schema."""
 
@@ -353,6 +283,35 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
                 }
             )
         elif module["type"] == "celebrations":
+            birthdays = []
+            for birthday in module["birthdays"]:
+                if "meta" in birthday:
+                    birthdays.append(birthday)
+                else:
+                    meta_parts = [
+                        birthday.get("date", ""),
+                        birthday.get("weekday", ""),
+                        birthday.get("office", ""),
+                    ]
+                    meta = " · ".join(
+                        [part for part in meta_parts if part]
+                    )
+                    birthdays.append({"name": birthday.get("name", ""), "meta": meta})
+            anniversaries = []
+            for anniversary in module["anniversaries"]:
+                if "meta" in anniversary:
+                    anniversaries.append(anniversary)
+                else:
+                    meta_parts = [
+                        anniversary.get("tenure", ""),
+                        anniversary.get("office", ""),
+                    ]
+                    meta = " · ".join(
+                        [part for part in meta_parts if part]
+                    )
+                    anniversaries.append(
+                        {"name": anniversary.get("name", ""), "meta": meta}
+                    )
             modules.append(
                 {
                     "type": "celebrations",
@@ -361,8 +320,8 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
                     "eyebrow": module["eyebrow"],
                     "title": module["title"],
                     "intro": module["intro"],
-                    "birthdays": module["birthdays"],
-                    "anniversaries": module["anniversaries"],
+                    "birthdays": birthdays,
+                    "anniversaries": anniversaries,
                     "style_preset": "default",
                 }
             )
@@ -379,21 +338,26 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
                 }
             )
         elif module["type"] == "resource_hub":
+            links = module.get("links")
+            if links is None:
+                links = []
+                for group in module.get("groups", []):
+                    links.extend(group.get("links", []))
             modules.append(
                 {
                     "type": "resource_hub",
                     "enabled": module["enabled"],
-                    "id": module["id"],
+                    "id": "resource_hub",
                     "eyebrow": module["eyebrow"],
                     "title": module["title"],
                     "intro": module["intro"],
-                    "groups": module["groups"],
+                    "links": links,
                     "style_preset": "default",
                 }
             )
 
     return {
-        "slug": "december-2025",
+        "slug": "current",
         "issue_month": issue["issue_month"],
         "hero": hero,
         "modules": modules,
@@ -410,7 +374,7 @@ def _ensure_seed_data() -> None:
         payload = _read_json(ISSUES_DIR / "december-2025.json")
         migrated = _migrate_issue(payload)
         issue = Issue(
-            slug=migrated["slug"],
+            slug="current",
             issue_month=migrated["issue_month"],
             hero=migrated["hero"],
             modules=migrated["modules"],
@@ -469,7 +433,7 @@ def require_site_auth() -> Response | None:
 def index() -> str:
     """Render the main newsletter page."""
 
-    issue = Issue.query.filter_by(is_active=True).first() or Issue.query.first()
+    issue = _get_current_issue()
     if not issue:
         return render_template("index.html", issue=None)
 
@@ -481,7 +445,7 @@ def admin_login() -> str | Response:
     """Authenticate an admin user."""
 
     if current_user.is_authenticated:
-        return redirect(url_for("admin_live"))
+        return redirect(url_for("index"))
 
     if request.method == "POST":
         email = request.form.get("email", "")
@@ -490,7 +454,7 @@ def admin_login() -> str | Response:
         user = AdminUser.query.filter_by(email=email).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect(url_for("admin_live"))
+            return redirect(url_for("index"))
 
         env_email = app.config.get("ADMIN_EMAIL")
         env_password = app.config.get("ADMIN_PASSWORD")
@@ -503,7 +467,7 @@ def admin_login() -> str | Response:
                 db.session.add(user)
                 db.session.commit()
                 login_user(user)
-                return redirect(url_for("admin_live"))
+                return redirect(url_for("index"))
 
         flash("Invalid credentials.", "error")
 
@@ -519,322 +483,175 @@ def admin_logout() -> Response:
     return redirect(url_for("admin_login"))
 
 
-@app.route("/admin/issues")
-@login_required
-def admin_issues() -> str:
-    """List available issues."""
+def _get_current_issue() -> Issue | None:
+    """Fetch or initialize the current issue."""
 
-    issues = Issue.query.order_by(Issue.created_at.desc()).all()
-    return render_template("admin/issues.html", issues=issues)
+    issue = Issue.query.filter_by(slug="current").first()
+    if issue:
+        if not issue.is_active:
+            issue.is_active = True
+            db.session.commit()
+        return issue
+
+    issue = Issue.query.first()
+    if issue:
+        issue.slug = "current"
+        issue.is_active = True
+        db.session.commit()
+        return issue
+
+    _ensure_seed_data()
+    return Issue.query.filter_by(slug="current").first()
 
 
-@app.route("/admin/live")
-@login_required
-def admin_live() -> str:
-    """Render the live site view with editing controls."""
+def _sanitize_body(body: dict[str, Any] | None) -> dict[str, Any]:
+    """Sanitize body payloads."""
 
-    issue = Issue.query.filter_by(is_active=True).first() or Issue.query.first()
-    return render_template("index.html", issue=issue, admin_mode=True)
+    if not body:
+        return {"content": "", "mode": "plain"}
+
+    mode = body.get("mode", "plain")
+    content = body.get("content", "")
+    if mode == "rich":
+        content = _sanitize_html(str(content))
+    return {"content": content, "mode": mode}
 
 
-def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:
-    """Parse issue data from admin form payload."""
+def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    """Sanitize issue payload before persisting."""
 
-    theme: dict[str, str] = {}
-    for key in THEME_TOKENS:
-        value = form.get(f"theme_{key}", "").strip()
-        if value:
-            theme[key] = value
-
-    hero = {
-        "title": form.get("hero_title", ""),
-        "subtitle": form.get("hero_subtitle", ""),
-        "image": form.get("hero_image", ""),
-        "cta": {
-            "label": form.get("hero_cta_label", ""),
-            "url": form.get("hero_cta_url", ""),
+    hero = payload.get("hero", {})
+    hero_theme = hero.get("theme", {})
+    cleaned = {
+        "issue_month": payload.get("issue_month", ""),
+        "hero": {
+            "title": hero.get("title", ""),
+            "subtitle": hero.get("subtitle", ""),
+            "image": hero.get("image", ""),
+            "cta": hero.get("cta", {"label": "", "url": ""}),
+            "theme": hero_theme,
         },
-        "theme": theme,
+        "modules": [],
     }
 
-    modules: list[dict[str, Any]] = []
-    module_count = int(form.get("module-count", "0"))
-    for index in range(module_count):
-        prefix = f"module-{index}-"
-        module_type = form.get(prefix + "type")
-        if not module_type:
-            continue
-
-        module = {
+    for module in payload.get("modules", []):
+        module_type = module.get("type")
+        base = {
             "type": module_type,
-            "enabled": form.get(prefix + "enabled") == "on",
-            "id": form.get(prefix + "id", ""),
-            "eyebrow": form.get(prefix + "eyebrow", ""),
-            "title": form.get(prefix + "title", ""),
-            "style_preset": form.get(prefix + "preset", "default"),
-            "order": int(form.get(prefix + "order", str(index))),
+            "enabled": module.get("enabled", True),
+            "id": module.get("id", ""),
+            "eyebrow": module.get("eyebrow", ""),
+            "title": module.get("title", ""),
+            "style_preset": module.get("style_preset", "default"),
         }
 
         if module_type == "featured_story":
-            module["body"] = {
-                "content": form.get(prefix + "body", ""),
-                "mode": form.get(prefix + "body_mode", "plain"),
-            }
+            base["body"] = _sanitize_body(module.get("body"))
         elif module_type == "editorial_grid":
-            module["intro"] = form.get(prefix + "intro", "")
-            card_count = int(form.get(prefix + "cards-count", "0"))
+            base["intro"] = module.get("intro", "")
             cards = []
-            for card_index in range(card_count):
-                card_prefix = f"{prefix}cards-{card_index}-"
-                if form.get(card_prefix + "remove") == "on":
-                    continue
-                order_value = form.get(card_prefix + "order", str(card_index))
-                try:
-                    order = int(order_value)
-                except ValueError:
-                    order = card_index
+            for card in module.get("cards", []):
                 cards.append(
                     {
-                        "id": form.get(card_prefix + "id", ""),
-                        "eyebrow": form.get(card_prefix + "eyebrow", ""),
-                        "title": form.get(card_prefix + "title", ""),
-                        "body": {
-                            "content": form.get(card_prefix + "body", ""),
-                            "mode": form.get(card_prefix + "body_mode", "plain"),
-                        },
-                        "cta": {
-                            "label": form.get(card_prefix + "cta_label", ""),
-                            "url": form.get(card_prefix + "cta_url", ""),
-                        },
-                        "style_preset": form.get(
-                            card_prefix + "preset", "default"
-                        ),
-                        "alignment": form.get(
-                            card_prefix + "alignment", "left"
-                        ),
-                        "order": order,
+                        "id": card.get("id", ""),
+                        "eyebrow": card.get("eyebrow", ""),
+                        "title": card.get("title", ""),
+                        "body": _sanitize_body(card.get("body")),
+                        "cta": card.get("cta", {"label": "", "url": ""}),
+                        "style_preset": card.get("style_preset", "default"),
+                        "alignment": card.get("alignment", "left"),
                     }
                 )
-            module["cards"] = _sort_editorial_cards(cards)
+            base["cards"] = cards
         elif module_type == "highlight_panel":
-            module["label"] = form.get(prefix + "label", "")
-            module["background_color"] = form.get(
-                prefix + "background_color", ""
-            ).strip()
-            module["text_color"] = form.get(
-                prefix + "text_color", ""
-            ).strip()
-            module["body"] = {
-                "content": form.get(prefix + "body", ""),
-                "mode": form.get(prefix + "body_mode", "plain"),
-            }
+            base["label"] = module.get("label", "")
+            base["background_color"] = module.get("background_color", "")
+            base["text_color"] = module.get("text_color", "")
+            base["body"] = _sanitize_body(module.get("body"))
         elif module_type == "celebrations":
-            module["intro"] = form.get(prefix + "intro", "")
-            birthdays = []
-            birthday_count = int(form.get(prefix + "birthdays-count", "0"))
-            for birthday_index in range(birthday_count):
-                item_prefix = f"{prefix}birthday-{birthday_index}-"
-                if form.get(item_prefix + "remove") == "on":
-                    continue
-                birthdays.append(
-                    {
-                        "name": form.get(item_prefix + "name", ""),
-                        "date": form.get(item_prefix + "date", ""),
-                        "weekday": form.get(item_prefix + "weekday", ""),
-                        "office": form.get(item_prefix + "office", ""),
-                    }
-                )
-            anniversaries = []
-            anniversary_count = int(
-                form.get(prefix + "anniversaries-count", "0")
-            )
-            for anniversary_index in range(anniversary_count):
-                item_prefix = f"{prefix}anniversary-{anniversary_index}-"
-                if form.get(item_prefix + "remove") == "on":
-                    continue
-                anniversaries.append(
-                    {
-                        "name": form.get(item_prefix + "name", ""),
-                        "tenure": form.get(item_prefix + "tenure", ""),
-                        "office": form.get(item_prefix + "office", ""),
-                    }
-                )
-            module["birthdays"] = birthdays
-            module["anniversaries"] = anniversaries
+            base["intro"] = module.get("intro", "")
+            base["birthdays"] = module.get("birthdays", [])
+            base["anniversaries"] = module.get("anniversaries", [])
         elif module_type == "contributors":
-            people = []
-            people_count = int(form.get(prefix + "people-count", "0"))
-            for person_index in range(people_count):
-                item_prefix = f"{prefix}person-{person_index}-"
-                if form.get(item_prefix + "remove") == "on":
-                    continue
-                person = {
-                    "name": form.get(item_prefix + "name", ""),
-                    "title": form.get(item_prefix + "title", ""),
-                    "section": form.get(item_prefix + "section", ""),
-                    "image": form.get(item_prefix + "image", ""),
-                }
-                secondary = form.get(item_prefix + "secondary", "")
-                if secondary:
-                    person["secondary"] = secondary
-                people.append(person)
-            module["people"] = people
+            base["people"] = module.get("people", [])
         elif module_type == "resource_hub":
-            module["intro"] = form.get(prefix + "intro", "")
-            groups = []
-            group_count = int(form.get(prefix + "groups-count", "0"))
-            for group_index in range(group_count):
-                group_prefix = f"{prefix}group-{group_index}-"
-                if form.get(group_prefix + "remove") == "on":
-                    continue
-                group = {"title": form.get(group_prefix + "title", "")}
-                links = []
-                link_count = int(form.get(group_prefix + "links-count", "0"))
-                for link_index in range(link_count):
-                    link_prefix = f"{group_prefix}link-{link_index}-"
-                    if form.get(link_prefix + "remove") == "on":
-                        continue
-                    links.append(
-                        {
-                            "label": form.get(link_prefix + "label", ""),
-                            "url": form.get(link_prefix + "url", ""),
-                            "icon": form.get(link_prefix + "icon", ""),
-                        }
-                    )
-                group["links"] = links
-                groups.append(group)
-            module["groups"] = groups
+            base["id"] = module.get("id", "resource_hub")
+            base["intro"] = module.get("intro", "")
+            base["links"] = module.get("links", [])
+        else:
+            continue
 
-        modules.append(module)
+        cleaned["modules"].append(base)
 
-    modules.sort(key=lambda item: item.get("order", 0))
-    for module in modules:
-        module.pop("order", None)
-
-    return {"hero": hero, "modules": modules}
+    return cleaned
 
 
-@app.route("/admin/issues/create", methods=["POST"])
+@app.route("/admin/api/current")
 @login_required
-def admin_create_issue() -> Response:
-    """Create a new issue."""
+def admin_api_current() -> Response:
+    """Return the current issue configuration."""
 
-    slug = _normalize_slug(request.form.get("slug", ""))
-    issue_month = request.form.get("issue_month", "")
-    source_slug = request.form.get("source_issue", "")
+    issue = _get_current_issue()
+    if not issue:
+        return Response(status=404)
 
-    if not slug or not issue_month:
-        flash("Slug and issue month are required.", "error")
-        return redirect(url_for("admin_issues"))
-
-    if Issue.query.filter_by(slug=slug).first():
-        flash("That slug already exists.", "error")
-        return redirect(url_for("admin_issues"))
-
-    source_issue = Issue.query.filter_by(slug=source_slug).first()
-    if source_issue:
-        hero = json.loads(json.dumps(source_issue.hero))
-        hero.setdefault("theme", _default_theme())
-        modules = json.loads(json.dumps(source_issue.modules))
-    else:
-        hero = {
-            "title": "",
-            "subtitle": "",
-            "image": "",
-            "cta": {"label": "", "url": ""},
-            "theme": _default_theme(),
-        }
-        modules = _default_modules()
-
-    issue = Issue(
-        slug=slug,
-        issue_month=issue_month,
-        hero=hero,
-        modules=modules,
-        is_active=False,
+    return Response(
+        json.dumps(
+            {
+                "slug": issue.slug,
+                "issue_month": issue.issue_month,
+                "hero": issue.hero,
+                "modules": issue.modules,
+            }
+        ),
+        mimetype="application/json",
     )
-    db.session.add(issue)
-    db.session.commit()
-    flash("Issue created.", "success")
-    return redirect(url_for("admin_editor", issue_slug=slug))
 
 
-@app.route("/admin/issues/<issue_slug>/duplicate", methods=["POST"])
+@app.route("/admin/api/current", methods=["POST"])
 @login_required
-def admin_duplicate_issue(issue_slug: str) -> Response:
-    """Duplicate an existing issue."""
+def admin_api_update_current() -> Response:
+    """Update the current issue configuration."""
 
-    source = Issue.query.filter_by(slug=issue_slug).first_or_404()
-    new_slug = _normalize_slug(request.form.get("new_slug", ""))
-    new_month = request.form.get("new_issue_month", "")
+    issue = _get_current_issue()
+    if not issue:
+        return Response(status=404)
 
-    if not new_slug or not new_month:
-        flash("New slug and month are required.", "error")
-        return redirect(url_for("admin_issues"))
-
-    if Issue.query.filter_by(slug=new_slug).first():
-        flash("That slug already exists.", "error")
-        return redirect(url_for("admin_issues"))
-
-    issue = Issue(
-        slug=new_slug,
-        issue_month=new_month,
-        hero=json.loads(json.dumps(source.hero)),
-        modules=json.loads(json.dumps(source.modules)),
-        is_active=False,
-    )
-    db.session.add(issue)
-    db.session.commit()
-    flash("Issue duplicated.", "success")
-    return redirect(url_for("admin_editor", issue_slug=new_slug))
-
-
-@app.route("/admin/issues/<issue_slug>/delete", methods=["POST"])
-@login_required
-def admin_delete_issue(issue_slug: str) -> Response:
-    """Delete an existing issue."""
-
-    issue = Issue.query.filter_by(slug=issue_slug).first_or_404()
-    if issue.is_active:
-        flash("Cannot delete the active issue.", "error")
-        return redirect(url_for("admin_issues"))
-
-    db.session.delete(issue)
-    db.session.commit()
-    flash("Issue deleted.", "success")
-    return redirect(url_for("admin_issues"))
-
-
-@app.route("/admin/issues/<issue_slug>/activate", methods=["POST"])
-@login_required
-def admin_activate_issue(issue_slug: str) -> Response:
-    """Set the active issue."""
-
-    issue = Issue.query.filter_by(slug=issue_slug).first_or_404()
-    Issue.query.update({Issue.is_active: False})
+    payload = request.get_json(silent=True) or {}
+    cleaned = _sanitize_issue_payload(payload)
+    issue.issue_month = cleaned["issue_month"]
+    issue.hero = cleaned["hero"]
+    issue.modules = cleaned["modules"]
     issue.is_active = True
+    issue.slug = "current"
     db.session.commit()
-    flash("Issue is now active.", "success")
-    return redirect(url_for("admin_issues"))
+    return Response(status=204)
 
 
-@app.route("/admin/editor/<issue_slug>", methods=["GET", "POST"])
+@app.route("/admin/upload-image", methods=["POST"])
 @login_required
-def admin_editor(issue_slug: str) -> str | Response:
-    """Edit an issue configuration."""
+def admin_upload_image() -> Response:
+    """Upload an image for inline editor usage."""
 
-    issue = Issue.query.filter_by(slug=issue_slug).first_or_404()
+    image = request.files.get("image")
+    if not image or not image.filename:
+        return Response("No image uploaded.", status=400)
 
-    if request.method == "POST":
-        payload = _issue_from_form(request.form)
-        issue.issue_month = request.form.get("issue_month", issue.issue_month)
-        issue.hero = payload["hero"]
-        issue.modules = payload["modules"]
-        db.session.commit()
-        flash("Changes saved.", "success")
-        return redirect(url_for("admin_editor", issue_slug=issue_slug))
+    filename = secure_filename(image.filename)
+    ext = Path(filename).suffix.lower().lstrip(".")
+    if ext not in {"png", "jpg", "jpeg", "webp"}:
+        return Response("Unsupported file type.", status=400)
 
-    return render_template("admin/editor.html", issue=issue)
+    upload_dir = Path(app.static_folder) / "images" / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S%f")
+    safe_name = f"{Path(filename).stem}-{timestamp}.{ext}"
+    image.save(upload_dir / safe_name)
+
+    return Response(
+        json.dumps({"path": f"images/uploads/{safe_name}"}),
+        mimetype="application/json",
+    )
 
 
 if __name__ == "__main__":

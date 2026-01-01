@@ -518,8 +518,18 @@ ul li::before {
 }
 
 .highlight-panel h2,
+.highlight-panel h3,
 .highlight-panel p {
   color: var(--highlight-panel-text, var(--highlight-text));
+}
+
+#safety-first.module {
+  padding-top: 1.8rem;
+}
+
+.highlight-panel__heading--card {
+  font-size: 1.17em;
+  margin-bottom: 0.75rem;
 }
 
 .highlight-panel__label {
@@ -538,11 +548,13 @@ ul li::before {
   display: grid;
   grid-template-columns: repeat(2, minmax(260px, 1fr));
   gap: 1.8rem;
+  align-items: stretch;
 }
 
 .celebration-card {
   padding: 2rem;
   text-align: center;
+  height: 100%;
 }
 
 .celebrations-list li {
@@ -566,6 +578,15 @@ ul li::before {
   display: block;
   font-size: 0.9rem;
   color: var(--ink-soft);
+}
+
+.callout {
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(34, 87, 122, 0.2);
+  color: var(--ink);
+  margin: 1.2rem 0;
 }
 
 .contributors-grid {
@@ -672,6 +693,13 @@ ul li::before {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 220px;
   height: 56px;
+}
+
+.resource-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .resource-button:hover,
