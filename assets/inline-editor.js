@@ -12,12 +12,18 @@
   const styleClose = document.querySelector('[data-style-close]');
   const themeInputs = Array.from(document.querySelectorAll('[data-theme-token]'));
   const richToolbar = document.querySelector('[data-rich-toolbar]');
+  const textStylePanel = document.querySelector('[data-text-style-panel]');
+  const textStyleColor = document.querySelector('[data-text-style-color]');
+  const textStyleSize = document.querySelector('[data-text-style-size]');
+  const textStyleReset = document.querySelector('[data-text-style-reset]');
   const imageInput = document.querySelector('[data-image-input]');
 
   let originalData = null;
   let draftData = null;
   let editMode = false;
   let activeEditable = null;
+  let activeStyleTarget = null;
+  let activeStylePath = null;
   let pendingImagePath = null;
 
   const themeTokens = {
@@ -104,6 +110,80 @@
         body.style.setProperty(cssVar, value);
       }
     });
+  }
+
+  function applyTextStyle(element, style) {
+    if (!element) return;
+    element.style.color = style?.color || '';
+    element.style.fontSize = style?.font_size || '';
+  }
+
+  function getTextStyles(data) {
+    return data?.hero?.text_styles || {};
+  }
+
+  function ensureTextStyles(data) {
+    if (!data.hero.text_styles) {
+      data.hero.text_styles = {};
+    }
+    return data.hero.text_styles;
+  }
+
+  function rgbToHex(rgb) {
+    if (!rgb || typeof rgb !== 'string') return '';
+    const match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (!match) return '';
+    const toHex = (value) => Number(value).toString(16).padStart(2, '0');
+    return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`;
+  }
+
+  function populateTextStyleInputs(element) {
+    if (!element || !draftData) return;
+    const styles = getTextStyles(draftData);
+    const current = styles[element.dataset.editPath] || {};
+    const computed = window.getComputedStyle(element);
+    if (textStyleColor) {
+      const colorValue = current.color || rgbToHex(computed.color) || '#000000';
+      textStyleColor.value = colorValue;
+    }
+    if (textStyleSize) {
+      const sizeValue = current.font_size || computed.fontSize || '';
+      const numeric = parseFloat(sizeValue);
+      textStyleSize.value = Number.isNaN(numeric) ? '' : numeric;
+    }
+  }
+
+  function setActiveTextStyleTarget(element) {
+    if (!textStylePanel || !element || !draftData) return;
+    activeStyleTarget = element;
+    activeStylePath = element.dataset.editPath;
+    populateTextStyleInputs(element);
+    textStylePanel.removeAttribute('hidden');
+  }
+
+  function clearActiveTextStyleTarget() {
+    activeStyleTarget = null;
+    activeStylePath = null;
+    textStylePanel?.setAttribute('hidden', '');
+  }
+
+  function updateTextStyle(updates) {
+    if (!draftData || !activeStylePath || !activeStyleTarget) return;
+    const styles = ensureTextStyles(draftData);
+    const next = { ...(styles[activeStylePath] || {}) };
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+    });
+    if (Object.keys(next).length === 0) {
+      delete styles[activeStylePath];
+    } else {
+      styles[activeStylePath] = next;
+    }
+    applyTextStyle(activeStyleTarget, next);
   }
 
   function renderHero(data) {
@@ -352,7 +432,18 @@
     const resources = findModule(data, 'resource_hub');
     if (resources) renderResources(resources);
     applyTheme(data.hero.theme || {});
+    syncTextStyles(data);
     syncEditableElements(data);
+  }
+
+  function syncTextStyles(data) {
+    const styles = getTextStyles(data);
+    document.querySelectorAll('[data-edit-path]').forEach((element) => {
+      const path = element.dataset.editPath;
+      const type = element.dataset.editType || 'text';
+      if (!path || type === 'image') return;
+      applyTextStyle(element, styles[path] || {});
+    });
   }
 
   function syncEditableElements(data) {
@@ -434,6 +525,7 @@
       });
       richToolbar?.setAttribute('hidden', '');
       activeEditable = null;
+      clearActiveTextStyleTarget();
     }
     renderAll(draftData || originalData);
   }
@@ -518,6 +610,7 @@
       return;
     }
 
+    setActiveTextStyleTarget(target);
     setEditable(target, type);
   }
 
@@ -666,6 +759,24 @@
       return;
     }
     document.execCommand(command, false, null);
+  });
+
+  textStyleColor?.addEventListener('input', (event) => {
+    updateTextStyle({ color: event.target.value });
+  });
+
+  textStyleSize?.addEventListener('input', (event) => {
+    const value = event.target.value;
+    const size = value ? `${Number(value)}px` : '';
+    updateTextStyle({ font_size: size });
+  });
+
+  textStyleReset?.addEventListener('click', () => {
+    if (!draftData || !activeStylePath || !activeStyleTarget) return;
+    const styles = ensureTextStyles(draftData);
+    delete styles[activeStylePath];
+    applyTextStyle(activeStyleTarget, {});
+    populateTextStyleInputs(activeStyleTarget);
   });
 
   imageInput?.addEventListener('change', async (event) => {

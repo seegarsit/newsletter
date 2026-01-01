@@ -99,6 +99,20 @@
       <button type="button" data-rich-command="createLink">Link</button>
       <button type="button" data-rich-command="callout">Callout</button>
     </div>
+    <div class="inline-text-style-panel" data-text-style-panel hidden>
+      <div class="inline-text-style-panel__header">
+        <h2>Text Styling</h2>
+        <button type="button" data-text-style-reset>Reset</button>
+      </div>
+      <label>
+        Text color
+        <input type="color" data-text-style-color />
+      </label>
+      <label>
+        Text size (px)
+        <input type="number" min="10" max="96" step="1" data-text-style-size />
+      </label>
+    </div>
     <input
       type="file"
       class="inline-image-input"
@@ -175,6 +189,7 @@
 
     <main>
       {% if issue %}
+      {% set text_styles = issue.hero.get('text_styles', {}) %}
       <section
         id="top"
         class="hero"
@@ -186,17 +201,31 @@
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="container hero__content">
           {% if issue.hero.title or current_user.is_authenticated %}
-          <h1 id="hero-heading" class="hero__title" data-edit-path="hero.title">
+          <h1
+            id="hero-heading"
+            class="hero__title"
+            data-edit-path="hero.title"
+            style="{{ inline_text_style(text_styles, 'hero.title') }}"
+          >
             {{ issue.hero.title }}
           </h1>
           {% endif %}
           {% if issue.issue_month or current_user.is_authenticated %}
-          <p class="hero__issue" data-edit-path="issue_month">
+          <p
+            class="hero__issue"
+            data-edit-path="issue_month"
+            style="{{ inline_text_style(text_styles, 'issue_month') }}"
+          >
             {{ issue.issue_month }}
           </p>
           {% endif %}
           {% if issue.hero.subtitle or current_user.is_authenticated %}
-          <p class="hero__tagline" data-edit-path="hero.subtitle" data-edit-type="multiline">
+          <p
+            class="hero__tagline"
+            data-edit-path="hero.subtitle"
+            data-edit-type="multiline"
+            style="{{ inline_text_style(text_styles, 'hero.subtitle') }}"
+          >
             {{ issue.hero.subtitle | replace('\n', '<br />') | safe }}
           </p>
           {% endif %}
@@ -235,17 +264,29 @@
         <div class="container">
           <header class="module__header">
             {% if module.eyebrow or current_user.is_authenticated %}
-            <p class="module__eyebrow" data-edit-path="modules.{{ module.id }}.eyebrow">
+            <p
+              class="module__eyebrow"
+              data-edit-path="modules.{{ module.id }}.eyebrow"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
+            >
               {{ module.eyebrow }}
             </p>
             {% endif %}
             {% if module.title or current_user.is_authenticated %}
-            <h2 id="{{ module.id }}-heading" data-edit-path="modules.{{ module.id }}.title">
+            <h2
+              id="{{ module.id }}-heading"
+              data-edit-path="modules.{{ module.id }}.title"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+            >
               {{ module.title }}
             </h2>
             {% endif %}
             {% if module.intro or current_user.is_authenticated %}
-            <p class="module__intro" data-edit-path="modules.{{ module.id }}.intro">
+            <p
+              class="module__intro"
+              data-edit-path="modules.{{ module.id }}.intro"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.intro') }}"
+            >
               {{ module.intro }}
             </p>
             {% endif %}
@@ -262,12 +303,20 @@
             >
               <header class="editorial-card__header">
                 {% if card.eyebrow or current_user.is_authenticated %}
-                <p class="editorial-card__eyebrow" data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.eyebrow">
+                <p
+                  class="editorial-card__eyebrow"
+                  data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.eyebrow"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.eyebrow') }}"
+                >
                   {{ card.eyebrow }}
                 </p>
                 {% endif %}
                 {% if card.title or current_user.is_authenticated %}
-                <h3 id="{{ card.id }}-title" data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.title">
+                <h3
+                  id="{{ card.id }}-title"
+                  data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.title"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.title') }}"
+                >
                   {{ card.title }}
                 </h3>
                 {% endif %}
@@ -277,6 +326,7 @@
                 class="editorial-card__body"
                 data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.body.content"
                 data-edit-type="rich"
+                style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.body.content') }}"
               >
                 {{ render_body(card.body) }}
               </div>
@@ -314,6 +364,7 @@
         </div>
       </section>
       {% elif module.type == "highlight_panel" %}
+      {% if module.id != "safety-first" %}
       {% set highlight_style = {
         '--highlight-panel-bg': module.background_color,
         '--highlight-panel-text': module.text_color
@@ -333,6 +384,7 @@
               <p
                 class="module__eyebrow{% if module.id == 'safety-first' %} visually-hidden{% endif %}"
                 data-edit-path="modules.{{ module.id }}.eyebrow"
+                style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
               >
                 {{ module.eyebrow }}
               </p>
@@ -344,17 +396,26 @@
                   id="{{ module.id }}-heading"
                   class="highlight-panel__heading highlight-panel__heading--card"
                   data-edit-path="modules.{{ module.id }}.title"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
                 >
                   {{ module.title }}
                 </h3>
                 {% else %}
-                <h2 id="{{ module.id }}-heading" data-edit-path="modules.{{ module.id }}.title">
+                <h2
+                  id="{{ module.id }}-heading"
+                  data-edit-path="modules.{{ module.id }}.title"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+                >
                   {{ module.title }}
                 </h2>
                 {% endif %}
                 {% endif %}
                 {% if module.label or current_user.is_authenticated %}
-                <span class="highlight-panel__label" data-edit-path="modules.{{ module.id }}.label">
+                <span
+                  class="highlight-panel__label"
+                  data-edit-path="modules.{{ module.id }}.label"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.label') }}"
+                >
                   {{ module.label }}
                 </span>
                 {% endif %}
@@ -365,6 +426,7 @@
               class="highlight-panel__body"
               data-edit-path="modules.{{ module.id }}.body.content"
               data-edit-type="rich"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.body.content') }}"
             >
               {{ render_body(module.body) }}
             </div>
@@ -372,6 +434,7 @@
           </article>
         </div>
       </section>
+      {% endif %}
       {% elif module.type == "celebrations" %}
       <section
         id="{{ module.id }}"
@@ -381,17 +444,29 @@
         <div class="container">
           <header class="module__header module__header--center">
             {% if module.eyebrow or current_user.is_authenticated %}
-            <p class="module__eyebrow" data-edit-path="modules.{{ module.id }}.eyebrow">
+            <p
+              class="module__eyebrow"
+              data-edit-path="modules.{{ module.id }}.eyebrow"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
+            >
               {{ module.eyebrow }}
             </p>
             {% endif %}
             {% if module.title or current_user.is_authenticated %}
-            <h2 id="{{ module.id }}-heading" data-edit-path="modules.{{ module.id }}.title">
+            <h2
+              id="{{ module.id }}-heading"
+              data-edit-path="modules.{{ module.id }}.title"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+            >
               {{ module.title }}
             </h2>
             {% endif %}
             {% if module.intro or current_user.is_authenticated %}
-            <p class="module__intro" data-edit-path="modules.{{ module.id }}.intro">
+            <p
+              class="module__intro"
+              data-edit-path="modules.{{ module.id }}.intro"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.intro') }}"
+            >
               {{ module.intro }}
             </p>
             {% endif %}
@@ -403,10 +478,18 @@
               <ul class="celebrations-list">
                 {% for birthday in module.birthdays %}
                 <li>
-                  <span class="celebrations-list__primary" data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.name">
+                  <span
+                    class="celebrations-list__primary"
+                    data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.name"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.birthdays.' ~ loop.index0 ~ '.name') }}"
+                  >
                     {{ birthday.name }}
                   </span>
-                  <span class="celebrations-list__meta" data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.meta">
+                  <span
+                    class="celebrations-list__meta"
+                    data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.meta"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.birthdays.' ~ loop.index0 ~ '.meta') }}"
+                  >
                     {{ birthday.meta }}
                   </span>
                   {% if current_user.is_authenticated %}
@@ -439,10 +522,18 @@
               <ul class="celebrations-list">
                 {% for anniversary in module.anniversaries %}
                 <li>
-                  <span class="celebrations-list__primary" data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.name">
+                  <span
+                    class="celebrations-list__primary"
+                    data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.name"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.anniversaries.' ~ loop.index0 ~ '.name') }}"
+                  >
                     {{ anniversary.name }}
                   </span>
-                  <span class="celebrations-list__meta" data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.meta">
+                  <span
+                    class="celebrations-list__meta"
+                    data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.meta"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.anniversaries.' ~ loop.index0 ~ '.meta') }}"
+                  >
                     {{ anniversary.meta }}
                   </span>
                   {% if current_user.is_authenticated %}
@@ -481,12 +572,20 @@
         <div class="container">
           <header class="module__header module__header--center">
             {% if module.eyebrow or current_user.is_authenticated %}
-            <p class="module__eyebrow" data-edit-path="modules.{{ module.id }}.eyebrow">
+            <p
+              class="module__eyebrow"
+              data-edit-path="modules.{{ module.id }}.eyebrow"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
+            >
               {{ module.eyebrow }}
             </p>
             {% endif %}
             {% if module.title or current_user.is_authenticated %}
-            <h2 id="{{ module.id }}-heading" data-edit-path="modules.{{ module.id }}.title">
+            <h2
+              id="{{ module.id }}-heading"
+              data-edit-path="modules.{{ module.id }}.title"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+            >
               {{ module.title }}
             </h2>
             {% endif %}
@@ -505,7 +604,11 @@
                 Remove
               </button>
               {% endif %}
-              <p class="contributor-card__section" data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.section">
+              <p
+                class="contributor-card__section"
+                data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.section"
+                style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.people.' ~ loop.index0 ~ '.section') }}"
+              >
                 {{ person.section }}
               </p>
               <div class="contributor-card__media">
@@ -517,10 +620,18 @@
                 />
               </div>
               <div class="contributor-card__body">
-                <h3 class="contributor-card__name" data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.name">
+                <h3
+                  class="contributor-card__name"
+                  data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.name"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.people.' ~ loop.index0 ~ '.name') }}"
+                >
                   {{ person.name }}
                 </h3>
-                <p class="contributor-card__title" data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.title">
+                <p
+                  class="contributor-card__title"
+                  data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.title"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.people.' ~ loop.index0 ~ '.title') }}"
+                >
                   {{ person.title }}
                 </p>
                 {% if person.secondary %}
@@ -551,17 +662,29 @@
         <div class="container">
           <header class="module__header module__header--center">
             {% if module.eyebrow or current_user.is_authenticated %}
-            <p class="module__eyebrow" data-edit-path="modules.{{ module.id }}.eyebrow">
+            <p
+              class="module__eyebrow"
+              data-edit-path="modules.{{ module.id }}.eyebrow"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
+            >
               {{ module.eyebrow }}
             </p>
             {% endif %}
             {% if module.title or current_user.is_authenticated %}
-            <h2 id="{{ module.id }}-heading" data-edit-path="modules.{{ module.id }}.title">
+            <h2
+              id="{{ module.id }}-heading"
+              data-edit-path="modules.{{ module.id }}.title"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+            >
               {{ module.title }}
             </h2>
             {% endif %}
             {% if module.intro or current_user.is_authenticated %}
-            <p class="module__intro" data-edit-path="modules.{{ module.id }}.intro">
+            <p
+              class="module__intro"
+              data-edit-path="modules.{{ module.id }}.intro"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.intro') }}"
+            >
               {{ module.intro }}
             </p>
             {% endif %}
@@ -582,7 +705,10 @@
                   {% if link.icon %}
                   <img src="{{ url_for('static', filename=link.icon) }}" alt="" aria-hidden="true" />
                   {% endif %}
-                  <span data-edit-path="modules.{{ module.id }}.links.{{ loop.index0 }}.label">
+                  <span
+                    data-edit-path="modules.{{ module.id }}.links.{{ loop.index0 }}.label"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.links.' ~ loop.index0 ~ '.label') }}"
+                  >
                     {{ link.label }}
                   </span>
                 </a>
