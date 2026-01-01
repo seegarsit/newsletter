@@ -357,6 +357,14 @@ ul li::before {
   position: relative;
 }
 
+.editorial-card--stack {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "header"
+    "body"
+    "actions";
+}
+
 .editorial-card--rail {
   grid-template-columns: 76px minmax(0, 1fr);
   grid-template-areas:
@@ -480,6 +488,10 @@ ul li::before {
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
   gap: 2rem;
   align-items: start;
+}
+
+.highlight-panel--stack {
+  grid-template-columns: 1fr;
 }
 
 .highlight-panel--rail {
