@@ -523,15 +523,6 @@ ul li::before {
   color: var(--highlight-panel-text, var(--highlight-text));
 }
 
-#safety-first.module {
-  padding-top: 1.8rem;
-}
-
-.highlight-panel__heading--card {
-  font-size: 1.17em;
-  margin-bottom: 0.75rem;
-}
-
 .highlight-panel__label {
   display: inline-flex;
   align-items: center;

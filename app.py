@@ -83,6 +83,8 @@ THEME_TOKENS = {
     "highlight": "--highlight",
     "highlight_text": "--highlight-text",
 }
+COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
 
 
 def _default_theme() -> dict[str, str]:
@@ -216,6 +218,48 @@ def _text_length(body: dict[str, Any]) -> int:
     return len(content.strip())
 
 
+def _sanitize_text_styles(styles: dict[str, Any] | None) -> dict[str, dict[str, str]]:
+    """Sanitize inline text styles stored by the inline editor."""
+
+    if not isinstance(styles, dict):
+        return {}
+
+    cleaned: dict[str, dict[str, str]] = {}
+    for key, value in styles.items():
+        if not isinstance(key, str) or not isinstance(value, dict):
+            continue
+        entry: dict[str, str] = {}
+        color = str(value.get("color", "")).strip()
+        if COLOR_PATTERN.match(color):
+            entry["color"] = color
+        font_size = str(value.get("font_size", "")).strip()
+        if FONT_SIZE_PATTERN.match(font_size):
+            entry["font_size"] = font_size
+        if entry:
+            cleaned[key] = entry
+    return cleaned
+
+
+def _inline_text_style(styles: dict[str, Any] | None, path: str) -> str:
+    """Build inline styles for a specific editable text path."""
+
+    if not styles or not isinstance(styles, dict) or not path:
+        return ""
+
+    value = styles.get(path)
+    if not isinstance(value, dict):
+        return ""
+
+    segments = []
+    color = str(value.get("color", "")).strip()
+    if COLOR_PATTERN.match(color):
+        segments.append(f"color: {color}")
+    font_size = str(value.get("font_size", "")).strip()
+    if FONT_SIZE_PATTERN.match(font_size):
+        segments.append(f"font-size: {font_size}")
+    return "; ".join(segments)
+
+
 def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
     """Convert file-based issue JSON to the database schema."""
 
@@ -225,6 +269,7 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
         "image": issue["hero"]["image"],
         "cta": {"label": "", "url": ""},
         "theme": _default_theme(),
+        "text_styles": {},
     }
 
     modules: list[dict[str, Any]] = []
@@ -403,6 +448,7 @@ def inject_helpers() -> dict[str, Any]:
         "style_vars": _style_vars,
         "default_theme": _default_theme,
         "sort_editorial_cards": _sort_editorial_cards,
+        "inline_text_style": _inline_text_style,
     }
 
 
@@ -522,6 +568,7 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
 
     hero = payload.get("hero", {})
     hero_theme = hero.get("theme", {})
+    hero_text_styles = _sanitize_text_styles(hero.get("text_styles"))
     cleaned = {
         "issue_month": payload.get("issue_month", ""),
         "hero": {
@@ -530,6 +577,7 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
             "image": hero.get("image", ""),
             "cta": hero.get("cta", {"label": "", "url": ""}),
             "theme": hero_theme,
+            "text_styles": hero_text_styles,
         },
         "modules": [],
     }

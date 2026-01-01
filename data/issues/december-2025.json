@@ -57,15 +57,6 @@
       ]
     },
     {
-      "type": "highlight_panel",
-      "enabled": true,
-      "id": "safety-first",
-      "eyebrow": "Safety First",
-      "title": "Safety First",
-      "label": "",
-      "body_html": ""
-    },
-    {
       "type": "celebrations",
       "enabled": true,
       "id": "celebrations",
