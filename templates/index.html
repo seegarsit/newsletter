@@ -7,12 +7,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
   </head>
   <body {% if issue %}style="{{ theme_style(issue.hero.get('theme', {})) }}"{% endif %}>
+    {% if admin_mode and current_user.is_authenticated %}
+    <div class="admin-toolbar">
+      <div class="admin-toolbar__content">
+        <span>Admin edit mode</span>
+        {% if issue %}
+        <a href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#editor-hero">Edit hero</a>
+        <a href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#editor-theme">Edit theme</a>
+        <a href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#editor-modules">Edit modules</a>
+        {% endif %}
+        <a href="{{ url_for('admin_issues') }}">Issues</a>
+        <a href="{{ url_for('admin_logout') }}">Log out</a>
+      </div>
+    </div>
+    {% endif %}
     <header class="top-bar">
       <div class="container top-bar__content">
         <a class="logo" href="https://www.seegarsfence.com/">
@@ -89,8 +103,8 @@
       >
         <div class="hero__overlay" aria-hidden="true"></div>
         <div class="container hero__content">
-          <p class="hero__issue">{{ issue.issue_month }}</p>
           <h1 id="hero-heading" class="hero__title">{{ issue.hero.title }}</h1>
+          <p class="hero__issue">{{ issue.issue_month }}</p>
           {% if issue.hero.subtitle %}
           {% set hero_lines = issue.hero.subtitle.split('\n') %}
           <p class="hero__tagline">
@@ -146,6 +160,9 @@
               id="{{ card.id }}"
               aria-labelledby="{{ card.id }}-title"
             >
+              {% if admin_mode and current_user.is_authenticated %}
+              <a class="admin-edit-link" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#module-editor-{{ loop.index0 }}">Edit</a>
+              {% endif %}
               <header class="editorial-card__header">
                 <p class="editorial-card__eyebrow">{{ card.eyebrow }}</p>
                 <h3 id="{{ card.id }}-title">{{ card.title }}</h3>
@@ -175,6 +192,9 @@
       >
         <div class="container">
           <article class="highlight-panel" style="{{ style_vars(highlight_style) }}">
+            {% if admin_mode and current_user.is_authenticated %}
+            <a class="admin-edit-link" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#module-editor-{{ loop.index0 }}">Edit</a>
+            {% endif %}
             <header class="module__header module__header--tight">
               <p class="module__eyebrow">{{ module.eyebrow }}</p>
               <div class="highlight-panel__title">
@@ -201,6 +221,9 @@
             <p class="module__intro">{{ module.intro }}</p>
           </header>
           <div class="celebrations-grid">
+            {% if admin_mode and current_user.is_authenticated %}
+            <a class="admin-edit-link admin-edit-link--block" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#module-editor-{{ loop.index0 }}">Edit celebrations</a>
+            {% endif %}
             <article class="celebration-card" aria-labelledby="birthdays-heading">
               <h3 id="birthdays-heading">Birthdays</h3>
               <ul class="celebrations-list">
@@ -238,6 +261,9 @@
             <h2 id="{{ module.id }}-heading">{{ module.title }}</h2>
           </header>
           <div class="contributors-grid">
+            {% if admin_mode and current_user.is_authenticated %}
+            <a class="admin-edit-link admin-edit-link--block" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#module-editor-{{ loop.index0 }}">Edit contributors</a>
+            {% endif %}
             {% for person in module.people %}
             <article class="contributor-card">
               <p class="contributor-card__section">{{ person.section }}</p>
@@ -245,8 +271,8 @@
                 <img src="{{ url_for('static', filename=person.image) }}" alt="Portrait of {{ person.name }}" />
               </div>
               <div class="contributor-card__body">
-                <h3>{{ person.name }}</h3>
-                <p>{{ person.title }}</p>
+                <h3 class="contributor-card__name">{{ person.name }}</h3>
+                <p class="contributor-card__title">{{ person.title }}</p>
                 {% if person.secondary %}
                 <p class="contributor-card__meta">{{ person.secondary }}</p>
                 {% endif %}
@@ -268,9 +294,13 @@
             <h2 id="{{ module.id }}-heading">{{ module.title }}</h2>
             <p class="module__intro">{{ module.intro }}</p>
           </header>
+          {% if admin_mode and current_user.is_authenticated %}
+          <a class="admin-edit-link admin-edit-link--block" href="{{ url_for('admin_editor', issue_slug=issue.slug) }}#module-editor-{{ loop.index0 }}">Edit resources</a>
+          {% endif %}
           {% for group in module.groups %}
-          <div class="resource-group">
-            {% if group.title %}
+          {% set show_resource_title = group.title and group.title|lower not in ['quick links', 'quick links for the team'] %}
+          <div class="resource-group{% if not show_resource_title %} resource-group--no-title{% endif %}">
+            {% if show_resource_title %}
             <h3 class="resource-group__title">{{ group.title }}</h3>
             {% endif %}
             <div class="resource-buttons">

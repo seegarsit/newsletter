@@ -85,16 +85,16 @@ def _default_theme() -> dict[str, str]:
     """Return the default site theme colors."""
 
     return {
-        "ink": "#1c1b18",
-        "ink_muted": "#5a5955",
-        "ink_soft": "#7c7a74",
-        "accent": "#a5463a",
-        "accent_strong": "#8b352a",
-        "surface": "#f6f0ea",
-        "surface_alt": "#efe7de",
+        "ink": "#22577A",
+        "ink_muted": "#2C6A8C",
+        "ink_soft": "#3A7A96",
+        "accent": "#38A3A5",
+        "accent_strong": "#22577A",
+        "surface": "#C7F9CC",
+        "surface_alt": "#80ED99",
         "card": "#ffffff",
-        "highlight": "#12314f",
-        "highlight_text": "#fefcfb",
+        "highlight": "#57CC99",
+        "highlight_text": "#22577A",
     }
 
 
@@ -481,7 +481,7 @@ def admin_login() -> str | Response:
     """Authenticate an admin user."""
 
     if current_user.is_authenticated:
-        return redirect(url_for("admin_issues"))
+        return redirect(url_for("admin_live"))
 
     if request.method == "POST":
         email = request.form.get("email", "")
@@ -490,7 +490,7 @@ def admin_login() -> str | Response:
         user = AdminUser.query.filter_by(email=email).first()
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect(url_for("admin_issues"))
+            return redirect(url_for("admin_live"))
 
         env_email = app.config.get("ADMIN_EMAIL")
         env_password = app.config.get("ADMIN_PASSWORD")
@@ -503,7 +503,7 @@ def admin_login() -> str | Response:
                 db.session.add(user)
                 db.session.commit()
                 login_user(user)
-                return redirect(url_for("admin_issues"))
+                return redirect(url_for("admin_live"))
 
         flash("Invalid credentials.", "error")
 
@@ -526,6 +526,15 @@ def admin_issues() -> str:
 
     issues = Issue.query.order_by(Issue.created_at.desc()).all()
     return render_template("admin/issues.html", issues=issues)
+
+
+@app.route("/admin/live")
+@login_required
+def admin_live() -> str:
+    """Render the live site view with editing controls."""
+
+    issue = Issue.query.filter_by(is_active=True).first() or Issue.query.first()
+    return render_template("index.html", issue=issue, admin_mode=True)
 
 
 def _issue_from_form(form: dict[str, str]) -> dict[str, Any]:

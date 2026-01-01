@@ -17,7 +17,7 @@
       <input type="text" name="issue_month" value="{{ issue.issue_month }}" required />
     </label>
 
-    <div class="section">
+    <div class="section" id="editor-hero">
       <h3>Hero module</h3>
       <div class="grid-two">
         <label class="field">
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="editor-theme">
       <h3>Site theme</h3>
       <p class="muted">Update these colors to change the overall newsletter palette.</p>
       <div class="grid-two">
@@ -100,12 +100,12 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="section" id="editor-modules">
       <h3>Modules</h3>
       <input type="hidden" name="module-count" value="{{ issue.modules | length }}" />
       <div class="module-list" data-module-list>
         {% for module in issue.modules %}
-        <div class="module-card" data-module data-module-index="{{ loop.index0 }}">
+        <div class="module-card" data-module data-module-index="{{ loop.index0 }}" id="module-editor-{{ loop.index0 }}">
           <div class="module-card__header">
             <div>
               <h4>{{ module.type.replace('_', ' ') | title }}</h4>
