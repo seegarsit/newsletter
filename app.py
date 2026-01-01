@@ -30,6 +30,8 @@ app.config["ADMIN_EMAIL"] = os.environ.get(
 app.config["ADMIN_PASSWORD"] = os.environ.get(
     "ADMIN_PASSWORD", "1C0ntr0lTh1sS1te!"
 )
+app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME", "SEEGARS")
+app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD", "Sfc1949!")
 database_url = os.environ.get("DATABASE_URL")
 if database_url:
     if database_url.startswith("postgres://"):
@@ -438,6 +440,29 @@ def inject_helpers() -> dict[str, Any]:
         "default_theme": _default_theme,
         "sort_editorial_cards": _sort_editorial_cards,
     }
+
+
+@app.before_request
+def require_site_auth() -> Response | None:
+    """Require basic auth credentials to access the site."""
+
+    if request.endpoint == "static":
+        return None
+
+    username = app.config.get("SITE_USERNAME")
+    password = app.config.get("SITE_PASSWORD")
+    if not username or not password:
+        return None
+
+    auth = request.authorization
+    if auth and auth.username == username and auth.password == password:
+        return None
+
+    return Response(
+        "Authentication required.",
+        401,
+        {"WWW-Authenticate": 'Basic realm="Seegars Fence Newsletter"'},
+    )
 
 
 @app.route("/")

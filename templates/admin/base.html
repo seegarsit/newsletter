@@ -7,20 +7,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}" />
   </head>
   <body>
-    <header class="admin-header">
-      <div class="admin-header__content">
-        <div>
-          <h1>Modular Editorial Dashboard</h1>
-          <p>Internal Newsletter Administration</p>
-        </div>
+    <header class="top-bar">
+      <div class="container top-bar__content">
+        <a class="logo" href="https://www.seegarsfence.com/">
+          <img
+            src="{{ url_for('static', filename='images/logo_nav.png') }}"
+            alt="Seegars Fence Company logo"
+          />
+        </a>
         {% if current_user.is_authenticated %}
-        <nav class="admin-nav">
+        <nav class="primary-nav" aria-label="Admin navigation">
           <a href="{{ url_for('admin_issues') }}">Issues</a>
           <a href="{{ url_for('index') }}" target="_blank" rel="noreferrer">View site</a>
           <a href="{{ url_for('admin_logout') }}">Log out</a>
@@ -28,9 +31,19 @@
         {% endif %}
       </div>
     </header>
+    <section class="admin-hero">
+      <div class="container admin-hero__content">
+        <p class="admin-hero__eyebrow">Editorial Administration</p>
+        <h1>{{ title or 'Editorial Admin' }}</h1>
+        <p class="admin-hero__lede">
+          Manage every detail of the Fence Line Newsletter from the same design
+          language your readers see.
+        </p>
+      </div>
+    </section>
 
     <main class="admin-main">
-      <div class="admin-container">
+      <div class="container admin-main__content">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="flash-stack">
