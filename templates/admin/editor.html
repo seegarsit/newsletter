@@ -293,20 +293,14 @@
                   <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-name" value="{{ item.name }}" />
                 </label>
                 <label class="field">
-                  <span>Date</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-date" value="{{ item.date }}" />
+                  <span>Line one</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-line_one" value="{{ item.line_one }}" />
                 </label>
               </div>
-              <div class="grid-two">
-                <label class="field">
-                  <span>Weekday</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-weekday" value="{{ item.weekday }}" />
-                </label>
-                <label class="field">
-                  <span>Office</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-office" value="{{ item.office }}" />
-                </label>
-              </div>
+              <label class="field">
+                <span>Line two</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-birthday-{{ loop.index0 }}-line_two" value="{{ item.line_two }}" />
+              </label>
             </div>
             {% endfor %}
           </div>
@@ -328,13 +322,13 @@
                   <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-name" value="{{ item.name }}" />
                 </label>
                 <label class="field">
-                  <span>Tenure</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-tenure" value="{{ item.tenure }}" />
+                  <span>Line one</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-line_one" value="{{ item.line_one }}" />
                 </label>
               </div>
               <label class="field">
-                <span>Office</span>
-                <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-office" value="{{ item.office }}" />
+                <span>Line two</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-anniversary-{{ loop.index0 }}-line_two" value="{{ item.line_two }}" />
               </label>
             </div>
             {% endfor %}
@@ -385,54 +379,35 @@
             <span>Intro text</span>
             <input type="text" name="module-{{ loop.index0 }}-intro" value="{{ module.intro }}" />
           </label>
-          <input type="hidden" name="module-{{ loop.index0 }}-groups-count" value="{{ module.groups | length }}" />
-          <div class="sub-list" data-group-list>
-            {% for group in module.groups %}
-            <div class="sub-card" data-group data-group-index="{{ loop.index0 }}">
+          <input type="hidden" name="module-{{ loop.index0 }}-links-count" value="{{ module.links | default([]) | length }}" />
+          <div class="sub-list" data-resource-link-list>
+            {% for link in module.links | default([]) %}
+            <div class="sub-card sub-card--tight" data-resource-link data-resource-link-index="{{ loop.index0 }}">
               <div class="sub-card__header">
-                <h5>{{ group.title or 'Resource group' }}</h5>
+                <h6>{{ link.label or 'Resource link' }}</h6>
                 <label class="checkbox">
-                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-remove" />
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-links-{{ loop.index0 }}-remove" />
                   <span>Remove</span>
                 </label>
               </div>
-              <label class="field">
-                <span>Group title</span>
-                <input type="text" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-title" value="{{ group.title }}" />
-              </label>
-              <input type="hidden" name="module-{{ loop.prevloop.index0 }}-group-{{ loop.index0 }}-links-count" value="{{ group.links | length }}" />
-              <div class="sub-list" data-link-list>
-                {% for link in group.links %}
-                <div class="sub-card sub-card--tight" data-link data-link-index="{{ loop.index0 }}">
-                  <div class="sub-card__header">
-                    <h6>{{ link.label or 'Resource link' }}</h6>
-                    <label class="checkbox">
-                      <input type="checkbox" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-remove" />
-                      <span>Remove</span>
-                    </label>
-                  </div>
-                  <div class="grid-two">
-                    <label class="field">
-                      <span>Label</span>
-                      <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-label" value="{{ link.label }}" />
-                    </label>
-                    <label class="field">
-                      <span>URL</span>
-                      <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-url" value="{{ link.url }}" />
-                    </label>
-                  </div>
-                  <label class="field">
-                    <span>Icon path (optional)</span>
-                    <input type="text" name="module-{{ loop.prevloop.prevloop.index0 }}-group-{{ loop.prevloop.index0 }}-link-{{ loop.index0 }}-icon" value="{{ link.icon }}" />
-                  </label>
-                </div>
-                {% endfor %}
+              <div class="grid-two">
+                <label class="field">
+                  <span>Label</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-links-{{ loop.index0 }}-label" value="{{ link.label }}" />
+                </label>
+                <label class="field">
+                  <span>URL</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-links-{{ loop.index0 }}-url" value="{{ link.url }}" />
+                </label>
               </div>
-              <button class="button button--ghost" type="button" data-add-link>Add link</button>
+              <label class="field">
+                <span>Icon path (optional)</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-links-{{ loop.index0 }}-icon" value="{{ link.icon }}" />
+              </label>
             </div>
             {% endfor %}
           </div>
-          <button class="button button--ghost" type="button" data-add-group>Add group</button>
+          <button class="button button--ghost" type="button" data-add-resource-link>Add link</button>
           {% endif %}
         </div>
         {% endfor %}
@@ -532,20 +507,14 @@
         <input type="text" name="module-__module__-birthday-__index__-name" />
       </label>
       <label class="field">
-        <span>Date</span>
-        <input type="text" name="module-__module__-birthday-__index__-date" />
+        <span>Line one</span>
+        <input type="text" name="module-__module__-birthday-__index__-line_one" />
       </label>
     </div>
-    <div class="grid-two">
-      <label class="field">
-        <span>Weekday</span>
-        <input type="text" name="module-__module__-birthday-__index__-weekday" />
-      </label>
-      <label class="field">
-        <span>Office</span>
-        <input type="text" name="module-__module__-birthday-__index__-office" />
-      </label>
-    </div>
+    <label class="field">
+      <span>Line two</span>
+      <input type="text" name="module-__module__-birthday-__index__-line_two" />
+    </label>
   </div>
 </template>
 
@@ -564,13 +533,13 @@
         <input type="text" name="module-__module__-anniversary-__index__-name" />
       </label>
       <label class="field">
-        <span>Tenure</span>
-        <input type="text" name="module-__module__-anniversary-__index__-tenure" />
+        <span>Line one</span>
+        <input type="text" name="module-__module__-anniversary-__index__-line_one" />
       </label>
     </div>
     <label class="field">
-      <span>Office</span>
-      <input type="text" name="module-__module__-anniversary-__index__-office" />
+      <span>Line two</span>
+      <input type="text" name="module-__module__-anniversary-__index__-line_two" />
     </label>
   </div>
 </template>
@@ -611,47 +580,28 @@
   </div>
 </template>
 
-<template id="group-template">
-  <div class="sub-card" data-group data-group-index="__index__">
-    <div class="sub-card__header">
-      <h5>Resource group</h5>
-      <label class="checkbox">
-        <input type="checkbox" name="module-__module__-group-__index__-remove" />
-        <span>Remove</span>
-      </label>
-    </div>
-    <label class="field">
-      <span>Group title</span>
-      <input type="text" name="module-__module__-group-__index__-title" />
-    </label>
-    <input type="hidden" name="module-__module__-group-__index__-links-count" value="0" />
-    <div class="sub-list" data-link-list></div>
-    <button class="button button--ghost" type="button" data-add-link>Add link</button>
-  </div>
-</template>
-
-<template id="link-template">
-  <div class="sub-card sub-card--tight" data-link data-link-index="__index__">
+<template id="resource-link-template">
+  <div class="sub-card sub-card--tight" data-resource-link data-resource-link-index="__index__">
     <div class="sub-card__header">
       <h6>Resource link</h6>
       <label class="checkbox">
-        <input type="checkbox" name="module-__module__-group-__group__-link-__index__-remove" />
+        <input type="checkbox" name="module-__module__-links-__index__-remove" />
         <span>Remove</span>
       </label>
     </div>
     <div class="grid-two">
       <label class="field">
         <span>Label</span>
-        <input type="text" name="module-__module__-group-__group__-link-__index__-label" />
+        <input type="text" name="module-__module__-links-__index__-label" />
       </label>
       <label class="field">
         <span>URL</span>
-        <input type="text" name="module-__module__-group-__group__-link-__index__-url" />
+        <input type="text" name="module-__module__-links-__index__-url" />
       </label>
     </div>
     <label class="field">
       <span>Icon path (optional)</span>
-      <input type="text" name="module-__module__-group-__group__-link-__index__-icon" />
+      <input type="text" name="module-__module__-links-__index__-icon" />
     </label>
   </div>
 </template>

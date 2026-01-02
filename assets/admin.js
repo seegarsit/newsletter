@@ -81,43 +81,19 @@
     });
   });
 
-  document.querySelectorAll('[data-add-group]').forEach((button) => {
+  document.querySelectorAll('[data-add-resource-link]').forEach((button) => {
     button.addEventListener('click', () => {
       const module = button.closest('[data-module]');
       const moduleIndex = module.dataset.moduleIndex;
-      const list = module.querySelector('[data-group-list]');
-      const template = document.getElementById('group-template');
-      const index = list.querySelectorAll('[data-group]').length;
+      const list = module.querySelector('[data-resource-link-list]');
+      const template = document.getElementById('resource-link-template');
+      const index = list.querySelectorAll('[data-resource-link]').length;
       const html = replaceTokens(template.innerHTML, {
         '__module__': moduleIndex,
         '__index__': index,
       });
       list.insertAdjacentHTML('beforeend', html);
-      updateCount(module, '[data-group]', `module-${moduleIndex}-groups-count`);
+      updateCount(module, '[data-resource-link]', `module-${moduleIndex}-links-count`);
     });
-  });
-
-  document.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-add-link]');
-    if (!button) return;
-
-    const module = button.closest('[data-module]');
-    const moduleIndex = module.dataset.moduleIndex;
-    const group = button.closest('[data-group]');
-    const groupIndex = group.dataset.groupIndex;
-    const list = group.querySelector('[data-link-list]');
-    const template = document.getElementById('link-template');
-    const index = list.querySelectorAll('[data-link]').length;
-    const html = replaceTokens(template.innerHTML, {
-      '__module__': moduleIndex,
-      '__group__': groupIndex,
-      '__index__': index,
-    });
-    list.insertAdjacentHTML('beforeend', html);
-    updateCount(
-      group,
-      '[data-link]',
-      `module-${moduleIndex}-group-${groupIndex}-links-count`
-    );
   });
 })();

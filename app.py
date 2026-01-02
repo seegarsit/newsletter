@@ -54,6 +54,7 @@ db = SQLAlchemy(app)
 ALLOWED_TAGS = [
     "p",
     "strong",
+    "b",
     "em",
     "a",
     "ul",
@@ -86,6 +87,7 @@ THEME_TOKENS = {
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
 STYLE_COLOR_KEYS = ("background_color", "text_color")
+META_SEPARATOR = " · "
 
 
 def _default_theme() -> dict[str, str]:
@@ -197,6 +199,85 @@ def _sanitize_html(content: str) -> str:
         protocols=ALLOWED_PROTOCOLS,
         strip=True,
     )
+
+
+def _split_meta(meta: str) -> list[str]:
+    """Split a meta string into trimmed parts."""
+
+    if not meta:
+        return []
+    return [part.strip() for part in meta.split("·") if part.strip()]
+
+
+def _join_meta(parts: list[str]) -> str:
+    """Join meta parts into a standardized string."""
+
+    return META_SEPARATOR.join([part for part in parts if part])
+
+
+def _normalize_birthday(entry: dict[str, Any]) -> dict[str, str]:
+    """Normalize birthday payload to two display lines."""
+
+    name = str(entry.get("name", "")).strip()
+    line_one = str(entry.get("line_one", "")).strip()
+    line_two = str(entry.get("line_two", "")).strip()
+
+    if not line_one and not line_two:
+        date = str(entry.get("date", "")).strip()
+        weekday = str(entry.get("weekday", "")).strip()
+        office = str(entry.get("office", "")).strip()
+        line_one = _join_meta([date, weekday])
+        line_two = office
+
+    if not line_one and not line_two:
+        parts = _split_meta(str(entry.get("meta", "")).strip())
+        if parts:
+            line_one = _join_meta(parts[:2])
+            if len(parts) > 2:
+                line_two = _join_meta(parts[2:])
+
+    return {
+        "name": name,
+        "line_one": line_one,
+        "line_two": line_two,
+    }
+
+
+def _normalize_anniversary(entry: dict[str, Any]) -> dict[str, str]:
+    """Normalize anniversary payload to two display lines."""
+
+    name = str(entry.get("name", "")).strip()
+    line_one = str(entry.get("line_one", "")).strip()
+    line_two = str(entry.get("line_two", "")).strip()
+
+    if not line_one and not line_two:
+        tenure = str(entry.get("tenure", "")).strip()
+        office = str(entry.get("office", "")).strip()
+        line_one = tenure
+        line_two = office
+
+    if not line_one and not line_two:
+        parts = _split_meta(str(entry.get("meta", "")).strip())
+        if parts:
+            line_one = parts[0]
+            if len(parts) > 1:
+                line_two = _join_meta(parts[1:])
+
+    return {
+        "name": name,
+        "line_one": line_one,
+        "line_two": line_two,
+    }
+
+
+def _celebration_lines(entry: dict[str, Any], kind: str) -> tuple[str, str]:
+    """Return celebration line one/two for templates."""
+
+    if kind == "birthday":
+        normalized = _normalize_birthday(entry)
+    else:
+        normalized = _normalize_anniversary(entry)
+    return normalized.get("line_one", ""), normalized.get("line_two", "")
 
 
 def _render_body(body: dict[str, Any]) -> Markup:
@@ -372,33 +453,10 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
         elif module["type"] == "celebrations":
             birthdays = []
             for birthday in module["birthdays"]:
-                if "meta" in birthday:
-                    birthdays.append(birthday)
-                else:
-                    meta_parts = [
-                        birthday.get("date", ""),
-                        birthday.get("weekday", ""),
-                        birthday.get("office", ""),
-                    ]
-                    meta = " · ".join(
-                        [part for part in meta_parts if part]
-                    )
-                    birthdays.append({"name": birthday.get("name", ""), "meta": meta})
+                birthdays.append(_normalize_birthday(birthday))
             anniversaries = []
             for anniversary in module["anniversaries"]:
-                if "meta" in anniversary:
-                    anniversaries.append(anniversary)
-                else:
-                    meta_parts = [
-                        anniversary.get("tenure", ""),
-                        anniversary.get("office", ""),
-                    ]
-                    meta = " · ".join(
-                        [part for part in meta_parts if part]
-                    )
-                    anniversaries.append(
-                        {"name": anniversary.get("name", ""), "meta": meta}
-                    )
+                anniversaries.append(_normalize_anniversary(anniversary))
             modules.append(
                 {
                     "type": "celebrations",
@@ -492,6 +550,7 @@ def inject_helpers() -> dict[str, Any]:
         "sort_editorial_cards": _sort_editorial_cards,
         "inline_text_style": _inline_text_style,
         "inline_element_style": _inline_element_style,
+        "celebration_lines": _celebration_lines,
     }
 
 
@@ -663,14 +722,27 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
             base["body"] = _sanitize_body(module.get("body"))
         elif module_type == "celebrations":
             base["intro"] = module.get("intro", "")
-            base["birthdays"] = module.get("birthdays", [])
-            base["anniversaries"] = module.get("anniversaries", [])
+            base["birthdays"] = [
+                _normalize_birthday(item)
+                for item in module.get("birthdays", [])
+                if isinstance(item, dict)
+            ]
+            base["anniversaries"] = [
+                _normalize_anniversary(item)
+                for item in module.get("anniversaries", [])
+                if isinstance(item, dict)
+            ]
         elif module_type == "contributors":
             base["people"] = module.get("people", [])
         elif module_type == "resource_hub":
             base["id"] = module.get("id", "resource_hub")
             base["intro"] = module.get("intro", "")
-            base["links"] = module.get("links", [])
+            links = module.get("links")
+            if links is None:
+                links = []
+                for group in module.get("groups", []):
+                    links.extend(group.get("links", []))
+            base["links"] = links
         else:
             continue
 

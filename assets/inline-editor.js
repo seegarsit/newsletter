@@ -408,19 +408,60 @@
     const anniversariesList = document.querySelector('#anniversaries-heading')?.parentElement?.querySelector('.celebrations-list');
     if (!birthdaysList || !anniversariesList) return;
 
+    const normalizeBirthday = (item) => {
+      if (item.line_one || item.line_two) {
+        return { lineOne: item.line_one || '', lineTwo: item.line_two || '' };
+      }
+      if (item.date || item.weekday || item.office) {
+        const lineOne = [item.date, item.weekday].filter(Boolean).join(' · ');
+        return { lineOne, lineTwo: item.office || '' };
+      }
+      if (item.meta) {
+        const parts = item.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        const lineOne = parts.slice(0, 2).join(' · ');
+        const lineTwo = parts.slice(2).join(' · ');
+        return { lineOne, lineTwo };
+      }
+      return { lineOne: '', lineTwo: '' };
+    };
+
+    const normalizeAnniversary = (item) => {
+      if (item.line_one || item.line_two) {
+        return { lineOne: item.line_one || '', lineTwo: item.line_two || '' };
+      }
+      if (item.tenure || item.office) {
+        return { lineOne: item.tenure || '', lineTwo: item.office || '' };
+      }
+      if (item.meta) {
+        const parts = item.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        const lineOne = parts[0] || '';
+        const lineTwo = parts.slice(1).join(' · ');
+        return { lineOne, lineTwo };
+      }
+      return { lineOne: '', lineTwo: '' };
+    };
+
     birthdaysList.innerHTML = '';
     module.birthdays.forEach((birthday, index) => {
+      const lines = normalizeBirthday(birthday);
       const li = document.createElement('li');
       const name = document.createElement('span');
       name.className = 'celebrations-list__primary';
       name.dataset.editPath = `modules.${module.id}.birthdays.${index}.name`;
       name.textContent = birthday.name || '';
-      const meta = document.createElement('span');
-      meta.className = 'celebrations-list__meta';
-      meta.dataset.editPath = `modules.${module.id}.birthdays.${index}.meta`;
-      meta.textContent = birthday.meta || '';
+      const lineOne = document.createElement('span');
+      lineOne.className = 'celebrations-list__meta';
+      lineOne.dataset.editPath = `modules.${module.id}.birthdays.${index}.line_one`;
+      lineOne.textContent = lines.lineOne || '';
+      const lineTwo = document.createElement('span');
+      lineTwo.className = 'celebrations-list__meta';
+      lineTwo.dataset.editPath = `modules.${module.id}.birthdays.${index}.line_two`;
+      lineTwo.textContent = lines.lineTwo || '';
       li.appendChild(name);
-      li.appendChild(meta);
+      li.appendChild(lineOne);
+      if (lines.lineTwo || editMode) {
+        li.appendChild(lineTwo);
+      }
       if (editMode) {
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
@@ -435,17 +476,25 @@
 
     anniversariesList.innerHTML = '';
     module.anniversaries.forEach((anniversary, index) => {
+      const lines = normalizeAnniversary(anniversary);
       const li = document.createElement('li');
       const name = document.createElement('span');
       name.className = 'celebrations-list__primary';
       name.dataset.editPath = `modules.${module.id}.anniversaries.${index}.name`;
       name.textContent = anniversary.name || '';
-      const meta = document.createElement('span');
-      meta.className = 'celebrations-list__meta';
-      meta.dataset.editPath = `modules.${module.id}.anniversaries.${index}.meta`;
-      meta.textContent = anniversary.meta || '';
+      const lineOne = document.createElement('span');
+      lineOne.className = 'celebrations-list__meta';
+      lineOne.dataset.editPath = `modules.${module.id}.anniversaries.${index}.line_one`;
+      lineOne.textContent = lines.lineOne || '';
+      const lineTwo = document.createElement('span');
+      lineTwo.className = 'celebrations-list__meta';
+      lineTwo.dataset.editPath = `modules.${module.id}.anniversaries.${index}.line_two`;
+      lineTwo.textContent = lines.lineTwo || '';
       li.appendChild(name);
-      li.appendChild(meta);
+      li.appendChild(lineOne);
+      if (lines.lineTwo || editMode) {
+        li.appendChild(lineTwo);
+      }
       if (editMode) {
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
@@ -559,7 +608,51 @@
     });
   }
 
+  function normalizeCelebrationsData(data) {
+    const celebrations = findModule(data, 'celebrations');
+    if (!celebrations) return;
+    celebrations.birthdays = (celebrations.birthdays || []).map((birthday) => {
+      if (birthday.line_one || birthday.line_two) return birthday;
+      if (birthday.date || birthday.weekday || birthday.office) {
+        return {
+          ...birthday,
+          line_one: [birthday.date, birthday.weekday].filter(Boolean).join(' · '),
+          line_two: birthday.office || '',
+        };
+      }
+      if (birthday.meta) {
+        const parts = birthday.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        return {
+          ...birthday,
+          line_one: parts.slice(0, 2).join(' · '),
+          line_two: parts.slice(2).join(' · '),
+        };
+      }
+      return { ...birthday, line_one: '', line_two: '' };
+    });
+    celebrations.anniversaries = (celebrations.anniversaries || []).map((anniversary) => {
+      if (anniversary.line_one || anniversary.line_two) return anniversary;
+      if (anniversary.tenure || anniversary.office) {
+        return {
+          ...anniversary,
+          line_one: anniversary.tenure || '',
+          line_two: anniversary.office || '',
+        };
+      }
+      if (anniversary.meta) {
+        const parts = anniversary.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        return {
+          ...anniversary,
+          line_one: parts[0] || '',
+          line_two: parts.slice(1).join(' · '),
+        };
+      }
+      return { ...anniversary, line_one: '', line_two: '' };
+    });
+  }
+
   function renderAll(data) {
+    normalizeCelebrationsData(data);
     renderHero(data);
     const editorial = findModule(data, 'editorial');
     if (editorial) renderEditorial(editorial);
@@ -821,13 +914,13 @@
     if (type === 'birthday') {
       const module = findModule(draftData, 'celebrations');
       if (!module) return;
-      module.birthdays.push({ name: 'New teammate', meta: '' });
+      module.birthdays.push({ name: 'New teammate', line_one: '', line_two: '' });
       renderCelebrations(module);
     }
     if (type === 'anniversary') {
       const module = findModule(draftData, 'celebrations');
       if (!module) return;
-      module.anniversaries.push({ name: 'New teammate', meta: '' });
+      module.anniversaries.push({ name: 'New teammate', line_one: '', line_two: '' });
       renderCelebrations(module);
     }
     if (type === 'contributor') {
