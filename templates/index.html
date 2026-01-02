@@ -501,6 +501,7 @@
               {% if module.birthdays or current_user.is_authenticated %}
               <ul class="celebrations-list">
                 {% for birthday in module.birthdays %}
+                {% set birthday_lines = celebration_lines(birthday, 'birthday') %}
                 <li>
                   <span
                     class="celebrations-list__primary"
@@ -511,11 +512,20 @@
                   </span>
                   <span
                     class="celebrations-list__meta"
-                    data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.meta"
-                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.birthdays.' ~ loop.index0 ~ '.meta') }}"
+                    data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.line_one"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.birthdays.' ~ loop.index0 ~ '.line_one') }}"
                   >
-                    {{ birthday.meta }}
+                    {{ birthday_lines[0] }}
                   </span>
+                  {% if birthday_lines[1] or current_user.is_authenticated %}
+                  <span
+                    class="celebrations-list__meta"
+                    data-edit-path="modules.{{ module.id }}.birthdays.{{ loop.index0 }}.line_two"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.birthdays.' ~ loop.index0 ~ '.line_two') }}"
+                  >
+                    {{ birthday_lines[1] }}
+                  </span>
+                  {% endif %}
                   {% if current_user.is_authenticated %}
                   <button
                     type="button"
@@ -550,6 +560,7 @@
               {% if module.anniversaries or current_user.is_authenticated %}
               <ul class="celebrations-list">
                 {% for anniversary in module.anniversaries %}
+                {% set anniversary_lines = celebration_lines(anniversary, 'anniversary') %}
                 <li>
                   <span
                     class="celebrations-list__primary"
@@ -560,11 +571,20 @@
                   </span>
                   <span
                     class="celebrations-list__meta"
-                    data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.meta"
-                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.anniversaries.' ~ loop.index0 ~ '.meta') }}"
+                    data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.line_one"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.anniversaries.' ~ loop.index0 ~ '.line_one') }}"
                   >
-                    {{ anniversary.meta }}
+                    {{ anniversary_lines[0] }}
                   </span>
+                  {% if anniversary_lines[1] or current_user.is_authenticated %}
+                  <span
+                    class="celebrations-list__meta"
+                    data-edit-path="modules.{{ module.id }}.anniversaries.{{ loop.index0 }}.line_two"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.anniversaries.' ~ loop.index0 ~ '.line_two') }}"
+                  >
+                    {{ anniversary_lines[1] }}
+                  </span>
+                  {% endif %}
                   {% if current_user.is_authenticated %}
                   <button
                     type="button"
