@@ -391,9 +391,9 @@
 
   function updateEditorialOrderFromGrid(module) {
     if (!editorialGrid || !module) return;
-    const orderedIds = Array.from(editorialGrid.querySelectorAll('[data-card-id]')).map(
-      (card) => card.dataset.cardId
-    );
+    const orderedIds = Array.from(
+      editorialGrid.querySelectorAll('.editorial-card[data-card-id]')
+    ).map((card) => card.dataset.cardId);
     const cardsById = new Map(module.cards.map((card) => [card.id, card]));
     module.cards = orderedIds
       .map((id, index) => {
@@ -647,6 +647,27 @@
     element.focus();
   }
 
+  function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value;
+    return div.innerHTML;
+  }
+
+  function handlePaste(event) {
+    if (!editMode || !activeEditable) return;
+    const type = activeEditable.dataset.editType || 'text';
+    const clipboard = event.clipboardData || window.clipboardData;
+    const text = clipboard?.getData('text/plain');
+    if (!text && text !== '') return;
+    event.preventDefault();
+    if (type === 'rich') {
+      const html = escapeHtml(text).replace(/\n/g, '<br>');
+      document.execCommand('insertHTML', false, html);
+      return;
+    }
+    document.execCommand('insertText', false, text);
+  }
+
   function handleEditableBlur(element) {
     const path = element.dataset.editPath;
     const type = element.dataset.editType || 'text';
@@ -888,7 +909,7 @@
   editorialGrid?.addEventListener('dragover', (event) => {
     if (!editMode || !draggingCard) return;
     event.preventDefault();
-    const targetCard = event.target.closest('[data-card-id]');
+    const targetCard = event.target.closest('.editorial-card[data-card-id]');
     if (!targetCard || targetCard === draggingCard) return;
     const rect = targetCard.getBoundingClientRect();
     const offset = event.clientY - rect.top;
@@ -920,6 +941,8 @@
       handleEditableBlur(target);
     }
   }, true);
+
+  document.addEventListener('paste', handlePaste);
 
   richToolbar?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-rich-command]');
