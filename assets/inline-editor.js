@@ -927,13 +927,21 @@
     if (type === 'birthday') {
       const module = findModule(draftData, 'celebrations');
       if (!module) return;
-      module.birthdays.push({ name: 'New teammate', line_one: '', line_two: '' });
+      module.birthdays.push({
+        name: 'New teammate',
+        line_one: 'MM/DD',
+        line_two: 'Location',
+      });
       renderCelebrations(module);
     }
     if (type === 'anniversary') {
       const module = findModule(draftData, 'celebrations');
       if (!module) return;
-      module.anniversaries.push({ name: 'New teammate', line_one: '', line_two: '' });
+      module.anniversaries.push({
+        name: 'New teammate',
+        line_one: 'MM/DD',
+        line_two: 'Location',
+      });
       renderCelebrations(module);
     }
     if (type === 'contributor') {
@@ -995,8 +1003,11 @@
   cancelButton?.addEventListener('click', cancelChanges);
   document.addEventListener('click', (event) => {
     const addButton = event.target.closest('[data-inline-add]');
-    if (addButton && editMode) {
+    if (addButton) {
       event.preventDefault();
+      if (!editMode) {
+        toggleEditMode(true);
+      }
       handleAddAction(addButton.dataset.inlineAdd);
       return;
     }
