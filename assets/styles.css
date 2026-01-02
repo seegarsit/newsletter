@@ -348,10 +348,11 @@ ul li::before {
 .editorial-card {
   padding: 2rem;
   display: grid;
-  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "header body"
-    "header actions";
+    "header"
+    "body"
+    "actions";
   gap: 1.5rem 2rem;
   align-items: start;
   position: relative;

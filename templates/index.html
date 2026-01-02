@@ -15,10 +15,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='inline-editor.css') }}" />
     {% endif %}
   </head>
+  {% set element_styles = issue.hero.get('element_styles', {}) if issue else {} %}
   <body
     class="{% if current_user.is_authenticated %}has-admin-toolbar{% endif %}"
     data-static-base="{{ url_for('static', filename='') }}"
-    {% if issue %}style="{{ theme_style(issue.hero.get('theme', {})) }}"{% endif %}
+    {% if issue %}style="{{ theme_style(issue.hero.get('theme', {})) }}{% if inline_element_style(element_styles, 'site.background') %}; {{ inline_element_style(element_styles, 'site.background') }}{% endif %}"{% endif %}
+    {% if current_user.is_authenticated %}data-style-path="site.background"{% endif %}
   >
     {% if current_user.is_authenticated %}
     <div class="admin-toolbar" data-inline-toolbar>
@@ -33,62 +35,9 @@
         <button type="button" class="admin-toolbar__button" data-inline-cancel>
           Cancel
         </button>
-        <button type="button" class="admin-toolbar__button" data-inline-style>
-          Edit Styling
-        </button>
         <a class="admin-toolbar__link" href="{{ url_for('admin_logout') }}">
           Log out
         </a>
-      </div>
-    </div>
-    <div class="inline-style-panel" data-style-panel hidden>
-      <div class="inline-style-panel__header">
-        <h2>Edit Theme</h2>
-        <button type="button" class="inline-style-panel__close" data-style-close>
-          Close
-        </button>
-      </div>
-      <div class="inline-style-panel__grid">
-        <label>
-          Ink
-          <input type="color" data-theme-token="ink" />
-        </label>
-        <label>
-          Ink Muted
-          <input type="color" data-theme-token="ink_muted" />
-        </label>
-        <label>
-          Ink Soft
-          <input type="color" data-theme-token="ink_soft" />
-        </label>
-        <label>
-          Accent
-          <input type="color" data-theme-token="accent" />
-        </label>
-        <label>
-          Accent Strong
-          <input type="color" data-theme-token="accent_strong" />
-        </label>
-        <label>
-          Surface
-          <input type="color" data-theme-token="surface" />
-        </label>
-        <label>
-          Surface Alt
-          <input type="color" data-theme-token="surface_alt" />
-        </label>
-        <label>
-          Card
-          <input type="color" data-theme-token="card" />
-        </label>
-        <label>
-          Highlight
-          <input type="color" data-theme-token="highlight" />
-        </label>
-        <label>
-          Highlight Text
-          <input type="color" data-theme-token="highlight_text" />
-        </label>
       </div>
     </div>
     <div class="inline-rich-toolbar" data-rich-toolbar hidden>
@@ -105,8 +54,16 @@
           <button type="button" data-text-style-reset>Reset</button>
         </div>
         <label>
+          Text color
+          <input type="color" data-text-style-color />
+        </label>
+        <label data-text-size-field>
           Text size (px)
           <input type="number" min="10" max="96" step="1" data-text-style-size />
+        </label>
+        <label data-style-background-field>
+          Background color
+          <input type="color" data-style-background />
         </label>
       </div>
     <input
@@ -225,9 +182,23 @@
             {{ issue.hero.subtitle | replace('\n', '<br />') | safe }}
           </p>
           {% endif %}
-          {% if issue.hero.cta.label and issue.hero.cta.url %}
-          <a class="button button--primary" href="{{ issue.hero.cta.url }}" target="_blank" rel="noreferrer">
-            {{ issue.hero.cta.label }}
+          {% if issue.hero.cta.label and issue.hero.cta.url or current_user.is_authenticated %}
+          <a
+            class="button button--primary"
+            href="{{ issue.hero.cta.url or '#' }}"
+            target="_blank"
+            rel="noreferrer"
+            data-edit-url-path="hero.cta.url"
+            {% if current_user.is_authenticated %}data-style-path="hero.cta"{% endif %}
+            style="{{ inline_element_style(element_styles, 'hero.cta') }}"
+          >
+            <span
+              class="button__label"
+              data-edit-path="hero.cta.label"
+              style="{{ inline_text_style(text_styles, 'hero.cta.label') }}"
+            >
+              {{ issue.hero.cta.label }}
+            </span>
           </a>
           {% endif %}
         </div>
@@ -242,12 +213,35 @@
         aria-labelledby="{{ module.id }}-heading"
       >
         <div class="container">
-          <article class="featured-story">
+          <article
+            class="featured-story"
+            {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.card"{% endif %}
+            style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.card') }}"
+          >
             <header class="module__header">
-              <p class="module__eyebrow">{{ module.eyebrow }}</p>
-              <h2 id="{{ module.id }}-heading">{{ module.title }}</h2>
+              <p
+                class="module__eyebrow"
+                data-edit-path="modules.{{ module.id }}.eyebrow"
+                style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.eyebrow') }}"
+              >
+                {{ module.eyebrow }}
+              </p>
+              <h2
+                id="{{ module.id }}-heading"
+                data-edit-path="modules.{{ module.id }}.title"
+                style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.title') }}"
+              >
+                {{ module.title }}
+              </h2>
             </header>
-            <div class="featured-story__body">{{ render_body(module.body) }}</div>
+            <div
+              class="featured-story__body"
+              data-edit-path="modules.{{ module.id }}.body.content"
+              data-edit-type="rich"
+              style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.body.content') }}"
+            >
+              {{ render_body(module.body) }}
+            </div>
           </article>
         </div>
       </section>
@@ -296,6 +290,8 @@
               id="{{ card.id }}"
               aria-labelledby="{{ card.id }}-title"
               data-card-id="{{ card.id }}"
+              {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.cards.{{ card.id }}.card"{% endif %}
+              style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.card') }}"
             >
               <header class="editorial-card__header">
                 {% if card.eyebrow or current_user.is_authenticated %}
@@ -327,14 +323,36 @@
                 {{ render_body(card.body) }}
               </div>
               {% endif %}
-              {% if card.cta.label and card.cta.url and card.id != 'tech-talk' %}
+              {% if card.id != 'tech-talk' and (card.cta.label and card.cta.url or current_user.is_authenticated) %}
               <div class="editorial-card__actions">
-                <a class="button button--primary" href="{{ card.cta.url }}" target="_blank" rel="noreferrer">
-                  {{ card.cta.label }}
+                <a
+                  class="button button--primary"
+                  href="{{ card.cta.url or '#' }}"
+                  target="_blank"
+                  rel="noreferrer"
+                  data-edit-url-path="modules.{{ module.id }}.cards.{{ card.id }}.cta.url"
+                  {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.cards.{{ card.id }}.cta"{% endif %}
+                  style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.cta') }}"
+                >
+                  <span
+                    class="button__label"
+                    data-edit-path="modules.{{ module.id }}.cards.{{ card.id }}.cta.label"
+                    style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.cards.' ~ card.id ~ '.cta.label') }}"
+                  >
+                    {{ card.cta.label }}
+                  </span>
                 </a>
               </div>
               {% endif %}
               {% if current_user.is_authenticated %}
+              <button
+                type="button"
+                class="editorial-card__drag-handle"
+                data-drag-handle
+                aria-label="Drag card to reorder"
+              >
+                ↕
+              </button>
               <button
                 type="button"
                 class="inline-remove-button"
@@ -365,6 +383,10 @@
         '--highlight-panel-bg': module.background_color,
         '--highlight-panel-text': module.text_color
       } %}
+      {% set highlight_style_string = style_vars(highlight_style) %}
+      {% if inline_element_style(element_styles, 'modules.' ~ module.id ~ '.card') %}
+        {% set highlight_style_string = highlight_style_string ~ '; ' ~ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.card') %}
+      {% endif %}
       <section
         id="{{ module.id }}"
         class="module module--highlight module--preset-{{ module.style_preset | default('default') }}"
@@ -373,7 +395,8 @@
         <div class="container">
           <article
             class="highlight-panel{% if module.id == 'safety-first' %} highlight-panel--stack{% endif %}"
-            style="{{ style_vars(highlight_style) }}"
+            style="{{ highlight_style_string }}"
+            {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.card"{% endif %}
           >
             <header class="module__header module__header--tight">
               {% if module.eyebrow or current_user.is_authenticated %}
@@ -468,7 +491,12 @@
             {% endif %}
           </header>
           <div class="celebrations-grid">
-            <article class="celebration-card" aria-labelledby="birthdays-heading">
+            <article
+              class="celebration-card"
+              aria-labelledby="birthdays-heading"
+              {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.birthdays.card"{% endif %}
+              style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.birthdays.card') }}"
+            >
               <h3 id="birthdays-heading">Birthdays</h3>
               {% if module.birthdays or current_user.is_authenticated %}
               <ul class="celebrations-list">
@@ -512,7 +540,12 @@
               </button>
               {% endif %}
             </article>
-            <article class="celebration-card" aria-labelledby="anniversaries-heading">
+            <article
+              class="celebration-card"
+              aria-labelledby="anniversaries-heading"
+              {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.anniversaries.card"{% endif %}
+              style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.anniversaries.card') }}"
+            >
               <h3 id="anniversaries-heading">Anniversaries</h3>
               {% if module.anniversaries or current_user.is_authenticated %}
               <ul class="celebrations-list">
@@ -589,7 +622,11 @@
           {% if module.people or current_user.is_authenticated %}
           <div class="contributors-grid">
             {% for person in module.people %}
-            <article class="contributor-card">
+            <article
+              class="contributor-card"
+              {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.people.{{ loop.index0 }}.card"{% endif %}
+              style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.people.' ~ loop.index0 ~ '.card') }}"
+            >
               {% if current_user.is_authenticated %}
               <button
                 type="button"
@@ -630,9 +667,15 @@
                 >
                   {{ person.title }}
                 </p>
-                {% if person.secondary %}
-                <p class="contributor-card__meta">{{ person.secondary }}</p>
-                {% endif %}
+              {% if person.secondary or current_user.is_authenticated %}
+                <p
+                  class="contributor-card__meta"
+                  data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.secondary"
+                  style="{{ inline_text_style(text_styles, 'modules.' ~ module.id ~ '.people.' ~ loop.index0 ~ '.secondary') }}"
+                >
+                  {{ person.secondary }}
+                </p>
+              {% endif %}
               </div>
             </article>
             {% endfor %}
@@ -697,6 +740,8 @@
                   target="_blank"
                   rel="noreferrer"
                   data-edit-url-path="modules.{{ module.id }}.links.{{ loop.index0 }}.url"
+                  {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.links.{{ loop.index0 }}.button"{% endif %}
+                  style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.links.' ~ loop.index0 ~ '.button') }}"
                 >
                   {% if link.icon %}
                   <img src="{{ url_for('static', filename=link.icon) }}" alt="" aria-hidden="true" />

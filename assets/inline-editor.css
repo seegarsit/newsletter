@@ -74,6 +74,31 @@ body:not(.inline-editing) .inline-remove-button {
   gap: 0.3rem;
 }
 
+.editorial-card__drag-handle {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 87, 122, 0.35);
+  background: #fff;
+  color: #22577a;
+  font-weight: 700;
+  cursor: grab;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.inline-editing .editorial-card__drag-handle {
+  display: inline-flex;
+}
+
+.inline-editing .editorial-card__drag-handle:active {
+  cursor: grabbing;
+}
+
 .inline-editing [data-edit-path] {
   outline: 1px dashed transparent;
   transition: outline-color 0.2s ease;
@@ -92,51 +117,18 @@ body:not(.inline-editing) .inline-remove-button {
   background: rgba(255, 255, 255, 0.6);
 }
 
-.inline-editing .editorial-card[draggable='true'] {
-  cursor: grab;
+.inline-editing .button__label {
+  display: inline-block;
+  min-width: 4rem;
+}
+
+.inline-editing .button__label:empty::before {
+  content: 'Edit label';
+  opacity: 0.6;
 }
 
 .inline-editing .editorial-card--dragging {
   opacity: 0.65;
-}
-
-.inline-style-panel {
-  position: fixed;
-  top: 4.5rem;
-  right: 1.5rem;
-  width: min(320px, 90vw);
-  background: #fff;
-  border-radius: 1rem;
-  padding: 1.2rem;
-  box-shadow: 0 24px 40px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-}
-
-.inline-style-panel__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.inline-style-panel__grid {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.inline-style-panel label {
-  display: grid;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  color: #22577a;
-}
-
-.inline-style-panel input[type='color'] {
-  width: 100%;
-  height: 2rem;
-  border: none;
-  padding: 0;
-  background: transparent;
 }
 
 .inline-rich-toolbar {
@@ -163,8 +155,6 @@ body:not(.inline-editing) .inline-remove-button {
 
 .inline-text-style-panel {
   position: fixed;
-  top: 4.5rem;
-  right: 1.5rem;
   width: min(240px, 90vw);
   background: #fff;
   border-radius: 1rem;
@@ -215,6 +205,14 @@ body:not(.inline-editing) .inline-remove-button {
 .inline-text-style-panel input[type='color'] {
   height: 2rem;
   padding: 0;
+}
+
+.inline-text-style-panel[data-mode='text'] [data-style-background-field] {
+  display: none;
+}
+
+.inline-text-style-panel[data-mode='element'] [data-text-size-field] {
+  display: none;
 }
 
 .resource-button-wrapper {
