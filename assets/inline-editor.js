@@ -48,6 +48,15 @@
     return data.modules.find((module) => module.id === moduleId);
   }
 
+  function findModuleByType(data, moduleType) {
+    if (!data || !Array.isArray(data.modules)) return null;
+    return data.modules.find((module) => module.type === moduleType);
+  }
+
+  function findResourceModule(data) {
+    return findModule(data, 'resource_hub') || findModuleByType(data, 'resource_hub');
+  }
+
   function getByPath(data, path) {
     const segments = path.split('.');
     let current = data;
@@ -673,7 +682,7 @@
     if (celebrations) renderCelebrations(celebrations);
     const contributors = findModule(data, 'contributors');
     if (contributors) renderContributors(contributors);
-    const resources = findModule(data, 'resource_hub');
+    const resources = findResourceModule(data);
     if (resources) renderResources(resources);
     applyTheme(data.hero.theme || {});
     syncTextStyles(data);
@@ -956,7 +965,7 @@
       renderContributors(module);
     }
     if (type === 'resource') {
-      const module = findModule(draftData, 'resource_hub');
+      const module = findResourceModule(draftData);
       if (!module) return;
       module.links = Array.isArray(module.links) ? module.links : [];
       module.links.push({ label: 'New link', url: '' });
@@ -991,7 +1000,7 @@
       renderContributors(module);
     }
     if (type === 'resource') {
-      const module = findModule(draftData, 'resource_hub');
+      const module = findResourceModule(draftData);
       if (!module) return;
       module.links.splice(index, 1);
       renderResources(module);
