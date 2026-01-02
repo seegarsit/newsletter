@@ -7,14 +7,12 @@
   const toggleButton = toolbar.querySelector('[data-inline-toggle]');
   const saveButton = toolbar.querySelector('[data-inline-save]');
   const cancelButton = toolbar.querySelector('[data-inline-cancel]');
-  const styleButton = toolbar.querySelector('[data-inline-style]');
-  const stylePanel = document.querySelector('[data-style-panel]');
-  const styleClose = document.querySelector('[data-style-close]');
-  const themeInputs = Array.from(document.querySelectorAll('[data-theme-token]'));
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
+  const textStyleColor = document.querySelector('[data-text-style-color]');
   const textStyleSize = document.querySelector('[data-text-style-size]');
   const textStyleReset = document.querySelector('[data-text-style-reset]');
+  const textStyleBackground = document.querySelector('[data-style-background]');
   const imageInput = document.querySelector('[data-image-input]');
   const editorialGrid = document.querySelector('[data-editorial-grid]');
 
@@ -24,6 +22,7 @@
   let activeEditable = null;
   let activeStyleTarget = null;
   let activeStylePath = null;
+  let activeStyleMode = null;
   let pendingImagePath = null;
   let draggingCard = null;
 
@@ -119,6 +118,24 @@
     element.style.fontSize = style?.font_size || '';
   }
 
+  function applyElementStyle(element, style) {
+    if (!element) return;
+    element.style.backgroundColor = style?.background_color || '';
+    element.style.color = style?.text_color || '';
+  }
+
+  function rgbToHex(value) {
+    if (!value) return '';
+    if (value.startsWith('#')) return value;
+    const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (!match) return '';
+    const hex = match
+      .slice(1, 4)
+      .map((segment) => Number(segment).toString(16).padStart(2, '0'))
+      .join('');
+    return `#${hex}`;
+  }
+
   function getTextStyles(data) {
     return data?.hero?.text_styles || {};
   }
@@ -128,6 +145,21 @@
       data.hero.text_styles = {};
     }
     return data.hero.text_styles;
+  }
+
+  function getElementStyles(data) {
+    return data?.hero?.element_styles || {};
+  }
+
+  function ensureElementStyles(data) {
+    if (!data.hero.element_styles) {
+      data.hero.element_styles = {};
+    }
+    return data.hero.element_styles;
+  }
+
+  function getCurrentElementStyles() {
+    return getElementStyles(draftData || originalData || {});
   }
 
   function populateTextStyleInputs(element) {
@@ -140,24 +172,75 @@
       const numeric = parseFloat(sizeValue);
       textStyleSize.value = Number.isNaN(numeric) ? '' : numeric;
     }
+    if (textStyleColor) {
+      textStyleColor.value = current.color || rgbToHex(computed.color) || '#000000';
+    }
+  }
+
+  function populateElementStyleInputs(element) {
+    if (!element || !draftData) return;
+    const styles = getElementStyles(draftData);
+    const current = styles[element.dataset.stylePath] || {};
+    const computed = window.getComputedStyle(element);
+    if (textStyleColor) {
+      textStyleColor.value = current.text_color || rgbToHex(computed.color) || '#000000';
+    }
+    if (textStyleBackground) {
+      textStyleBackground.value =
+        current.background_color || rgbToHex(computed.backgroundColor) || '#ffffff';
+    }
+  }
+
+  function positionTextStylePanel(element) {
+    if (!textStylePanel || !element) return;
+    const rect = element.getBoundingClientRect();
+    const panelRect = textStylePanel.getBoundingClientRect();
+    const margin = 12;
+    let top = rect.bottom + margin;
+    if (top + panelRect.height > window.innerHeight) {
+      top = rect.top - panelRect.height - margin;
+    }
+    top = Math.max(margin, top);
+    let left = rect.left;
+    if (left + panelRect.width > window.innerWidth - margin) {
+      left = window.innerWidth - panelRect.width - margin;
+    }
+    left = Math.max(margin, left);
+    textStylePanel.style.top = `${top}px`;
+    textStylePanel.style.left = `${left}px`;
   }
 
   function setActiveTextStyleTarget(element) {
     if (!textStylePanel || !element || !draftData) return;
     activeStyleTarget = element;
     activeStylePath = element.dataset.editPath;
+    activeStyleMode = 'text';
     populateTextStyleInputs(element);
+    textStylePanel.dataset.mode = 'text';
     textStylePanel.removeAttribute('hidden');
+    positionTextStylePanel(element);
+  }
+
+  function setActiveElementStyleTarget(element) {
+    if (!textStylePanel || !element || !draftData) return;
+    activeStyleTarget = element;
+    activeStylePath = element.dataset.stylePath;
+    activeStyleMode = 'element';
+    populateElementStyleInputs(element);
+    textStylePanel.dataset.mode = 'element';
+    textStylePanel.removeAttribute('hidden');
+    positionTextStylePanel(element);
   }
 
   function clearActiveTextStyleTarget() {
     activeStyleTarget = null;
     activeStylePath = null;
+    activeStyleMode = null;
     textStylePanel?.setAttribute('hidden', '');
   }
 
   function updateTextStyle(updates) {
-    if (!draftData || !activeStylePath || !activeStyleTarget) return;
+    if (!draftData || !activeStylePath || !activeStyleTarget || activeStyleMode !== 'text') return;
     const styles = ensureTextStyles(draftData);
     const next = { ...(styles[activeStylePath] || {}) };
     Object.entries(updates).forEach(([key, value]) => {
@@ -173,6 +256,29 @@
       styles[activeStylePath] = next;
     }
     applyTextStyle(activeStyleTarget, next);
+    positionTextStylePanel(activeStyleTarget);
+  }
+
+  function updateElementStyle(updates) {
+    if (!draftData || !activeStylePath || !activeStyleTarget || activeStyleMode !== 'element') {
+      return;
+    }
+    const styles = ensureElementStyles(draftData);
+    const next = { ...(styles[activeStylePath] || {}) };
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+    });
+    if (Object.keys(next).length === 0) {
+      delete styles[activeStylePath];
+    } else {
+      styles[activeStylePath] = next;
+    }
+    applyElementStyle(activeStyleTarget, next);
+    positionTextStylePanel(activeStyleTarget);
   }
 
   function renderHero(data) {
@@ -200,7 +306,8 @@
     article.id = card.id;
     article.setAttribute('aria-labelledby', `${card.id}-title`);
     article.dataset.cardId = card.id;
-    article.draggable = editMode;
+    article.dataset.stylePath = `modules.${moduleId}.cards.${card.id}.card`;
+    applyElementStyle(article, getCurrentElementStyles()[article.dataset.stylePath] || {});
 
     const header = document.createElement('header');
     header.className = 'editorial-card__header';
@@ -232,20 +339,36 @@
       article.appendChild(body);
     }
 
-    if (card.cta && card.cta.label && card.cta.url && card.id !== 'tech-talk') {
+    if (card.cta && card.id !== 'tech-talk' && (card.cta.label && card.cta.url || editMode)) {
       const actions = document.createElement('div');
       actions.className = 'editorial-card__actions';
       const link = document.createElement('a');
       link.className = 'button button--primary';
-      link.href = card.cta.url;
+      link.href = card.cta.url || '#';
       link.target = '_blank';
       link.rel = 'noreferrer';
-      link.textContent = card.cta.label;
+      link.dataset.editUrlPath = `modules.${moduleId}.cards.${card.id}.cta.url`;
+      link.dataset.stylePath = `modules.${moduleId}.cards.${card.id}.cta`;
+      applyElementStyle(link, getCurrentElementStyles()[link.dataset.stylePath] || {});
+      const label = document.createElement('span');
+      label.className = 'button__label';
+      label.dataset.editPath = `modules.${moduleId}.cards.${card.id}.cta.label`;
+      label.textContent = card.cta.label || '';
+      link.appendChild(label);
       actions.appendChild(link);
       article.appendChild(actions);
     }
 
     if (editMode) {
+      const dragHandle = document.createElement('button');
+      dragHandle.type = 'button';
+      dragHandle.className = 'editorial-card__drag-handle';
+      dragHandle.dataset.dragHandle = 'true';
+      dragHandle.setAttribute('aria-label', 'Drag card to reorder');
+      dragHandle.setAttribute('draggable', 'true');
+      dragHandle.textContent = '↕';
+      article.appendChild(dragHandle);
+
       const removeButton = document.createElement('button');
       removeButton.type = 'button';
       removeButton.className = 'inline-remove-button';
@@ -345,6 +468,8 @@
     module.people.forEach((person, index) => {
       const card = document.createElement('article');
       card.className = 'contributor-card';
+      card.dataset.stylePath = `modules.${module.id}.people.${index}.card`;
+      applyElementStyle(card, getCurrentElementStyles()[card.dataset.stylePath] || {});
 
       if (editMode) {
         const removeButton = document.createElement('button');
@@ -383,6 +508,14 @@
       bodyEl.appendChild(name);
       bodyEl.appendChild(title);
 
+      if (person.secondary || editMode) {
+        const secondary = document.createElement('p');
+        secondary.className = 'contributor-card__meta';
+        secondary.dataset.editPath = `modules.${module.id}.people.${index}.secondary`;
+        secondary.textContent = person.secondary || '';
+        bodyEl.appendChild(secondary);
+      }
+
       card.appendChild(section);
       card.appendChild(media);
       card.appendChild(bodyEl);
@@ -404,6 +537,8 @@
       anchor.target = '_blank';
       anchor.rel = 'noreferrer';
       anchor.dataset.editUrlPath = `modules.${module.id}.links.${index}.url`;
+      anchor.dataset.stylePath = `modules.${module.id}.links.${index}.button`;
+      applyElementStyle(anchor, getCurrentElementStyles()[anchor.dataset.stylePath] || {});
 
       const span = document.createElement('span');
       span.dataset.editPath = `modules.${module.id}.links.${index}.label`;
@@ -438,6 +573,7 @@
     if (resources) renderResources(resources);
     applyTheme(data.hero.theme || {});
     syncTextStyles(data);
+    syncElementStyles(data);
     syncEditableElements(data);
   }
 
@@ -448,6 +584,15 @@
       const type = element.dataset.editType || 'text';
       if (!path || type === 'image') return;
       applyTextStyle(element, styles[path] || {});
+    });
+  }
+
+  function syncElementStyles(data) {
+    const styles = getElementStyles(data);
+    document.querySelectorAll('[data-style-path]').forEach((element) => {
+      const path = element.dataset.stylePath;
+      if (!path) return;
+      applyElementStyle(element, styles[path] || {});
     });
   }
 
@@ -542,14 +687,6 @@
     originalData = cloneData(data);
     draftData = cloneData(data);
     renderAll(draftData);
-    populateThemeInputs(draftData.hero.theme || {});
-  }
-
-  function populateThemeInputs(theme) {
-    themeInputs.forEach((input) => {
-      const token = input.dataset.themeToken;
-      input.value = theme[token] || '#ffffff';
-    });
   }
 
   async function saveChanges() {
@@ -569,7 +706,6 @@
     if (!originalData) return;
     draftData = cloneData(originalData);
     renderAll(draftData);
-    populateThemeInputs(draftData.hero.theme || {});
     toggleEditMode(false);
   }
 
@@ -593,8 +729,14 @@
 
   function ensureEditableClick(event) {
     if (!editMode) return;
-    const target = event.target.closest('[data-edit-path], [data-edit-url-path]');
+    const target = event.target.closest(
+      '[data-edit-path], [data-edit-url-path], [data-style-path]'
+    );
     if (!target) return;
+
+    if (target.closest('a')) {
+      event.preventDefault();
+    }
 
     const urlPath = target.dataset.editUrlPath;
     if (urlPath) {
@@ -605,6 +747,11 @@
         setByPath(draftData, urlPath, next.trim());
         target.setAttribute('href', next.trim());
       }
+      return;
+    }
+
+    if (target.dataset.stylePath && !target.dataset.editPath) {
+      setActiveElementStyleTarget(target);
       return;
     }
 
@@ -705,22 +852,6 @@
   toggleButton?.addEventListener('click', () => toggleEditMode());
   saveButton?.addEventListener('click', saveChanges);
   cancelButton?.addEventListener('click', cancelChanges);
-  styleButton?.addEventListener('click', () => {
-    if (!stylePanel) return;
-    stylePanel.toggleAttribute('hidden');
-  });
-  styleClose?.addEventListener('click', () => stylePanel?.setAttribute('hidden', ''));
-
-  themeInputs.forEach((input) => {
-    input.addEventListener('input', (event) => {
-      if (!draftData) return;
-      const token = event.target.dataset.themeToken;
-      if (!draftData.hero.theme) draftData.hero.theme = {};
-      draftData.hero.theme[token] = event.target.value;
-      applyTheme(draftData.hero.theme);
-    });
-  });
-
   document.addEventListener('click', (event) => {
     const addButton = event.target.closest('[data-inline-add]');
     if (addButton && editMode) {
@@ -744,7 +875,9 @@
 
   editorialGrid?.addEventListener('dragstart', (event) => {
     if (!editMode) return;
-    const card = event.target.closest('[data-card-id]');
+    const handle = event.target.closest('[data-drag-handle]');
+    if (!handle) return;
+    const card = handle.closest('[data-card-id]');
     if (!card) return;
     draggingCard = card;
     card.classList.add('editorial-card--dragging');
@@ -812,12 +945,43 @@
     updateTextStyle({ font_size: size });
   });
 
+  textStyleColor?.addEventListener('input', (event) => {
+    if (activeStyleMode === 'text') {
+      updateTextStyle({ color: event.target.value });
+    } else if (activeStyleMode === 'element') {
+      updateElementStyle({ text_color: event.target.value });
+    }
+  });
+
+  textStyleBackground?.addEventListener('input', (event) => {
+    updateElementStyle({ background_color: event.target.value });
+  });
+
   textStyleReset?.addEventListener('click', () => {
     if (!draftData || !activeStylePath || !activeStyleTarget) return;
-    const styles = ensureTextStyles(draftData);
-    delete styles[activeStylePath];
-    applyTextStyle(activeStyleTarget, {});
-    populateTextStyleInputs(activeStyleTarget);
+    if (activeStyleMode === 'text') {
+      const styles = ensureTextStyles(draftData);
+      delete styles[activeStylePath];
+      applyTextStyle(activeStyleTarget, {});
+      populateTextStyleInputs(activeStyleTarget);
+    } else if (activeStyleMode === 'element') {
+      const styles = ensureElementStyles(draftData);
+      delete styles[activeStylePath];
+      applyElementStyle(activeStyleTarget, {});
+      populateElementStyleInputs(activeStyleTarget);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (activeStyleTarget) {
+      positionTextStylePanel(activeStyleTarget);
+    }
+  });
+
+  window.addEventListener('scroll', () => {
+    if (activeStyleTarget) {
+      positionTextStylePanel(activeStyleTarget);
+    }
   });
 
   imageInput?.addEventListener('change', async (event) => {

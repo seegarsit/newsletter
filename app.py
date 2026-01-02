@@ -85,6 +85,7 @@ THEME_TOKENS = {
 }
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
+STYLE_COLOR_KEYS = ("background_color", "text_color")
 
 
 def _default_theme() -> dict[str, str]:
@@ -240,6 +241,26 @@ def _sanitize_text_styles(styles: dict[str, Any] | None) -> dict[str, dict[str, 
     return cleaned
 
 
+def _sanitize_element_styles(styles: dict[str, Any] | None) -> dict[str, dict[str, str]]:
+    """Sanitize inline element styles stored by the inline editor."""
+
+    if not isinstance(styles, dict):
+        return {}
+
+    cleaned: dict[str, dict[str, str]] = {}
+    for key, value in styles.items():
+        if not isinstance(key, str) or not isinstance(value, dict):
+            continue
+        entry: dict[str, str] = {}
+        for style_key in STYLE_COLOR_KEYS:
+            color = str(value.get(style_key, "")).strip()
+            if COLOR_PATTERN.match(color):
+                entry[style_key] = color
+        if entry:
+            cleaned[key] = entry
+    return cleaned
+
+
 def _inline_text_style(styles: dict[str, Any] | None, path: str) -> str:
     """Build inline styles for a specific editable text path."""
 
@@ -260,6 +281,26 @@ def _inline_text_style(styles: dict[str, Any] | None, path: str) -> str:
     return "; ".join(segments)
 
 
+def _inline_element_style(styles: dict[str, Any] | None, path: str) -> str:
+    """Build inline styles for a specific editable element path."""
+
+    if not styles or not isinstance(styles, dict) or not path:
+        return ""
+
+    value = styles.get(path)
+    if not isinstance(value, dict):
+        return ""
+
+    segments = []
+    background_color = str(value.get("background_color", "")).strip()
+    if COLOR_PATTERN.match(background_color):
+        segments.append(f"background-color: {background_color}")
+    text_color = str(value.get("text_color", "")).strip()
+    if COLOR_PATTERN.match(text_color):
+        segments.append(f"color: {text_color}")
+    return "; ".join(segments)
+
+
 def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
     """Convert file-based issue JSON to the database schema."""
 
@@ -270,6 +311,7 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
         "cta": {"label": "", "url": ""},
         "theme": _default_theme(),
         "text_styles": {},
+        "element_styles": {},
     }
 
     modules: list[dict[str, Any]] = []
@@ -449,6 +491,7 @@ def inject_helpers() -> dict[str, Any]:
         "default_theme": _default_theme,
         "sort_editorial_cards": _sort_editorial_cards,
         "inline_text_style": _inline_text_style,
+        "inline_element_style": _inline_element_style,
     }
 
 
@@ -569,6 +612,7 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
     hero = payload.get("hero", {})
     hero_theme = hero.get("theme", {})
     hero_text_styles = _sanitize_text_styles(hero.get("text_styles"))
+    hero_element_styles = _sanitize_element_styles(hero.get("element_styles"))
     cleaned = {
         "issue_month": payload.get("issue_month", ""),
         "hero": {
@@ -578,6 +622,7 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
             "cta": hero.get("cta", {"label": "", "url": ""}),
             "theme": hero_theme,
             "text_styles": hero_text_styles,
+            "element_styles": hero_element_styles,
         },
         "modules": [],
     }
