@@ -195,19 +195,17 @@
     if (!textStylePanel || !element) return;
     const rect = element.getBoundingClientRect();
     const panelRect = textStylePanel.getBoundingClientRect();
-    const margin = 12;
-    let top = rect.bottom + margin;
-    if (top + panelRect.height > window.innerHeight) {
-      top = rect.top - panelRect.height - margin;
+    const margin = 16;
+    const toolbarHeight =
+      document.querySelector('[data-inline-toolbar]')?.getBoundingClientRect().height || 0;
+    let top = rect.top;
+    if (top + panelRect.height > window.innerHeight - margin) {
+      top = window.innerHeight - panelRect.height - margin;
     }
-    top = Math.max(margin, top);
-    let left = rect.left;
-    if (left + panelRect.width > window.innerWidth - margin) {
-      left = window.innerWidth - panelRect.width - margin;
-    }
-    left = Math.max(margin, left);
+    top = Math.max(toolbarHeight + margin, top);
     textStylePanel.style.top = `${top}px`;
-    textStylePanel.style.left = `${left}px`;
+    textStylePanel.style.right = `${margin}px`;
+    textStylePanel.style.left = 'auto';
   }
 
   function setActiveTextStyleTarget(element) {
@@ -750,10 +748,25 @@
 
   function ensureEditableClick(event) {
     if (!editMode) return;
+    if (
+      event.target.closest('[data-text-style-panel]') ||
+      event.target.closest('[data-rich-toolbar]') ||
+      event.target.closest('[data-inline-toolbar]')
+    ) {
+      return;
+    }
     const target = event.target.closest(
       '[data-edit-path], [data-edit-url-path], [data-style-path]'
     );
-    if (!target) return;
+    if (!target) {
+      if (activeEditable) {
+        activeEditable.removeAttribute('contenteditable');
+        activeEditable = null;
+      }
+      richToolbar?.setAttribute('hidden', '');
+      clearActiveTextStyleTarget();
+      return;
+    }
 
     if (target.closest('a')) {
       event.preventDefault();
