@@ -92,6 +92,14 @@ body:not(.inline-editing) .inline-remove-button {
   background: rgba(255, 255, 255, 0.6);
 }
 
+.inline-editing .editorial-card[draggable='true'] {
+  cursor: grab;
+}
+
+.inline-editing .editorial-card--dragging {
+  opacity: 0.65;
+}
+
 .inline-style-panel {
   position: fixed;
   top: 4.5rem;
@@ -155,7 +163,7 @@ body:not(.inline-editing) .inline-remove-button {
 
 .inline-text-style-panel {
   position: fixed;
-  bottom: 1.5rem;
+  top: 4.5rem;
   right: 1.5rem;
   width: min(240px, 90vw);
   background: #fff;

@@ -99,20 +99,16 @@
       <button type="button" data-rich-command="createLink">Link</button>
       <button type="button" data-rich-command="callout">Callout</button>
     </div>
-    <div class="inline-text-style-panel" data-text-style-panel hidden>
-      <div class="inline-text-style-panel__header">
-        <h2>Text Styling</h2>
-        <button type="button" data-text-style-reset>Reset</button>
+      <div class="inline-text-style-panel" data-text-style-panel hidden>
+        <div class="inline-text-style-panel__header">
+          <h2>Text Styling</h2>
+          <button type="button" data-text-style-reset>Reset</button>
+        </div>
+        <label>
+          Text size (px)
+          <input type="number" min="10" max="96" step="1" data-text-style-size />
+        </label>
       </div>
-      <label>
-        Text color
-        <input type="color" data-text-style-color />
-      </label>
-      <label>
-        Text size (px)
-        <input type="number" min="10" max="96" step="1" data-text-style-size />
-      </label>
-    </div>
     <input
       type="file"
       class="inline-image-input"

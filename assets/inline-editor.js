@@ -13,10 +13,10 @@
   const themeInputs = Array.from(document.querySelectorAll('[data-theme-token]'));
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
-  const textStyleColor = document.querySelector('[data-text-style-color]');
   const textStyleSize = document.querySelector('[data-text-style-size]');
   const textStyleReset = document.querySelector('[data-text-style-reset]');
   const imageInput = document.querySelector('[data-image-input]');
+  const editorialGrid = document.querySelector('[data-editorial-grid]');
 
   let originalData = null;
   let draftData = null;
@@ -25,6 +25,7 @@
   let activeStyleTarget = null;
   let activeStylePath = null;
   let pendingImagePath = null;
+  let draggingCard = null;
 
   const themeTokens = {
     ink: '--ink',
@@ -129,23 +130,11 @@
     return data.hero.text_styles;
   }
 
-  function rgbToHex(rgb) {
-    if (!rgb || typeof rgb !== 'string') return '';
-    const match = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-    if (!match) return '';
-    const toHex = (value) => Number(value).toString(16).padStart(2, '0');
-    return `#${toHex(match[1])}${toHex(match[2])}${toHex(match[3])}`;
-  }
-
   function populateTextStyleInputs(element) {
     if (!element || !draftData) return;
     const styles = getTextStyles(draftData);
     const current = styles[element.dataset.editPath] || {};
     const computed = window.getComputedStyle(element);
-    if (textStyleColor) {
-      const colorValue = current.color || rgbToHex(computed.color) || '#000000';
-      textStyleColor.value = colorValue;
-    }
     if (textStyleSize) {
       const sizeValue = current.font_size || computed.fontSize || '';
       const numeric = parseFloat(sizeValue);
@@ -211,6 +200,7 @@
     article.id = card.id;
     article.setAttribute('aria-labelledby', `${card.id}-title`);
     article.dataset.cardId = card.id;
+    article.draggable = editMode;
 
     const header = document.createElement('header');
     header.className = 'editorial-card__header';
@@ -269,12 +259,27 @@
   }
 
   function renderEditorial(module) {
-    const grid = document.querySelector('[data-editorial-grid]');
-    if (!grid) return;
-    grid.innerHTML = '';
+    if (!editorialGrid) return;
+    editorialGrid.innerHTML = '';
     module.cards.forEach((card) => {
-      grid.appendChild(createEditorialCard(card, module.id));
+      editorialGrid.appendChild(createEditorialCard(card, module.id));
     });
+  }
+
+  function updateEditorialOrderFromGrid(module) {
+    if (!editorialGrid || !module) return;
+    const orderedIds = Array.from(editorialGrid.querySelectorAll('[data-card-id]')).map(
+      (card) => card.dataset.cardId
+    );
+    const cardsById = new Map(module.cards.map((card) => [card.id, card]));
+    module.cards = orderedIds
+      .map((id, index) => {
+        const card = cardsById.get(id);
+        if (!card) return null;
+        card.order = index;
+        return card;
+      })
+      .filter(Boolean);
   }
 
   function renderCelebrations(module) {
@@ -622,10 +627,11 @@
       const id = `card-${Date.now()}`;
       module.cards.push({
         id,
-        eyebrow: '',
-        title: 'New card',
-        body: { content: '', mode: 'rich' },
+        eyebrow: 'Card heading',
+        title: 'Article heading',
+        body: { content: 'Article text', mode: 'rich' },
         cta: { label: '', url: '' },
+        order: module.cards.length,
         style_preset: 'default',
         alignment: 'left',
       });
@@ -736,6 +742,45 @@
     ensureEditableClick(event);
   });
 
+  editorialGrid?.addEventListener('dragstart', (event) => {
+    if (!editMode) return;
+    const card = event.target.closest('[data-card-id]');
+    if (!card) return;
+    draggingCard = card;
+    card.classList.add('editorial-card--dragging');
+    event.dataTransfer?.setData('text/plain', card.dataset.cardId || '');
+    event.dataTransfer?.setDragImage(card, 20, 20);
+  });
+
+  editorialGrid?.addEventListener('dragover', (event) => {
+    if (!editMode || !draggingCard) return;
+    event.preventDefault();
+    const targetCard = event.target.closest('[data-card-id]');
+    if (!targetCard || targetCard === draggingCard) return;
+    const rect = targetCard.getBoundingClientRect();
+    const offset = event.clientY - rect.top;
+    const shouldInsertAfter = offset > rect.height / 2;
+    const referenceNode = shouldInsertAfter ? targetCard.nextSibling : targetCard;
+    if (referenceNode !== draggingCard) {
+      editorialGrid.insertBefore(draggingCard, referenceNode);
+    }
+  });
+
+  editorialGrid?.addEventListener('drop', (event) => {
+    if (!editMode) return;
+    event.preventDefault();
+    const module = draftData ? findModule(draftData, 'editorial') : null;
+    updateEditorialOrderFromGrid(module);
+    if (module) renderEditorial(module);
+  });
+
+  editorialGrid?.addEventListener('dragend', () => {
+    if (draggingCard) {
+      draggingCard.classList.remove('editorial-card--dragging');
+    }
+    draggingCard = null;
+  });
+
   document.addEventListener('blur', (event) => {
     const target = event.target;
     if (target && target.matches('[data-edit-path][contenteditable="true"]')) {
@@ -759,10 +804,6 @@
       return;
     }
     document.execCommand(command, false, null);
-  });
-
-  textStyleColor?.addEventListener('input', (event) => {
-    updateTextStyle({ color: event.target.value });
   });
 
   textStyleSize?.addEventListener('input', (event) => {
