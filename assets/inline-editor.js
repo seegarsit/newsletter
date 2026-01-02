@@ -408,18 +408,24 @@
     const anniversariesList = document.querySelector('#anniversaries-heading')?.parentElement?.querySelector('.celebrations-list');
     if (!birthdaysList || !anniversariesList) return;
 
+    const splitMeta = (metaValue) =>
+      metaValue
+        .split(/[·•]/)
+        .map((part) => part.trim())
+        .filter(Boolean);
+
     const normalizeBirthday = (item) => {
       if (item.line_one || item.line_two) {
         return { lineOne: item.line_one || '', lineTwo: item.line_two || '' };
       }
       if (item.date || item.weekday || item.office) {
-        const lineOne = [item.date, item.weekday].filter(Boolean).join(' · ');
+        const lineOne = [item.date, item.weekday].filter(Boolean).join(' • ');
         return { lineOne, lineTwo: item.office || '' };
       }
       if (item.meta) {
-        const parts = item.meta.split('·').map((part) => part.trim()).filter(Boolean);
-        const lineOne = parts.slice(0, 2).join(' · ');
-        const lineTwo = parts.slice(2).join(' · ');
+        const parts = splitMeta(item.meta);
+        const lineOne = parts.slice(0, 2).join(' • ');
+        const lineTwo = parts.slice(2).join(' • ');
         return { lineOne, lineTwo };
       }
       return { lineOne: '', lineTwo: '' };
@@ -433,9 +439,9 @@
         return { lineOne: item.tenure || '', lineTwo: item.office || '' };
       }
       if (item.meta) {
-        const parts = item.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        const parts = splitMeta(item.meta);
         const lineOne = parts[0] || '';
-        const lineTwo = parts.slice(1).join(' · ');
+        const lineTwo = parts.slice(1).join(' • ');
         return { lineOne, lineTwo };
       }
       return { lineOne: '', lineTwo: '' };
@@ -573,6 +579,7 @@
   function renderResources(module) {
     const container = document.querySelector('.resource-buttons');
     if (!container) return;
+    module.links = Array.isArray(module.links) ? module.links : [];
     container.innerHTML = '';
     module.links.forEach((link, index) => {
       const wrapper = document.createElement('div');
@@ -582,7 +589,7 @@
       anchor.className = 'resource-button';
       anchor.href = link.url || '#';
       anchor.target = '_blank';
-      anchor.rel = 'noreferrer';
+      anchor.rel = 'noopener noreferrer';
       anchor.dataset.editUrlPath = `modules.${module.id}.links.${index}.url`;
       anchor.dataset.stylePath = `modules.${module.id}.links.${index}.button`;
       applyElementStyle(anchor, getCurrentElementStyles()[anchor.dataset.stylePath] || {});
@@ -616,16 +623,19 @@
       if (birthday.date || birthday.weekday || birthday.office) {
         return {
           ...birthday,
-          line_one: [birthday.date, birthday.weekday].filter(Boolean).join(' · '),
+          line_one: [birthday.date, birthday.weekday].filter(Boolean).join(' • '),
           line_two: birthday.office || '',
         };
       }
       if (birthday.meta) {
-        const parts = birthday.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        const parts = birthday.meta
+          .split(/[·•]/)
+          .map((part) => part.trim())
+          .filter(Boolean);
         return {
           ...birthday,
-          line_one: parts.slice(0, 2).join(' · '),
-          line_two: parts.slice(2).join(' · '),
+          line_one: parts.slice(0, 2).join(' • '),
+          line_two: parts.slice(2).join(' • '),
         };
       }
       return { ...birthday, line_one: '', line_two: '' };
@@ -640,11 +650,14 @@
         };
       }
       if (anniversary.meta) {
-        const parts = anniversary.meta.split('·').map((part) => part.trim()).filter(Boolean);
+        const parts = anniversary.meta
+          .split(/[·•]/)
+          .map((part) => part.trim())
+          .filter(Boolean);
         return {
           ...anniversary,
           line_one: parts[0] || '',
-          line_two: parts.slice(1).join(' · '),
+          line_two: parts.slice(1).join(' • '),
         };
       }
       return { ...anniversary, line_one: '', line_two: '' };
@@ -937,6 +950,7 @@
     if (type === 'resource') {
       const module = findModule(draftData, 'resource_hub');
       if (!module) return;
+      module.links = Array.isArray(module.links) ? module.links : [];
       module.links.push({ label: 'New link', url: '' });
       renderResources(module);
     }

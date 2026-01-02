@@ -758,7 +758,7 @@
                   class="resource-button"
                   href="{{ link.url }}"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   data-edit-url-path="modules.{{ module.id }}.links.{{ loop.index0 }}.url"
                   {% if current_user.is_authenticated %}data-style-path="modules.{{ module.id }}.links.{{ loop.index0 }}.button"{% endif %}
                   style="{{ inline_element_style(element_styles, 'modules.' ~ module.id ~ '.links.' ~ loop.index0 ~ '.button') }}"

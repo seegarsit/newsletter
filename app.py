@@ -36,13 +36,17 @@ app.config["ADMIN_EMAIL"] = os.environ.get("ADMIN_EMAIL")
 app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD")
 app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME")
 app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD")
-database_url = os.environ.get("DATABASE_URL")
+default_database_url = (
+    "postgresql+psycopg://seegarsit_db_user:x6HcYaFnxMN5x4bCVcC9NC11GkL7GOF8"
+    "@dpg-d3uiemfdiees73eadfg0-a/seegarsit_db"
+)
+database_url = os.environ.get("DATABASE_URL", default_database_url)
 if database_url:
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////tmp/newsletter.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = default_database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 login_manager = LoginManager()
@@ -50,6 +54,7 @@ login_manager.login_view = "admin_login"
 login_manager.init_app(app)
 
 db = SQLAlchemy(app)
+_db_initialized = False
 
 ALLOWED_TAGS = [
     "p",
@@ -87,7 +92,7 @@ THEME_TOKENS = {
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
 STYLE_COLOR_KEYS = ("background_color", "text_color")
-META_SEPARATOR = " · "
+META_SEPARATOR = " • "
 
 
 def _default_theme() -> dict[str, str]:
@@ -206,7 +211,7 @@ def _split_meta(meta: str) -> list[str]:
 
     if not meta:
         return []
-    return [part.strip() for part in meta.split("·") if part.strip()]
+    return [part.strip() for part in re.split(r"[·•]", meta) if part.strip()]
 
 
 def _join_meta(parts: list[str]) -> str:
@@ -529,6 +534,17 @@ def _ensure_seed_data() -> None:
         db.session.commit()
 
 
+def _ensure_database_ready() -> None:
+    """Create tables and seed defaults once per process."""
+
+    global _db_initialized
+    if _db_initialized:
+        return
+    db.create_all()
+    _ensure_seed_data()
+    _db_initialized = True
+
+
 @app.cli.command("init-db")
 def init_db() -> None:
     """Create database tables and seed initial data."""
@@ -552,6 +568,13 @@ def inject_helpers() -> dict[str, Any]:
         "inline_element_style": _inline_element_style,
         "celebration_lines": _celebration_lines,
     }
+
+
+@app.before_request
+def ensure_database_ready() -> None:
+    """Ensure database tables exist before serving requests."""
+
+    _ensure_database_ready()
 
 
 @app.before_request
