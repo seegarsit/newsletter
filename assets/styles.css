@@ -562,13 +562,15 @@ ul li::before {
 }
 
 .celebrations-list__primary {
-  font-weight: 600;
+  display: block;
+  font-weight: 700;
+  font-size: 13pt;
   color: var(--ink);
 }
 
 .celebrations-list__meta {
   display: block;
-  font-size: 0.9rem;
+  font-size: 12pt;
   color: var(--ink-soft);
 }
 
