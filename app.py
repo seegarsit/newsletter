@@ -93,6 +93,8 @@ COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
 STYLE_COLOR_KEYS = ("background_color", "text_color")
 META_SEPARATOR = " • "
+ALLOWED_MEDIA_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "webp"}
+ALLOWED_ALIGNMENTS = {"left", "center", "right"}
 
 
 def _default_theme() -> dict[str, str]:
@@ -428,6 +430,9 @@ def _migrate_issue(issue: dict[str, Any]) -> dict[str, Any]:
                         },
                         "cta": card.get("cta") or {"label": "", "url": ""},
                         "style_preset": "default",
+                        "alignment": "left",
+                        "media_alignment": "left",
+                        "media": [],
                     }
                 )
             modules.append(
@@ -688,6 +693,35 @@ def _sanitize_body(body: dict[str, Any] | None) -> dict[str, Any]:
     return {"content": content, "mode": mode}
 
 
+def _sanitize_media_items(items: list[dict[str, Any]] | None) -> list[dict[str, str]]:
+    """Sanitize card media items."""
+
+    if not isinstance(items, list):
+        return []
+
+    cleaned: list[dict[str, str]] = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        path = str(item.get("path") or item.get("src") or "").strip()
+        if not path:
+            continue
+        ext = Path(path).suffix.lower().lstrip(".")
+        if ext not in ALLOWED_MEDIA_EXTENSIONS:
+            continue
+        alt = str(item.get("alt") or "").strip()
+        cleaned.append({"path": path, "alt": alt})
+    return cleaned
+
+
+def _sanitize_alignment(value: str | None, default: str = "left") -> str:
+    """Return a supported alignment token."""
+
+    if isinstance(value, str) and value in ALLOWED_ALIGNMENTS:
+        return value
+    return default
+
+
 def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
     """Sanitize issue payload before persisting."""
 
@@ -726,6 +760,10 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
             base["intro"] = module.get("intro", "")
             cards = []
             for card in module.get("cards", []):
+                alignment = _sanitize_alignment(card.get("alignment"), "left")
+                media_alignment = _sanitize_alignment(
+                    card.get("media_alignment"), alignment
+                )
                 cards.append(
                     {
                         "id": card.get("id", ""),
@@ -734,7 +772,9 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
                         "body": _sanitize_body(card.get("body")),
                         "cta": card.get("cta", {"label": "", "url": ""}),
                         "style_preset": card.get("style_preset", "default"),
-                        "alignment": card.get("alignment", "left"),
+                        "alignment": alignment,
+                        "media_alignment": media_alignment,
+                        "media": _sanitize_media_items(card.get("media")),
                     }
                 )
             base["cards"] = cards
@@ -827,7 +867,7 @@ def admin_upload_image() -> Response:
 
     filename = secure_filename(image.filename)
     ext = Path(filename).suffix.lower().lstrip(".")
-    if ext not in {"png", "jpg", "jpeg", "webp"}:
+    if ext not in ALLOWED_MEDIA_EXTENSIONS:
         return Response("Unsupported file type.", status=400)
 
     upload_dir = Path(app.static_folder) / "images" / "uploads"
