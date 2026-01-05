@@ -23,7 +23,7 @@
   let activeStyleTarget = null;
   let activeStylePath = null;
   let activeStyleMode = null;
-  let pendingImagePath = null;
+  let pendingImageAction = null;
   let draggingCard = null;
 
   const themeTokens = {
@@ -38,6 +38,7 @@
     highlight: '--highlight',
     highlight_text: '--highlight-text',
   };
+  const mediaAlignments = ['left', 'center', 'right'];
 
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
@@ -131,6 +132,22 @@
     if (!element) return;
     element.style.backgroundColor = style?.background_color || '';
     element.style.color = style?.text_color || '';
+  }
+
+  function getMediaItems(card) {
+    return Array.isArray(card?.media) ? card.media : [];
+  }
+
+  function getMediaPath(item) {
+    return item?.path || item?.src || '';
+  }
+
+  function getMediaAlignment(card) {
+    return card?.media_alignment || card?.alignment || 'left';
+  }
+
+  function isPdfFile(path) {
+    return path?.toLowerCase().endsWith('.pdf');
   }
 
   function rgbToHex(value) {
@@ -336,6 +353,96 @@
     }
 
     article.appendChild(header);
+
+    const mediaItems = getMediaItems(card);
+    if (mediaItems.length || editMode) {
+      const mediaAlignment = getMediaAlignment(card);
+      const mediaSection = document.createElement('div');
+      mediaSection.className = `editorial-card__media editorial-card__media--align-${mediaAlignment}`;
+
+      mediaItems.forEach((media, index) => {
+        const mediaPath = getMediaPath(media);
+        if (!mediaPath) return;
+        const isPdf = isPdfFile(mediaPath);
+        const mediaItem = document.createElement('div');
+        mediaItem.className = 'editorial-card__media-item';
+
+        const link = document.createElement('a');
+        link.className = `editorial-card__media-link${isPdf ? ' editorial-card__media-link--pdf' : ''}`;
+        link.href = `${staticBase}${mediaPath}`;
+        link.target = '_blank';
+        link.rel = 'noreferrer';
+
+        if (isPdf) {
+          const placeholder = document.createElement('span');
+          placeholder.className = 'editorial-card__media-placeholder';
+          placeholder.textContent = 'PDF';
+          link.appendChild(placeholder);
+        } else {
+          const img = document.createElement('img');
+          img.src = `${staticBase}${mediaPath}`;
+          img.alt = media?.alt || '';
+          img.loading = 'lazy';
+          link.appendChild(img);
+        }
+
+        mediaItem.appendChild(link);
+
+        if (editMode) {
+          const removeButton = document.createElement('button');
+          removeButton.type = 'button';
+          removeButton.className =
+            'inline-remove-button inline-remove-button--compact editorial-card__media-remove';
+          removeButton.dataset.mediaRemove = 'true';
+          removeButton.dataset.moduleId = moduleId;
+          removeButton.dataset.cardId = card.id;
+          removeButton.dataset.mediaIndex = String(index);
+          removeButton.textContent = 'Remove';
+          mediaItem.appendChild(removeButton);
+        }
+
+        mediaSection.appendChild(mediaItem);
+      });
+
+      if (editMode) {
+        const controls = document.createElement('div');
+        controls.className = 'editorial-card__media-controls';
+
+        const addButton = document.createElement('button');
+        addButton.type = 'button';
+        addButton.className = 'inline-add-button inline-add-button--compact';
+        addButton.dataset.mediaAdd = 'true';
+        addButton.dataset.moduleId = moduleId;
+        addButton.dataset.cardId = card.id;
+        addButton.textContent = 'Add image';
+        controls.appendChild(addButton);
+
+        const alignLabel = document.createElement('label');
+        alignLabel.className = 'editorial-card__media-align';
+        const alignText = document.createElement('span');
+        alignText.textContent = 'Image alignment';
+        const select = document.createElement('select');
+        select.dataset.mediaAlign = 'true';
+        select.dataset.moduleId = moduleId;
+        select.dataset.cardId = card.id;
+        mediaAlignments.forEach((alignment) => {
+          const option = document.createElement('option');
+          option.value = alignment;
+          option.textContent = alignment.replace(/^\w/, (char) => char.toUpperCase());
+          if (alignment === mediaAlignment) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+        alignLabel.appendChild(alignText);
+        alignLabel.appendChild(select);
+        controls.appendChild(alignLabel);
+
+        mediaSection.appendChild(controls);
+      }
+
+      article.appendChild(mediaSection);
+    }
 
     if ((card.body && card.body.content) || editMode) {
       const body = document.createElement('div');
@@ -845,8 +952,17 @@
 
   function handleImageClick(target) {
     if (!imageInput) return;
-    pendingImagePath = target.dataset.editPath;
+    pendingImageAction = { type: 'single', path: target.dataset.editPath };
     imageInput.click();
+  }
+
+  function formatAltFromFilename(filename) {
+    if (!filename) return '';
+    return filename
+      .replace(/\.[^.]+$/, '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   async function uploadImage(file) {
@@ -930,6 +1046,8 @@
         order: module.cards.length,
         style_preset: 'default',
         alignment: 'left',
+        media_alignment: 'left',
+        media: [],
       });
       renderEditorial(module);
     }
@@ -1011,6 +1129,38 @@
   saveButton?.addEventListener('click', saveChanges);
   cancelButton?.addEventListener('click', cancelChanges);
   document.addEventListener('click', (event) => {
+    const mediaAddButton = event.target.closest('[data-media-add]');
+    if (mediaAddButton) {
+      event.preventDefault();
+      if (!editMode) {
+        toggleEditMode(true);
+      }
+      if (!imageInput) return;
+      pendingImageAction = {
+        type: 'media',
+        moduleId: mediaAddButton.dataset.moduleId,
+        cardId: mediaAddButton.dataset.cardId,
+      };
+      imageInput.click();
+      return;
+    }
+
+    const mediaRemoveButton = event.target.closest('[data-media-remove]');
+    if (mediaRemoveButton && editMode && draftData) {
+      event.preventDefault();
+      const module = findModule(draftData, mediaRemoveButton.dataset.moduleId);
+      const card = module?.cards?.find((item) => item.id === mediaRemoveButton.dataset.cardId);
+      if (!card) return;
+      const index = Number(mediaRemoveButton.dataset.mediaIndex);
+      if (!Number.isNaN(index)) {
+        const items = getMediaItems(card);
+        items.splice(index, 1);
+        card.media = items;
+        renderEditorial(module);
+      }
+      return;
+    }
+
     const addButton = event.target.closest('[data-inline-add]');
     if (addButton) {
       event.preventDefault();
@@ -1032,6 +1182,16 @@
     }
 
     ensureEditableClick(event);
+  });
+
+  document.addEventListener('change', (event) => {
+    const alignSelect = event.target.closest('[data-media-align]');
+    if (!alignSelect || !draftData) return;
+    const module = findModule(draftData, alignSelect.dataset.moduleId);
+    const card = module?.cards?.find((item) => item.id === alignSelect.dataset.cardId);
+    if (!card) return;
+    card.media_alignment = alignSelect.value;
+    renderEditorial(module);
   });
 
   editorialGrid?.addEventListener('dragstart', (event) => {
@@ -1149,12 +1309,26 @@
 
   imageInput?.addEventListener('change', async (event) => {
     const file = event.target.files?.[0];
-    if (!file || !pendingImagePath || !draftData) return;
+    if (!file || !pendingImageAction || !draftData) return;
     const uploadedPath = await uploadImage(file);
     if (!uploadedPath) return;
-    setByPath(draftData, pendingImagePath, uploadedPath);
-    renderAll(draftData);
-    pendingImagePath = null;
+    if (pendingImageAction.type === 'single') {
+      setByPath(draftData, pendingImageAction.path, uploadedPath);
+      renderAll(draftData);
+    } else if (pendingImageAction.type === 'media') {
+      const module = findModule(draftData, pendingImageAction.moduleId);
+      const card = module?.cards?.find((item) => item.id === pendingImageAction.cardId);
+      if (card) {
+        const items = getMediaItems(card);
+        items.push({
+          path: uploadedPath,
+          alt: formatAltFromFilename(file.name),
+        });
+        card.media = items;
+        renderEditorial(module);
+      }
+    }
+    pendingImageAction = null;
     imageInput.value = '';
   });
 

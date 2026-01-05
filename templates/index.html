@@ -70,7 +70,7 @@
       type="file"
       class="inline-image-input"
       data-image-input
-      accept="image/png,image/jpeg,image/webp"
+      accept="image/png,image/jpeg,image/webp,application/pdf"
       hidden
     />
     {% endif %}
@@ -313,6 +313,55 @@
                 </h3>
                 {% endif %}
               </header>
+              {% set media_items = card.media if card.media is defined else [] %}
+              {% if media_items or current_user.is_authenticated %}
+              {% set media_alignment = card.media_alignment | default(card.alignment | default('left')) %}
+              <div class="editorial-card__media editorial-card__media--align-{{ media_alignment }}">
+                {% for media in media_items %}
+                {% set media_path = media.path if media.path is defined else media.src %}
+                {% if media_path %}
+                {% set is_pdf = media_path.lower().endswith('.pdf') %}
+                <a
+                  class="editorial-card__media-link{% if is_pdf %} editorial-card__media-link--pdf{% endif %}"
+                  href="{{ url_for('static', filename=media_path) }}"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {% if is_pdf %}
+                  <span class="editorial-card__media-placeholder">PDF</span>
+                  {% else %}
+                  <img
+                    src="{{ url_for('static', filename=media_path) }}"
+                    alt="{{ media.alt | default('') }}"
+                    loading="lazy"
+                  />
+                  {% endif %}
+                </a>
+                {% endif %}
+                {% endfor %}
+                {% if current_user.is_authenticated %}
+                <div class="editorial-card__media-controls">
+                  <button
+                    type="button"
+                    class="inline-add-button inline-add-button--compact"
+                    data-media-add
+                    data-card-id="{{ card.id }}"
+                    data-module-id="{{ module.id }}"
+                  >
+                    Add image
+                  </button>
+                  <label class="editorial-card__media-align">
+                    <span>Image alignment</span>
+                    <select data-media-align data-card-id="{{ card.id }}" data-module-id="{{ module.id }}">
+                      {% for align in ['left','center','right'] %}
+                      <option value="{{ align }}" {% if media_alignment == align %}selected{% endif %}>{{ align | title }}</option>
+                      {% endfor %}
+                    </select>
+                  </label>
+                </div>
+                {% endif %}
+              </div>
+              {% endif %}
               {% if body_length(card.body) > 0 or current_user.is_authenticated %}
               <div
                 class="editorial-card__body"

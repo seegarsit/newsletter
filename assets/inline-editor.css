@@ -51,6 +51,10 @@ body:not(.inline-editing) .inline-remove-button {
   display: none;
 }
 
+body:not(.inline-editing) .editorial-card__media-controls {
+  display: none;
+}
+
 .inline-add-button,
 .inline-remove-button {
   margin-top: 0.75rem;
@@ -129,6 +133,39 @@ body:not(.inline-editing) .inline-remove-button {
 
 .inline-editing .editorial-card--dragging {
   opacity: 0.65;
+}
+
+.editorial-card__media-controls {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  flex-basis: 100%;
+}
+
+.editorial-card__media-align {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(34, 87, 122, 0.85);
+}
+
+.editorial-card__media-align select {
+  border-radius: 0.5rem;
+  border: 1px solid rgba(34, 87, 122, 0.35);
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.inline-editing .editorial-card__media-remove {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .inline-rich-toolbar {
