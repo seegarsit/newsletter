@@ -285,8 +285,13 @@
             {% for card in sort_editorial_cards(module.cards) %}
             {% set stacked_ids = ['team-letter', 'hr-corner', 'tech-talk'] %}
             {% set is_stacked = card.id in stacked_ids %}
+            {% set media_items = card.media if card.media is defined else [] %}
+            {% set media_alignment = card.media_alignment | default(card.alignment | default('left')) %}
+            {% if media_alignment in ['left', 'center', 'right'] %}
+              {% set media_alignment = 'top-' ~ media_alignment %}
+            {% endif %}
             <article
-              class="editorial-card{% if is_stacked %} editorial-card--stack{% endif %} editorial-card--preset-{{ card.style_preset | default('default') }} editorial-card--align-{{ card.alignment | default('left') }}"
+              class="editorial-card{% if is_stacked %} editorial-card--stack{% endif %} editorial-card--preset-{{ card.style_preset | default('default') }} editorial-card--align-{{ card.alignment | default('left') }} editorial-card--media-align-{{ media_alignment }}"
               id="{{ card.id }}"
               aria-labelledby="{{ card.id }}-title"
               data-card-id="{{ card.id }}"
@@ -313,12 +318,7 @@
                 </h3>
                 {% endif %}
               </header>
-              {% set media_items = card.media if card.media is defined else [] %}
               {% if media_items or current_user.is_authenticated %}
-              {% set media_alignment = card.media_alignment | default(card.alignment | default('left')) %}
-              {% if media_alignment in ['left', 'center', 'right'] %}
-                {% set media_alignment = 'top-' ~ media_alignment %}
-              {% endif %}
               <div class="editorial-card__media editorial-card__media--align-{{ media_alignment }}">
                 {% for media in media_items %}
                 {% set media_path = media.path if media.path is defined else media.src %}

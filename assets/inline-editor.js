@@ -372,6 +372,7 @@
     if (mediaItems.length || editMode) {
       const mediaAlignment = getMediaAlignment(card);
       const mediaSection = document.createElement('div');
+      article.classList.add(`editorial-card--media-align-${mediaAlignment}`);
       mediaSection.className = `editorial-card__media editorial-card__media--align-${mediaAlignment}`;
 
       mediaItems.forEach((media, index) => {
