@@ -38,7 +38,17 @@
     highlight: '--highlight',
     highlight_text: '--highlight-text',
   };
-  const mediaAlignments = ['left', 'center', 'right'];
+  const mediaAlignments = [
+    'top-left',
+    'top-center',
+    'top-right',
+    'middle-left',
+    'middle-center',
+    'middle-right',
+    'bottom-left',
+    'bottom-center',
+    'bottom-right',
+  ];
 
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
@@ -143,7 +153,11 @@
   }
 
   function getMediaAlignment(card) {
-    return card?.media_alignment || card?.alignment || 'left';
+    const alignment = card?.media_alignment || card?.alignment || 'left';
+    if (['left', 'center', 'right'].includes(alignment)) {
+      return `top-${alignment}`;
+    }
+    return alignment;
   }
 
   function isPdfFile(path) {
@@ -428,7 +442,10 @@
         mediaAlignments.forEach((alignment) => {
           const option = document.createElement('option');
           option.value = alignment;
-          option.textContent = alignment.replace(/^\w/, (char) => char.toUpperCase());
+          option.textContent = alignment
+            .split('-')
+            .map((segment) => segment.replace(/^\w/, (char) => char.toUpperCase()))
+            .join(' ');
           if (alignment === mediaAlignment) {
             option.selected = true;
           }
@@ -1046,7 +1063,7 @@
         order: module.cards.length,
         style_preset: 'default',
         alignment: 'left',
-        media_alignment: 'left',
+        media_alignment: 'top-left',
         media: [],
       });
       renderEditorial(module);
