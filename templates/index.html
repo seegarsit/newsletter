@@ -286,12 +286,8 @@
             {% set stacked_ids = ['team-letter', 'hr-corner', 'tech-talk'] %}
             {% set is_stacked = card.id in stacked_ids %}
             {% set media_items = card.media if card.media is defined else [] %}
-            {% set media_alignment = card.media_alignment | default(card.alignment | default('left')) %}
-            {% if media_alignment in ['left', 'center', 'right'] %}
-              {% set media_alignment = 'top-' ~ media_alignment %}
-            {% endif %}
             <article
-              class="editorial-card{% if is_stacked %} editorial-card--stack{% endif %} editorial-card--preset-{{ card.style_preset | default('default') }} editorial-card--align-{{ card.alignment | default('left') }} editorial-card--media-align-{{ media_alignment }}"
+              class="editorial-card{% if is_stacked %} editorial-card--stack{% endif %} editorial-card--preset-{{ card.style_preset | default('default') }} editorial-card--align-{{ card.alignment | default('left') }}"
               id="{{ card.id }}"
               aria-labelledby="{{ card.id }}-title"
               data-card-id="{{ card.id }}"
@@ -318,53 +314,6 @@
                 </h3>
                 {% endif %}
               </header>
-              {% if media_items or current_user.is_authenticated %}
-              <div class="editorial-card__media editorial-card__media--align-{{ media_alignment }}">
-                {% for media in media_items %}
-                {% set media_path = media.path if media.path is defined else media.src %}
-                {% if media_path %}
-                {% set is_pdf = media_path.lower().endswith('.pdf') %}
-                <a
-                  class="editorial-card__media-link{% if is_pdf %} editorial-card__media-link--pdf{% endif %}"
-                  href="{{ url_for('static', filename=media_path) }}"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {% if is_pdf %}
-                  <span class="editorial-card__media-placeholder">PDF</span>
-                  {% else %}
-                  <img
-                    src="{{ url_for('static', filename=media_path) }}"
-                    alt="{{ media.alt | default('') }}"
-                    loading="lazy"
-                  />
-                  {% endif %}
-                </a>
-                {% endif %}
-                {% endfor %}
-                {% if current_user.is_authenticated %}
-                <div class="editorial-card__media-controls">
-                  <button
-                    type="button"
-                    class="inline-add-button inline-add-button--compact"
-                    data-media-add
-                    data-card-id="{{ card.id }}"
-                    data-module-id="{{ module.id }}"
-                  >
-                    Add image
-                  </button>
-                  <label class="editorial-card__media-align">
-                    <span>Image alignment</span>
-                    <select data-media-align data-card-id="{{ card.id }}" data-module-id="{{ module.id }}">
-                      {% for align in ['top-left','top-center','top-right','middle-left','middle-center','middle-right','bottom-left','bottom-center','bottom-right'] %}
-                      <option value="{{ align }}" {% if media_alignment == align %}selected{% endif %}>{{ align | replace('-', ' ') | title }}</option>
-                      {% endfor %}
-                    </select>
-                  </label>
-                </div>
-                {% endif %}
-              </div>
-              {% endif %}
               {% if body_length(card.body) > 0 or current_user.is_authenticated %}
               <div
                 class="editorial-card__body"
@@ -394,6 +343,57 @@
                     {{ card.cta.label }}
                   </span>
                 </a>
+                {% if current_user.is_authenticated and media_items | length == 0 %}
+                <button
+                  type="button"
+                  class="inline-add-button inline-add-button--compact"
+                  data-media-add
+                  data-card-id="{{ card.id }}"
+                  data-module-id="{{ module.id }}"
+                >
+                  Add image
+                </button>
+                {% endif %}
+              </div>
+              {% endif %}
+              {% if media_items %}
+              {% set display_items = media_items[:4] if media_items | length > 4 else media_items %}
+              <div
+                class="editorial-card__media-footer{% if media_items | length == 1 %} editorial-card__media-footer--single{% elif media_items | length > 4 %} editorial-card__media-footer--overflow{% else %} editorial-card__media-footer--grid{% endif %}"
+              >
+                <div class="editorial-card__media-grid">
+                  {% for media in display_items %}
+                  {% set media_path = media.path if media.path is defined else media.src %}
+                  {% if media_path %}
+                  {% set is_pdf = media_path.lower().endswith('.pdf') %}
+                  <div class="editorial-card__media-item">
+                    <a
+                      class="editorial-card__media-thumb"
+                      href="{{ url_for('static', filename=media_path) }}"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {% if is_pdf %}
+                      <span class="editorial-card__media-placeholder">PDF</span>
+                      {% else %}
+                      <img
+                        src="{{ url_for('static', filename=media_path) }}"
+                        alt="{{ media.alt | default('') }}"
+                        loading="lazy"
+                      />
+                      {% endif %}
+                    </a>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                  {% if media_items | length > 4 %}
+                  <div class="editorial-card__media-item editorial-card__media-item--more">
+                    <span class="editorial-card__media-thumb editorial-card__media-thumb--more">
+                      +{{ media_items | length - 4 }} more
+                    </span>
+                  </div>
+                  {% endif %}
+                </div>
               </div>
               {% endif %}
               {% if current_user.is_authenticated %}
@@ -877,6 +877,25 @@
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
     {% if current_user.is_authenticated %}
     <script src="{{ url_for('static', filename='inline-editor.js') }}" defer></script>
+    <div class="editorial-lightbox" data-editorial-lightbox hidden aria-hidden="true">
+      <div class="editorial-lightbox__backdrop" data-editorial-lightbox-close></div>
+      <div class="editorial-lightbox__dialog" role="dialog" aria-modal="true">
+        <header class="editorial-lightbox__header">
+          <h2 data-editorial-lightbox-title>Media preview</h2>
+          <div class="editorial-lightbox__actions">
+            <button type="button" data-editorial-lightbox-remove hidden>Remove</button>
+            <button type="button" class="editorial-lightbox__close" data-editorial-lightbox-close>
+              Close
+            </button>
+          </div>
+        </header>
+        <div class="editorial-lightbox__content" data-editorial-lightbox-content></div>
+        <div class="editorial-lightbox__nav">
+          <button type="button" data-editorial-lightbox-prev>Previous</button>
+          <button type="button" data-editorial-lightbox-next>Next</button>
+        </div>
+      </div>
+    </div>
     {% endif %}
   </body>
 </html>
