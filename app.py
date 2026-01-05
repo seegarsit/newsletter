@@ -17,6 +17,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
@@ -34,8 +35,8 @@ ISSUES_DIR = DATA_DIR / "issues"
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-secret-key")
 app.config["ADMIN_EMAIL"] = os.environ.get("ADMIN_EMAIL")
 app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD")
-app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME")
-app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD")
+app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME", "SEEGARS")
+app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD", "Sfc1949!")
 default_database_url = (
     "postgresql+psycopg://seegarsit_db_user:x6HcYaFnxMN5x4bCVcC9NC11GkL7GOF8"
     "@dpg-d3uiemfdiees73eadfg0-a/seegarsit_db"
@@ -598,25 +599,22 @@ def ensure_database_ready() -> None:
 
 @app.before_request
 def require_site_auth() -> Response | None:
-    """Require basic auth credentials to access the site."""
+    """Require site credentials before allowing access."""
 
-    if request.endpoint == "static":
+    if request.endpoint in {"static", "site_login", "admin_login"}:
         return None
 
-    username = app.config.get("SITE_USERNAME")
-    password = app.config.get("SITE_PASSWORD")
-    if not username or not password:
+    if request.path.startswith("/admin"):
         return None
 
-    auth = request.authorization
-    if auth and auth.username == username and auth.password == password:
+    if current_user.is_authenticated:
         return None
 
-    return Response(
-        "Authentication required.",
-        401,
-        {"WWW-Authenticate": 'Basic realm="Seegars Fence Newsletter"'},
-    )
+    if session.get("site_authenticated"):
+        return None
+
+    next_url = request.full_path if request.full_path else request.path
+    return redirect(url_for("site_login", next=next_url))
 
 
 @app.route("/")
@@ -628,6 +626,38 @@ def index() -> str:
         return render_template("index.html", issue=None)
 
     return render_template("index.html", issue=issue)
+
+
+def _safe_next_url(next_url: str | None) -> str:
+    """Return a safe redirect destination."""
+
+    if next_url and next_url.startswith("/"):
+        return next_url
+    return url_for("index")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def site_login() -> str | Response:
+    """Authenticate site visitors."""
+
+    if session.get("site_authenticated") or current_user.is_authenticated:
+        return redirect(url_for("index"))
+
+    issue = _get_current_issue()
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        site_username = app.config.get("SITE_USERNAME")
+        site_password = app.config.get("SITE_PASSWORD")
+
+        if username == site_username and password == site_password:
+            session["site_authenticated"] = True
+            next_url = _safe_next_url(request.args.get("next"))
+            return redirect(next_url)
+
+        flash("Invalid username or password.", "error")
+
+    return render_template("login.html", issue=issue)
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
