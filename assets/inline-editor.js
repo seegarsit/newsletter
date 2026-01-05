@@ -193,6 +193,7 @@
       trigger.dataset.moduleId = moduleId;
       trigger.dataset.cardId = card.id;
       trigger.setAttribute('aria-label', media.alt || 'Open media preview');
+      attachEditorialMediaListeners(trigger);
 
       if (media.type === 'pdf') {
         const placeholder = document.createElement('span');
@@ -237,6 +238,7 @@
       moreButton.dataset.cardId = card.id;
       moreButton.setAttribute('aria-label', `Open ${mediaData.length - 4} more media items`);
       moreButton.textContent = `+${mediaData.length - 4} more`;
+      attachEditorialMediaListeners(moreButton);
       moreItem.appendChild(moreButton);
       grid.appendChild(moreItem);
     }
@@ -289,6 +291,7 @@
   let activeEditorialTrigger = null;
   let activeEditorialModuleId = null;
   let activeEditorialCardId = null;
+  let lastMediaPointerUp = 0;
 
   function renderEditorialLightbox() {
     if (!editorialLightboxContent || !activeEditorialMedia.length) return;
@@ -405,6 +408,41 @@
       activeEditorialIndex = activeEditorialMedia.length - 1;
     }
     renderEditorialLightbox();
+  }
+
+  function getMediaItemsFromFooter(trigger) {
+    const footer = trigger.closest('.editorial-card__media-footer');
+    const itemsRaw = footer?.dataset.mediaItems;
+    if (!itemsRaw) return [];
+    try {
+      return JSON.parse(itemsRaw);
+    } catch (error) {
+      console.error('Unable to parse editorial media items', error);
+      return [];
+    }
+  }
+
+  function handleEditorialMediaTrigger(event, trigger) {
+    event.preventDefault();
+    event.stopPropagation();
+    const items = getMediaItemsFromFooter(trigger);
+    if (!items.length) return;
+    const index = Number(trigger.dataset.mediaIndex || 0);
+    openEditorialLightbox(items, Number.isNaN(index) ? 0 : index, trigger);
+  }
+
+  function attachEditorialMediaListeners(trigger) {
+    if (!trigger) return;
+    trigger.addEventListener('pointerup', (event) => {
+      if (event.pointerType && event.pointerType !== 'touch') return;
+      lastMediaPointerUp = Date.now();
+      handleEditorialMediaTrigger(event, trigger);
+    });
+
+    trigger.addEventListener('click', (event) => {
+      if (Date.now() - lastMediaPointerUp < 500) return;
+      handleEditorialMediaTrigger(event, trigger);
+    });
   }
 
   function rgbToHex(value) {
@@ -1357,24 +1395,6 @@
         card.media = items;
         renderEditorial(module);
       }
-      return;
-    }
-
-    const editorialTrigger = event.target.closest('[data-editorial-media-trigger]');
-    if (editorialTrigger) {
-      event.preventDefault();
-      const footer = editorialTrigger.closest('.editorial-card__media-footer');
-      const itemsRaw = footer?.dataset.mediaItems;
-      if (!itemsRaw) return;
-      let items = [];
-      try {
-        items = JSON.parse(itemsRaw);
-      } catch (error) {
-        console.error('Unable to parse editorial media items', error);
-      }
-      if (!items.length) return;
-      const index = Number(editorialTrigger.dataset.mediaIndex || 0);
-      openEditorialLightbox(items, Number.isNaN(index) ? 0 : index, editorialTrigger);
       return;
     }
 
