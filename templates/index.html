@@ -358,8 +358,21 @@
               {% endif %}
               {% if media_items %}
               {% set display_items = media_items[:4] if media_items | length > 4 else media_items %}
+              {% set media_payload = [] %}
+              {% for media in media_items %}
+              {% set media_path = media.path if media.path is defined else media.src %}
+              {% if media_path %}
+              {% set media_type = 'pdf' if media_path.lower().endswith('.pdf') else 'image' %}
+              {% set media_payload = media_payload + [{
+                'src': url_for('static', filename=media_path),
+                'alt': media.alt | default(''),
+                'type': media_type
+              }] %}
+              {% endif %}
+              {% endfor %}
               <div
                 class="editorial-card__media-footer{% if media_items | length == 1 %} editorial-card__media-footer--single{% elif media_items | length > 4 %} editorial-card__media-footer--overflow{% else %} editorial-card__media-footer--grid{% endif %}"
+                data-media-items="{{ media_payload | tojson }}"
               >
                 <div class="editorial-card__media-grid">
                   {% for media in display_items %}
@@ -370,8 +383,8 @@
                     <a
                       class="editorial-card__media-thumb"
                       href="{{ url_for('static', filename=media_path) }}"
-                      target="_blank"
-                      rel="noreferrer"
+                      data-editorial-media-trigger
+                      data-media-index="{{ loop.index0 }}"
                     >
                       {% if is_pdf %}
                       <span class="editorial-card__media-placeholder">PDF</span>
@@ -388,9 +401,14 @@
                   {% endfor %}
                   {% if media_items | length > 4 %}
                   <div class="editorial-card__media-item editorial-card__media-item--more">
-                    <span class="editorial-card__media-thumb editorial-card__media-thumb--more">
+                    <button
+                      type="button"
+                      class="editorial-card__media-thumb editorial-card__media-thumb--more"
+                      data-editorial-media-trigger
+                      data-media-index="4"
+                    >
                       +{{ media_items | length - 4 }} more
-                    </span>
+                    </button>
                   </div>
                   {% endif %}
                 </div>
@@ -875,7 +893,6 @@
     </footer>
 
     <script src="{{ url_for('static', filename='app.js') }}" defer></script>
-    {% if current_user.is_authenticated %}
     <script src="{{ url_for('static', filename='inline-editor.js') }}" defer></script>
     <div class="editorial-lightbox" data-editorial-lightbox hidden aria-hidden="true">
       <div class="editorial-lightbox__backdrop" data-editorial-lightbox-close></div>
@@ -884,8 +901,13 @@
           <h2 data-editorial-lightbox-title>Media preview</h2>
           <div class="editorial-lightbox__actions">
             <button type="button" data-editorial-lightbox-remove hidden>Remove</button>
-            <button type="button" class="editorial-lightbox__close" data-editorial-lightbox-close>
-              Close
+            <button
+              type="button"
+              class="editorial-lightbox__close"
+              data-editorial-lightbox-close
+              aria-label="Close"
+            >
+              &times;
             </button>
           </div>
         </header>
@@ -896,6 +918,5 @@
         </div>
       </div>
     </div>
-    {% endif %}
   </body>
 </html>
