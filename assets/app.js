@@ -252,4 +252,34 @@
     });
   }
 
+  const externalLinks = document.querySelectorAll('a[href]');
+  externalLinks.forEach((link) => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) {
+      return;
+    }
+
+    let url;
+    try {
+      url = new URL(href, window.location.href);
+    } catch (error) {
+      return;
+    }
+
+    if (url.origin === window.location.origin) {
+      return;
+    }
+
+    link.setAttribute('target', '_blank');
+
+    const rel = (link.getAttribute('rel') || '').split(' ').filter(Boolean);
+    if (!rel.includes('noopener')) {
+      rel.push('noopener');
+    }
+    if (!rel.includes('noreferrer')) {
+      rel.push('noreferrer');
+    }
+    link.setAttribute('rel', rel.join(' '));
+  });
+
 })();
