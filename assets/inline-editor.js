@@ -1,12 +1,10 @@
 (function () {
   const toolbar = document.querySelector('[data-inline-toolbar]');
-  if (!toolbar) return;
-
   const body = document.body;
   const staticBase = body.dataset.staticBase || '/assets/';
-  const toggleButton = toolbar.querySelector('[data-inline-toggle]');
-  const saveButton = toolbar.querySelector('[data-inline-save]');
-  const cancelButton = toolbar.querySelector('[data-inline-cancel]');
+  const toggleButton = toolbar?.querySelector('[data-inline-toggle]');
+  const saveButton = toolbar?.querySelector('[data-inline-save]');
+  const cancelButton = toolbar?.querySelector('[data-inline-cancel]');
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
   const textStyleColor = document.querySelector('[data-text-style-color]');
@@ -280,6 +278,9 @@
   const editorialLightboxClose = Array.from(
     editorialLightbox?.querySelectorAll('[data-editorial-lightbox-close]') || []
   );
+  const editorialLightboxCloseButton = editorialLightbox?.querySelector(
+    '.editorial-lightbox__close'
+  );
   const editorialLightboxRemove = editorialLightbox?.querySelector(
     '[data-editorial-lightbox-remove]'
   );
@@ -336,12 +337,15 @@
       editorialLightbox.classList.add('is-active');
     });
     editorialLightbox.setAttribute('aria-hidden', 'false');
+    body.classList.add('is-lightbox-open');
+    editorialLightboxCloseButton?.focus();
   }
 
   function closeEditorialLightbox() {
     if (!editorialLightbox || editorialLightbox.hasAttribute('hidden')) return;
     editorialLightbox.classList.remove('is-active');
     editorialLightbox.setAttribute('aria-hidden', 'true');
+    body.classList.remove('is-lightbox-open');
 
     const onTransitionEnd = () => {
       editorialLightbox.setAttribute('hidden', '');
@@ -1564,5 +1568,7 @@
     imageInput.value = '';
   });
 
-  fetchCurrent();
+  if (toolbar) {
+    fetchCurrent();
+  }
 })();
