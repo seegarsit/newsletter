@@ -249,6 +249,78 @@ ul li::before {
   color: rgba(255, 255, 255, 0.9);
 }
 
+.hero--login {
+  min-height: calc(100vh - 80px);
+}
+
+.login-page .hero__content {
+  max-width: 600px;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--ink);
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.login-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.login-field input {
+  border-radius: 12px;
+  border: 1px solid rgba(34, 87, 122, 0.2);
+  padding: 0.7rem 0.9rem;
+  font-size: 1rem;
+}
+
+.login-field input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.login-messages {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.login-message {
+  background: rgba(34, 87, 122, 0.08);
+  border-radius: 12px;
+  padding: 0.6rem 0.9rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.login-message--error {
+  background: rgba(200, 40, 40, 0.12);
+  color: #7a1b1b;
+}
+
 .button {
   display: inline-flex;
   align-items: center;
