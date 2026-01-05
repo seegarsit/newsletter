@@ -95,6 +95,20 @@ STYLE_COLOR_KEYS = ("background_color", "text_color")
 META_SEPARATOR = " • "
 ALLOWED_MEDIA_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "webp"}
 ALLOWED_ALIGNMENTS = {"left", "center", "right"}
+ALLOWED_MEDIA_ALIGNMENTS = {
+    "left",
+    "center",
+    "right",
+    "top-left",
+    "top-center",
+    "top-right",
+    "middle-left",
+    "middle-center",
+    "middle-right",
+    "bottom-left",
+    "bottom-center",
+    "bottom-right",
+}
 
 
 def _default_theme() -> dict[str, str]:
@@ -714,10 +728,16 @@ def _sanitize_media_items(items: list[dict[str, Any]] | None) -> list[dict[str, 
     return cleaned
 
 
-def _sanitize_alignment(value: str | None, default: str = "left") -> str:
+def _sanitize_alignment(
+    value: str | None,
+    default: str = "left",
+    allowed_alignments: set[str] | None = None,
+) -> str:
     """Return a supported alignment token."""
 
-    if isinstance(value, str) and value in ALLOWED_ALIGNMENTS:
+    if allowed_alignments is None:
+        allowed_alignments = ALLOWED_ALIGNMENTS
+    if isinstance(value, str) and value in allowed_alignments:
         return value
     return default
 
@@ -762,7 +782,9 @@ def _sanitize_issue_payload(payload: dict[str, Any]) -> dict[str, Any]:
             for card in module.get("cards", []):
                 alignment = _sanitize_alignment(card.get("alignment"), "left")
                 media_alignment = _sanitize_alignment(
-                    card.get("media_alignment"), alignment
+                    card.get("media_alignment"),
+                    alignment,
+                    allowed_alignments=ALLOWED_MEDIA_ALIGNMENTS,
                 )
                 cards.append(
                     {

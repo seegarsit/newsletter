@@ -316,6 +316,9 @@
               {% set media_items = card.media if card.media is defined else [] %}
               {% if media_items or current_user.is_authenticated %}
               {% set media_alignment = card.media_alignment | default(card.alignment | default('left')) %}
+              {% if media_alignment in ['left', 'center', 'right'] %}
+                {% set media_alignment = 'top-' ~ media_alignment %}
+              {% endif %}
               <div class="editorial-card__media editorial-card__media--align-{{ media_alignment }}">
                 {% for media in media_items %}
                 {% set media_path = media.path if media.path is defined else media.src %}
@@ -353,8 +356,8 @@
                   <label class="editorial-card__media-align">
                     <span>Image alignment</span>
                     <select data-media-align data-card-id="{{ card.id }}" data-module-id="{{ module.id }}">
-                      {% for align in ['left','center','right'] %}
-                      <option value="{{ align }}" {% if media_alignment == align %}selected{% endif %}>{{ align | title }}</option>
+                      {% for align in ['top-left','top-center','top-right','middle-left','middle-center','middle-right','bottom-left','bottom-center','bottom-right'] %}
+                      <option value="{{ align }}" {% if media_alignment == align %}selected{% endif %}>{{ align | replace('-', ' ') | title }}</option>
                       {% endfor %}
                     </select>
                   </label>
