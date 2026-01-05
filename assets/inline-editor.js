@@ -38,17 +38,6 @@
     highlight: '--highlight',
     highlight_text: '--highlight-text',
   };
-  const mediaAlignments = [
-    'top-left',
-    'top-center',
-    'top-right',
-    'middle-left',
-    'middle-center',
-    'middle-right',
-    'bottom-left',
-    'bottom-center',
-    'bottom-right',
-  ];
 
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
@@ -152,16 +141,266 @@
     return item?.path || item?.src || '';
   }
 
-  function getMediaAlignment(card) {
-    const alignment = card?.media_alignment || card?.alignment || 'left';
-    if (['left', 'center', 'right'].includes(alignment)) {
-      return `top-${alignment}`;
-    }
-    return alignment;
-  }
 
   function isPdfFile(path) {
     return path?.toLowerCase().endsWith('.pdf');
+  }
+
+  function buildMediaItemsData(mediaItems) {
+    return mediaItems
+      .map((media) => {
+        const mediaPath = getMediaPath(media);
+        if (!mediaPath) return null;
+        return {
+          src: `${staticBase}${mediaPath}`,
+          alt: media?.alt || '',
+          type: isPdfFile(mediaPath) ? 'pdf' : 'image',
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function createMediaFooter(card, moduleId) {
+    const mediaItems = getMediaItems(card);
+    if (!mediaItems.length) return null;
+
+    const mediaData = buildMediaItemsData(mediaItems);
+    if (!mediaData.length) return null;
+
+    const footer = document.createElement('div');
+    footer.className = 'editorial-card__media-footer';
+    footer.dataset.mediaItems = JSON.stringify(mediaData);
+
+    const grid = document.createElement('div');
+    grid.className = 'editorial-card__media-grid';
+
+    if (mediaData.length === 1) {
+      footer.classList.add('editorial-card__media-footer--single');
+    } else if (mediaData.length > 4) {
+      footer.classList.add('editorial-card__media-footer--overflow');
+    } else {
+      footer.classList.add('editorial-card__media-footer--grid');
+    }
+
+    const displayItems = mediaData.length > 4 ? mediaData.slice(0, 4) : mediaData;
+    displayItems.forEach((media, index) => {
+      const mediaItem = document.createElement('div');
+      mediaItem.className = 'editorial-card__media-item';
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'editorial-card__media-thumb';
+      trigger.dataset.editorialMediaTrigger = 'true';
+      trigger.dataset.mediaIndex = String(index);
+      trigger.dataset.moduleId = moduleId;
+      trigger.dataset.cardId = card.id;
+      trigger.setAttribute('aria-label', media.alt || 'Open media preview');
+
+      if (media.type === 'pdf') {
+        const placeholder = document.createElement('span');
+        placeholder.className = 'editorial-card__media-placeholder';
+        placeholder.textContent = 'PDF';
+        trigger.appendChild(placeholder);
+      } else {
+        const img = document.createElement('img');
+        img.src = media.src;
+        img.alt = media.alt;
+        img.loading = 'lazy';
+        trigger.appendChild(img);
+      }
+
+      mediaItem.appendChild(trigger);
+
+      if (editMode) {
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className =
+          'inline-remove-button inline-remove-button--compact editorial-card__media-remove';
+        removeButton.dataset.mediaRemove = 'true';
+        removeButton.dataset.moduleId = moduleId;
+        removeButton.dataset.cardId = card.id;
+        removeButton.dataset.mediaIndex = String(index);
+        removeButton.textContent = 'Remove';
+        mediaItem.appendChild(removeButton);
+      }
+
+      grid.appendChild(mediaItem);
+    });
+
+    if (mediaData.length > 4) {
+      const moreItem = document.createElement('div');
+      moreItem.className = 'editorial-card__media-item editorial-card__media-item--more';
+      const moreButton = document.createElement('button');
+      moreButton.type = 'button';
+      moreButton.className = 'editorial-card__media-thumb editorial-card__media-thumb--more';
+      moreButton.dataset.editorialMediaTrigger = 'true';
+      moreButton.dataset.mediaIndex = '4';
+      moreButton.dataset.moduleId = moduleId;
+      moreButton.dataset.cardId = card.id;
+      moreButton.setAttribute('aria-label', `Open ${mediaData.length - 4} more media items`);
+      moreButton.textContent = `+${mediaData.length - 4} more`;
+      moreItem.appendChild(moreButton);
+      grid.appendChild(moreItem);
+    }
+
+    footer.appendChild(grid);
+
+    if (editMode) {
+      const controls = document.createElement('div');
+      controls.className = 'editorial-card__media-controls';
+
+      const addButton = document.createElement('button');
+      addButton.type = 'button';
+      addButton.className = 'inline-add-button inline-add-button--compact';
+      addButton.dataset.mediaAdd = 'true';
+      addButton.dataset.moduleId = moduleId;
+      addButton.dataset.cardId = card.id;
+      addButton.textContent = 'Add image';
+      controls.appendChild(addButton);
+
+      footer.appendChild(controls);
+    }
+
+    return footer;
+  }
+
+  const editorialLightbox = document.querySelector('[data-editorial-lightbox]');
+  const editorialLightboxContent = editorialLightbox?.querySelector(
+    '[data-editorial-lightbox-content]'
+  );
+  const editorialLightboxTitle = editorialLightbox?.querySelector(
+    '[data-editorial-lightbox-title]'
+  );
+  const editorialLightboxPrev = editorialLightbox?.querySelector(
+    '[data-editorial-lightbox-prev]'
+  );
+  const editorialLightboxNext = editorialLightbox?.querySelector(
+    '[data-editorial-lightbox-next]'
+  );
+  const editorialLightboxClose = Array.from(
+    editorialLightbox?.querySelectorAll('[data-editorial-lightbox-close]') || []
+  );
+  const editorialLightboxRemove = editorialLightbox?.querySelector(
+    '[data-editorial-lightbox-remove]'
+  );
+  let activeEditorialMedia = [];
+  let activeEditorialIndex = 0;
+  let activeEditorialTrigger = null;
+  let activeEditorialModuleId = null;
+  let activeEditorialCardId = null;
+
+  function renderEditorialLightbox() {
+    if (!editorialLightboxContent || !activeEditorialMedia.length) return;
+    const item = activeEditorialMedia[activeEditorialIndex];
+    editorialLightboxContent.innerHTML = '';
+
+    if (editorialLightboxTitle) {
+      editorialLightboxTitle.textContent = `Media ${activeEditorialIndex + 1} of ${activeEditorialMedia.length}`;
+    }
+
+    if (item.type === 'pdf') {
+      const iframe = document.createElement('iframe');
+      iframe.src = item.src;
+      iframe.title = item.alt || 'Media document';
+      iframe.loading = 'lazy';
+      editorialLightboxContent.appendChild(iframe);
+    } else {
+      const img = document.createElement('img');
+      img.src = item.src;
+      img.alt = item.alt || '';
+      img.loading = 'lazy';
+      editorialLightboxContent.appendChild(img);
+    }
+
+    if (editorialLightboxPrev) {
+      editorialLightboxPrev.disabled = activeEditorialMedia.length <= 1;
+    }
+    if (editorialLightboxNext) {
+      editorialLightboxNext.disabled = activeEditorialMedia.length <= 1;
+    }
+    if (editorialLightboxRemove) {
+      editorialLightboxRemove.hidden = !editMode;
+    }
+  }
+
+  function openEditorialLightbox(items, index, trigger) {
+    if (!editorialLightbox || !Array.isArray(items) || items.length === 0) return;
+    activeEditorialMedia = items;
+    activeEditorialIndex = Math.max(0, Math.min(index, items.length - 1));
+    activeEditorialTrigger = trigger;
+    activeEditorialModuleId = trigger?.dataset.moduleId || null;
+    activeEditorialCardId = trigger?.dataset.cardId || null;
+    renderEditorialLightbox();
+    editorialLightbox.removeAttribute('hidden');
+    requestAnimationFrame(() => {
+      editorialLightbox.classList.add('is-active');
+    });
+    editorialLightbox.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeEditorialLightbox() {
+    if (!editorialLightbox || editorialLightbox.hasAttribute('hidden')) return;
+    editorialLightbox.classList.remove('is-active');
+    editorialLightbox.setAttribute('aria-hidden', 'true');
+
+    const onTransitionEnd = () => {
+      editorialLightbox.setAttribute('hidden', '');
+      editorialLightbox.removeEventListener('transitionend', onTransitionEnd);
+      if (editorialLightboxContent) {
+        editorialLightboxContent.innerHTML = '';
+      }
+      if (activeEditorialTrigger) {
+        activeEditorialTrigger.focus();
+        activeEditorialTrigger = null;
+      }
+      activeEditorialModuleId = null;
+      activeEditorialCardId = null;
+    };
+
+    editorialLightbox.addEventListener('transitionend', onTransitionEnd);
+
+    setTimeout(() => {
+      if (!editorialLightbox.hasAttribute('hidden')) {
+        editorialLightbox.setAttribute('hidden', '');
+        if (editorialLightboxContent) {
+          editorialLightboxContent.innerHTML = '';
+        }
+        if (activeEditorialTrigger) {
+          activeEditorialTrigger.focus();
+          activeEditorialTrigger = null;
+        }
+        activeEditorialModuleId = null;
+        activeEditorialCardId = null;
+      }
+    }, 350);
+  }
+
+  function moveEditorialLightbox(step) {
+    if (!activeEditorialMedia.length) return;
+    activeEditorialIndex =
+      (activeEditorialIndex + step + activeEditorialMedia.length) % activeEditorialMedia.length;
+    renderEditorialLightbox();
+  }
+
+  function removeEditorialLightboxItem() {
+    if (!editMode || !draftData || !activeEditorialModuleId || !activeEditorialCardId) return;
+    const module = findModule(draftData, activeEditorialModuleId);
+    const card = module?.cards?.find((item) => item.id === activeEditorialCardId);
+    if (!card) return;
+    const items = getMediaItems(card);
+    if (!items.length) return;
+    items.splice(activeEditorialIndex, 1);
+    card.media = items;
+    renderEditorial(module);
+    if (!items.length) {
+      closeEditorialLightbox();
+      return;
+    }
+    activeEditorialMedia = buildMediaItemsData(items);
+    if (activeEditorialIndex >= activeEditorialMedia.length) {
+      activeEditorialIndex = activeEditorialMedia.length - 1;
+    }
+    renderEditorialLightbox();
   }
 
   function rgbToHex(value) {
@@ -368,100 +607,6 @@
 
     article.appendChild(header);
 
-    const mediaItems = getMediaItems(card);
-    if (mediaItems.length || editMode) {
-      const mediaAlignment = getMediaAlignment(card);
-      const mediaSection = document.createElement('div');
-      article.classList.add(`editorial-card--media-align-${mediaAlignment}`);
-      mediaSection.className = `editorial-card__media editorial-card__media--align-${mediaAlignment}`;
-
-      mediaItems.forEach((media, index) => {
-        const mediaPath = getMediaPath(media);
-        if (!mediaPath) return;
-        const isPdf = isPdfFile(mediaPath);
-        const mediaItem = document.createElement('div');
-        mediaItem.className = 'editorial-card__media-item';
-
-        const link = document.createElement('a');
-        link.className = `editorial-card__media-link${isPdf ? ' editorial-card__media-link--pdf' : ''}`;
-        link.href = `${staticBase}${mediaPath}`;
-        link.target = '_blank';
-        link.rel = 'noreferrer';
-
-        if (isPdf) {
-          const placeholder = document.createElement('span');
-          placeholder.className = 'editorial-card__media-placeholder';
-          placeholder.textContent = 'PDF';
-          link.appendChild(placeholder);
-        } else {
-          const img = document.createElement('img');
-          img.src = `${staticBase}${mediaPath}`;
-          img.alt = media?.alt || '';
-          img.loading = 'lazy';
-          link.appendChild(img);
-        }
-
-        mediaItem.appendChild(link);
-
-        if (editMode) {
-          const removeButton = document.createElement('button');
-          removeButton.type = 'button';
-          removeButton.className =
-            'inline-remove-button inline-remove-button--compact editorial-card__media-remove';
-          removeButton.dataset.mediaRemove = 'true';
-          removeButton.dataset.moduleId = moduleId;
-          removeButton.dataset.cardId = card.id;
-          removeButton.dataset.mediaIndex = String(index);
-          removeButton.textContent = 'Remove';
-          mediaItem.appendChild(removeButton);
-        }
-
-        mediaSection.appendChild(mediaItem);
-      });
-
-      if (editMode) {
-        const controls = document.createElement('div');
-        controls.className = 'editorial-card__media-controls';
-
-        const addButton = document.createElement('button');
-        addButton.type = 'button';
-        addButton.className = 'inline-add-button inline-add-button--compact';
-        addButton.dataset.mediaAdd = 'true';
-        addButton.dataset.moduleId = moduleId;
-        addButton.dataset.cardId = card.id;
-        addButton.textContent = 'Add image';
-        controls.appendChild(addButton);
-
-        const alignLabel = document.createElement('label');
-        alignLabel.className = 'editorial-card__media-align';
-        const alignText = document.createElement('span');
-        alignText.textContent = 'Image alignment';
-        const select = document.createElement('select');
-        select.dataset.mediaAlign = 'true';
-        select.dataset.moduleId = moduleId;
-        select.dataset.cardId = card.id;
-        mediaAlignments.forEach((alignment) => {
-          const option = document.createElement('option');
-          option.value = alignment;
-          option.textContent = alignment
-            .split('-')
-            .map((segment) => segment.replace(/^\w/, (char) => char.toUpperCase()))
-            .join(' ');
-          if (alignment === mediaAlignment) {
-            option.selected = true;
-          }
-          select.appendChild(option);
-        });
-        alignLabel.appendChild(alignText);
-        alignLabel.appendChild(select);
-        controls.appendChild(alignLabel);
-
-        mediaSection.appendChild(controls);
-      }
-
-      article.appendChild(mediaSection);
-    }
-
     if ((card.body && card.body.content) || editMode) {
       const body = document.createElement('div');
       body.className = 'editorial-card__body';
@@ -471,6 +616,7 @@
       article.appendChild(body);
     }
 
+    let hasActions = false;
     if (card.cta && card.id !== 'tech-talk' && (card.cta.label && card.cta.url || editMode)) {
       const actions = document.createElement('div');
       actions.className = 'editorial-card__actions';
@@ -488,7 +634,39 @@
       label.textContent = card.cta.label || '';
       link.appendChild(label);
       actions.appendChild(link);
+
+      if (editMode && getMediaItems(card).length === 0) {
+        const addMediaButton = document.createElement('button');
+        addMediaButton.type = 'button';
+        addMediaButton.className = 'inline-add-button inline-add-button--compact';
+        addMediaButton.dataset.mediaAdd = 'true';
+        addMediaButton.dataset.moduleId = moduleId;
+        addMediaButton.dataset.cardId = card.id;
+        addMediaButton.textContent = 'Add image';
+        actions.appendChild(addMediaButton);
+      }
+
       article.appendChild(actions);
+      hasActions = true;
+    }
+
+    if (editMode && getMediaItems(card).length === 0 && !hasActions) {
+      const controls = document.createElement('div');
+      controls.className = 'editorial-card__actions';
+      const addMediaButton = document.createElement('button');
+      addMediaButton.type = 'button';
+      addMediaButton.className = 'inline-add-button inline-add-button--compact';
+      addMediaButton.dataset.mediaAdd = 'true';
+      addMediaButton.dataset.moduleId = moduleId;
+      addMediaButton.dataset.cardId = card.id;
+      addMediaButton.textContent = 'Add image';
+      controls.appendChild(addMediaButton);
+      article.appendChild(controls);
+    }
+
+    const mediaFooter = createMediaFooter(card, moduleId);
+    if (mediaFooter) {
+      article.appendChild(mediaFooter);
     }
 
     if (editMode) {
@@ -1064,7 +1242,6 @@
         order: module.cards.length,
         style_preset: 'default',
         alignment: 'left',
-        media_alignment: 'top-left',
         media: [],
       });
       renderEditorial(module);
@@ -1179,6 +1356,24 @@
       return;
     }
 
+    const editorialTrigger = event.target.closest('[data-editorial-media-trigger]');
+    if (editorialTrigger) {
+      event.preventDefault();
+      const footer = editorialTrigger.closest('.editorial-card__media-footer');
+      const itemsRaw = footer?.dataset.mediaItems;
+      if (!itemsRaw) return;
+      let items = [];
+      try {
+        items = JSON.parse(itemsRaw);
+      } catch (error) {
+        console.error('Unable to parse editorial media items', error);
+      }
+      if (!items.length) return;
+      const index = Number(editorialTrigger.dataset.mediaIndex || 0);
+      openEditorialLightbox(items, Number.isNaN(index) ? 0 : index, editorialTrigger);
+      return;
+    }
+
     const addButton = event.target.closest('[data-inline-add]');
     if (addButton) {
       event.preventDefault();
@@ -1202,14 +1397,33 @@
     ensureEditableClick(event);
   });
 
-  document.addEventListener('change', (event) => {
-    const alignSelect = event.target.closest('[data-media-align]');
-    if (!alignSelect || !draftData) return;
-    const module = findModule(draftData, alignSelect.dataset.moduleId);
-    const card = module?.cards?.find((item) => item.id === alignSelect.dataset.cardId);
-    if (!card) return;
-    card.media_alignment = alignSelect.value;
-    renderEditorial(module);
+  editorialLightboxPrev?.addEventListener('click', () => {
+    moveEditorialLightbox(-1);
+  });
+
+  editorialLightboxNext?.addEventListener('click', () => {
+    moveEditorialLightbox(1);
+  });
+
+  editorialLightboxClose.forEach((closeButton) => {
+    closeButton.addEventListener('click', closeEditorialLightbox);
+  });
+
+  editorialLightboxRemove?.addEventListener('click', () => {
+    removeEditorialLightboxItem();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (!editorialLightbox || editorialLightbox.hasAttribute('hidden')) return;
+    if (event.key === 'Escape') {
+      closeEditorialLightbox();
+    }
+    if (event.key === 'ArrowLeft') {
+      moveEditorialLightbox(-1);
+    }
+    if (event.key === 'ArrowRight') {
+      moveEditorialLightbox(1);
+    }
   });
 
   editorialGrid?.addEventListener('dragstart', (event) => {
