@@ -38,6 +38,9 @@
         <button type="button" class="admin-toolbar__button" data-inline-cancel>
           Cancel
         </button>
+        <button type="button" class="admin-toolbar__button" data-theme-toggle>
+          Theme
+        </button>
         <a class="admin-toolbar__link" href="{{ url_for('admin_logout') }}">
           Log out
         </a>
@@ -69,6 +72,125 @@
           <input type="color" data-style-background />
         </label>
       </div>
+      <div class="inline-theme-panel" data-theme-panel hidden>
+        <div class="inline-theme-panel__header">
+          <h2>Theme</h2>
+          <div class="inline-theme-panel__actions">
+            <button type="button" data-theme-reset>Reset Theme</button>
+            <button type="button" data-theme-close>Close</button>
+          </div>
+        </div>
+        <label>
+          Page background
+          <input type="color" data-theme-key="page_bg" data-default-color="#C7F9CC" />
+        </label>
+        <label>
+          Text color
+          <input type="color" data-theme-key="text_color" data-default-color="#22577A" />
+        </label>
+        <label>
+          Link color
+          <input type="color" data-theme-key="link_color" data-default-color="#38A3A5" />
+        </label>
+        <label>
+          Link hover
+          <input type="color" data-theme-key="link_hover" data-default-color="#22577A" />
+        </label>
+        <label>
+          Button background
+          <input type="color" data-theme-key="btn_bg" data-default-color="#38A3A5" />
+        </label>
+        <label>
+          Button text
+          <input type="color" data-theme-key="btn_text" data-default-color="#FFFFFF" />
+        </label>
+        <label>
+          Button hover
+          <input type="color" data-theme-key="btn_hover_bg" data-default-color="#38A3A5" />
+        </label>
+        <label>
+          Nav background
+          <input type="color" data-theme-key="nav_bg" data-default-color="#22577A" />
+        </label>
+        <label>
+          Nav text
+          <input type="color" data-theme-key="nav_text" data-default-color="#F8FDF9" />
+        </label>
+        <label>
+          Callout background
+          <input type="color" data-theme-key="callout_bg" data-default-color="#FFFFFF" />
+        </label>
+        <label>
+          Callout text
+          <input type="color" data-theme-key="callout_text" data-default-color="#22577A" />
+        </label>
+        <label>
+          Callout border
+          <input type="color" data-theme-key="callout_border" data-default-color="#22577A" />
+        </label>
+        <label>
+          Card background
+          <input type="color" data-theme-key="card_bg" data-default-color="#FFFFFF" />
+        </label>
+        <label>
+          Card border
+          <input type="color" data-theme-key="card_border" data-default-color="#FFFFFF" />
+        </label>
+      </div>
+      <div class="inline-component-panel" data-component-panel hidden>
+        <div class="inline-theme-panel__header">
+          <h2 data-component-title>Component</h2>
+          <button type="button" data-component-reset>Reset</button>
+        </div>
+        <div class="inline-component-panel__section" data-component-section="nav" hidden>
+          <label>
+            Nav background
+            <input type="color" data-component-nav-bg data-default-color="#22577A" />
+          </label>
+          <label>
+            Nav text
+            <input type="color" data-component-nav-text data-default-color="#F8FDF9" />
+          </label>
+        </div>
+        <div class="inline-component-panel__section" data-component-section="callout" hidden>
+          <label>
+            Callout background
+            <input type="color" data-component-callout-bg data-default-color="#FFFFFF" />
+          </label>
+          <label>
+            Callout text
+            <input type="color" data-component-callout-text data-default-color="#22577A" />
+          </label>
+          <label>
+            Callout border
+            <input type="color" data-component-callout-border data-default-color="#22577A" />
+          </label>
+        </div>
+        <div class="inline-component-panel__section" data-component-section="section" hidden>
+          <label>
+            Section background
+            <input type="color" data-component-section-bg data-default-color="#FFFFFF" />
+          </label>
+        </div>
+        <div class="inline-component-panel__section" data-component-section="image" hidden>
+          <button type="button" data-component-image-replace>Replace image</button>
+        </div>
+        <div class="inline-component-panel__section" data-component-section="hero" hidden>
+          <button type="button" data-component-hero-image>Replace hero image</button>
+          <label>
+            Overlay tint
+            <input type="color" data-component-hero-overlay data-default-color="#22577A" />
+          </label>
+          <label>
+            Title text color
+            <input type="color" data-component-hero-title data-default-color="#FFFFFF" />
+          </label>
+          <label>
+            Subtitle text color
+            <input type="color" data-component-hero-subtitle data-default-color="#FFFFFF" />
+          </label>
+        </div>
+      </div>
     <input
       type="file"
       class="inline-image-input"
@@ -89,7 +211,7 @@
             alt="Seegars Fence Company logo"
           />
         </a>
-        <nav class="primary-nav" aria-label="Primary navigation">
+        <nav class="primary-nav site-nav" aria-label="Primary navigation">
           <a
             class="primary-nav__icon-link"
             href="https://www.facebook.com/seegarsfencecompany/"
@@ -156,6 +278,8 @@
         aria-labelledby="hero-heading"
         data-edit-path="hero.image"
         data-edit-type="image"
+        data-editable="image"
+        data-hero
         style="--hero-image: url('{{ url_for('static', filename=issue.hero.image) }}');"
       >
         <div
@@ -223,6 +347,9 @@
         id="{{ module.id }}"
         class="module module--featured module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <article
@@ -262,6 +389,9 @@
         id="{{ module.id }}"
         class="module module--editorial module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <header class="module__header">
@@ -473,6 +603,9 @@
         id="{{ module.id }}"
         class="module module--highlight module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <article
@@ -541,6 +674,9 @@
         id="{{ module.id }}"
         class="module module--celebrations module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <header class="module__header module__header--center">
@@ -699,6 +835,9 @@
         id="{{ module.id }}"
         class="module module--contributors module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <header class="module__header module__header--center">
@@ -752,6 +891,7 @@
                   alt="Portrait of {{ person.name }}"
                   data-edit-path="modules.{{ module.id }}.people.{{ loop.index0 }}.image"
                   data-edit-type="image"
+                  data-editable="image"
                 />
               </div>
               <div class="contributor-card__body">
@@ -799,6 +939,9 @@
         id="{{ module.id }}"
         class="module module--resources module--preset-{{ module.style_preset | default('default') }}"
         aria-labelledby="{{ module.id }}-heading"
+        data-section
+        {% if current_user.is_authenticated %}data-style-path="sections.{{ module.id }}"{% endif %}
+        style="{{ inline_element_style(element_styles, 'sections.' ~ module.id) }}"
       >
         <div class="container">
           <header class="module__header module__header--center">
@@ -895,7 +1038,7 @@
     </main>
 
     <footer
-      class="site-footer"
+      class="site-footer bottom-bar"
       {% if current_user.is_authenticated %}data-style-path="site.footer"{% endif %}
       style="{{ inline_element_style(element_styles, 'site.footer') }}"
     >

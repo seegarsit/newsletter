@@ -10,6 +10,20 @@
   --highlight: #57CC99;
   --highlight-soft: #d7fbe5;
   --highlight-text: #22577A;
+  --page-bg: #C7F9CC;
+  --text-color: #22577A;
+  --link-color: #38A3A5;
+  --link-hover: #22577A;
+  --btn-bg: #38A3A5;
+  --btn-text: #FFFFFF;
+  --btn-hover-bg: #38A3A5;
+  --nav-bg: #22577A;
+  --nav-text: #F8FDF9;
+  --callout-bg: #FFFFFF;
+  --callout-text: #22577A;
+  --callout-border: rgba(34, 87, 122, 0.2);
+  --card-bg: #FFFFFF;
+  --card-border: transparent;
   --shadow: 0 26px 60px rgba(22, 18, 15, 0.12);
   --shadow-soft: 0 14px 32px rgba(22, 18, 15, 0.08);
   --radius-xl: 26px;
@@ -30,8 +44,8 @@ html {
 body {
   margin: 0;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--ink);
-  background: var(--surface);
+  color: var(--text-color, var(--ink));
+  background: var(--page-bg, var(--surface));
   line-height: 1.7;
 }
 
@@ -47,13 +61,17 @@ body {
 }
 
 a {
-  color: var(--accent);
+  color: var(--link-color, var(--accent));
   text-decoration: none;
 }
 
 a:hover,
+a:focus-visible {
+  color: var(--link-hover, var(--accent-strong));
+  text-decoration: underline;
+}
+
 button:hover,
-a:focus-visible,
 button:focus-visible {
   text-decoration: underline;
 }
@@ -77,12 +95,12 @@ h4 {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   line-height: 1.2;
   margin: 0 0 0.75rem;
-  color: var(--ink);
+  color: var(--text-color, var(--ink));
 }
 
 p {
   margin: 0 0 1rem;
-  color: var(--ink-muted);
+  color: var(--text-color, var(--ink-muted));
 }
 
 ul,
@@ -185,6 +203,7 @@ ul li::before {
 .primary-nav a:hover,
 .primary-nav a:focus-visible {
   background: rgba(255, 255, 255, 0.15);
+  color: inherit;
   text-decoration: none;
 }
 
@@ -220,6 +239,7 @@ ul li::before {
   inset: 0;
   background-color: var(--hero-tint, #22577a);
   opacity: 0.75;
+  pointer-events: none;
 }
 
 .hero__content {
@@ -330,8 +350,8 @@ ul li::before {
   padding: 0.7rem 1.4rem;
   border-radius: 999px;
   border: none;
-  background: var(--button-bg, var(--accent));
-  color: var(--button-text, #fff);
+  background: var(--btn-bg, var(--button-bg, var(--accent)));
+  color: var(--btn-text, var(--button-text, #fff));
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -340,12 +360,14 @@ ul li::before {
 }
 
 .button--primary {
-  background: var(--button-bg, var(--accent));
+  background: var(--btn-bg, var(--button-bg, var(--accent)));
   box-shadow: var(--shadow-soft);
 }
 
 .button:hover,
 .button:focus-visible {
+  background: var(--btn-hover-bg, var(--btn-bg, var(--button-bg, var(--accent))));
+  color: var(--btn-text, var(--button-text, #fff));
   transform: translateY(-2px);
   box-shadow: 0 16px 30px rgba(20, 18, 16, 0.18);
   text-decoration: none;
@@ -392,7 +414,8 @@ ul li::before {
 .celebration-card,
 .contributor-card,
 .resource-group {
-  background: var(--card);
+  background: var(--card-bg, var(--card));
+  border: 1px solid var(--card-border, transparent);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
 }
@@ -657,7 +680,8 @@ ul li::before {
 
 .editorial-lightbox__dialog {
   position: relative;
-  background: var(--card);
+  background: var(--card-bg, var(--card));
+  border: 1px solid var(--card-border, transparent);
   border-radius: var(--radius-lg);
   max-width: 900px;
   width: min(92vw, 900px);
@@ -860,8 +884,8 @@ body.is-lightbox-open {
   padding: 1.25rem 1.5rem;
   border-radius: 1rem;
   background: var(--callout-bg, rgba(255, 255, 255, 0.5));
-  border: 1px solid rgba(34, 87, 122, 0.2);
-  color: var(--callout-text, var(--ink));
+  border: 1px solid var(--callout-border, rgba(34, 87, 122, 0.2));
+  color: var(--callout-text, var(--text-color, var(--ink)));
   margin: 1.2rem 0;
 }
 
@@ -962,8 +986,8 @@ body.is-lightbox-open {
   gap: 0.6rem;
   padding: 0.85rem 1rem;
   border-radius: 16px;
-  background: var(--surface-alt);
-  color: var(--ink);
+  background: var(--btn-bg, var(--surface-alt));
+  color: var(--btn-text, var(--ink));
   font-weight: 600;
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -980,14 +1004,16 @@ body.is-lightbox-open {
 
 .resource-button:hover,
 .resource-button:focus-visible {
+  background: var(--btn-hover-bg, var(--btn-bg, var(--surface-alt)));
+  color: var(--btn-text, var(--ink));
   transform: translateY(-2px);
   box-shadow: var(--shadow-soft);
 }
 
 .site-footer {
   padding: 2.5rem 0 3rem;
-  background: var(--footer-bg, var(--ink));
-  color: var(--footer-text, rgba(255, 255, 255, 0.82));
+  background: var(--nav-bg, var(--ink));
+  color: var(--nav-text, rgba(255, 255, 255, 0.82));
 }
 
 .site-footer .container {
@@ -1005,6 +1031,11 @@ body.is-lightbox-open {
 .footer-links a {
   color: inherit;
   margin-right: 0;
+}
+
+.footer-links a:hover,
+.footer-links a:focus-visible {
+  color: inherit;
 }
 
 .footer-links {
