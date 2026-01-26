@@ -4,7 +4,10 @@
   const staticBase = body.dataset.staticBase || '/assets/';
   const toggleButton = toolbar?.querySelector('[data-inline-toggle]');
   const saveButton = toolbar?.querySelector('[data-inline-save]');
+  const publishButton = toolbar?.querySelector('[data-inline-publish]');
   const cancelButton = toolbar?.querySelector('[data-inline-cancel]');
+  const draftStatus = toolbar?.querySelector('[data-draft-status]');
+  const publishedStatus = toolbar?.querySelector('[data-published-status]');
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
   const textStyleColor = document.querySelector('[data-text-style-color]');
@@ -39,6 +42,28 @@
 
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
+  }
+
+  function formatTimestamp(value) {
+    if (!value) return 'Not yet';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return 'Not yet';
+    }
+    return date.toLocaleString();
+  }
+
+  function updateStatus(meta) {
+    if (draftStatus) {
+      draftStatus.textContent = `Last draft saved: ${formatTimestamp(
+        meta?.draft_updated_at || meta?.draftUpdatedAt
+      )}`;
+    }
+    if (publishedStatus) {
+      publishedStatus.textContent = `Last published: ${formatTimestamp(
+        meta?.published_at || meta?.publishedAt
+      )}`;
+    }
   }
 
   function findModule(data, moduleId) {
@@ -1163,22 +1188,47 @@
     const response = await fetch('/admin/api/current');
     if (!response.ok) return;
     const data = await response.json();
-    originalData = cloneData(data);
-    draftData = cloneData(data);
+    const content = data.content || data;
+    originalData = cloneData(content);
+    draftData = cloneData(content);
+    updateStatus(data);
     renderAll(draftData);
   }
 
   async function saveChanges() {
     if (!draftData) return;
-    const response = await fetch('/admin/api/current', {
+    const response = await fetch('/admin/api/current/draft', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(draftData),
     });
-    if (response.ok) {
-      originalData = cloneData(draftData);
-      toggleEditMode(false);
-    }
+    if (!response.ok) return;
+    const data = await response.json();
+    const content = data.content || draftData;
+    originalData = cloneData(content);
+    draftData = cloneData(content);
+    updateStatus(data);
+    toggleEditMode(false);
+  }
+
+  async function publishChanges() {
+    if (!draftData) return;
+    const confirmed = window.confirm(
+      'Publish this draft to the live site? This will update what everyone sees.'
+    );
+    if (!confirmed) return;
+    const response = await fetch('/admin/api/current/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(draftData),
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    const content = data.content || draftData;
+    originalData = cloneData(content);
+    draftData = cloneData(content);
+    updateStatus(data);
+    toggleEditMode(false);
   }
 
   function cancelChanges() {
@@ -1364,6 +1414,7 @@
 
   toggleButton?.addEventListener('click', () => toggleEditMode());
   saveButton?.addEventListener('click', saveChanges);
+  publishButton?.addEventListener('click', publishChanges);
   cancelButton?.addEventListener('click', cancelChanges);
   document.addEventListener('click', (event) => {
     const mediaAddButton = event.target.closest('[data-media-add]');
