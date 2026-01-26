@@ -147,8 +147,8 @@ ul li::before {
 }
 
 .top-bar {
-  background: var(--ink);
-  color: #f8fdf9;
+  background: var(--nav-bg, var(--ink));
+  color: var(--nav-text, #f8fdf9);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -218,7 +218,7 @@ ul li::before {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background-color: #22577a;
+  background-color: var(--hero-tint, #22577a);
   opacity: 0.75;
 }
 
@@ -330,8 +330,8 @@ ul li::before {
   padding: 0.7rem 1.4rem;
   border-radius: 999px;
   border: none;
-  background: var(--accent);
-  color: #fff;
+  background: var(--button-bg, var(--accent));
+  color: var(--button-text, #fff);
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
@@ -340,7 +340,7 @@ ul li::before {
 }
 
 .button--primary {
-  background: var(--accent);
+  background: var(--button-bg, var(--accent));
   box-shadow: var(--shadow-soft);
 }
 
@@ -859,9 +859,9 @@ body.is-lightbox-open {
 .callout {
   padding: 1.25rem 1.5rem;
   border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--callout-bg, rgba(255, 255, 255, 0.5));
   border: 1px solid rgba(34, 87, 122, 0.2);
-  color: var(--ink);
+  color: var(--callout-text, var(--ink));
   margin: 1.2rem 0;
 }
 
@@ -986,8 +986,8 @@ body.is-lightbox-open {
 
 .site-footer {
   padding: 2.5rem 0 3rem;
-  background: var(--ink);
-  color: rgba(255, 255, 255, 0.82);
+  background: var(--footer-bg, var(--ink));
+  color: var(--footer-text, rgba(255, 255, 255, 0.82));
 }
 
 .site-footer .container {

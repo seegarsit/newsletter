@@ -38,6 +38,9 @@
         <button type="button" class="admin-toolbar__button" data-inline-cancel>
           Cancel
         </button>
+        <button type="button" class="admin-toolbar__button" data-theme-toggle>
+          Theme Colors
+        </button>
         <a class="admin-toolbar__link" href="{{ url_for('admin_logout') }}">
           Log out
         </a>
@@ -67,6 +70,48 @@
         <label data-style-background-field>
           Background color
           <input type="color" data-style-background />
+        </label>
+      </div>
+      <div class="inline-theme-panel" data-theme-panel hidden>
+        <div class="inline-theme-panel__header">
+          <h2>Theme colors</h2>
+          <button type="button" data-theme-close>Close</button>
+        </div>
+        <label>
+          Callout background
+          <input type="color" data-theme-key="callout_bg" />
+        </label>
+        <label>
+          Callout text
+          <input type="color" data-theme-key="callout_text" />
+        </label>
+        <label>
+          Button background
+          <input type="color" data-theme-key="button_bg" />
+        </label>
+        <label>
+          Button text
+          <input type="color" data-theme-key="button_text" />
+        </label>
+        <label>
+          Top nav background
+          <input type="color" data-theme-key="nav_bg" />
+        </label>
+        <label>
+          Top nav text
+          <input type="color" data-theme-key="nav_text" />
+        </label>
+        <label>
+          Footer background
+          <input type="color" data-theme-key="footer_bg" />
+        </label>
+        <label>
+          Footer text
+          <input type="color" data-theme-key="footer_text" />
+        </label>
+        <label>
+          Hero tint
+          <input type="color" data-theme-key="hero_tint" />
         </label>
       </div>
     <input

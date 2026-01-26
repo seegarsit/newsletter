@@ -96,6 +96,15 @@ THEME_TOKENS = {
     "card": "--card",
     "highlight": "--highlight",
     "highlight_text": "--highlight-text",
+    "nav_bg": "--nav-bg",
+    "nav_text": "--nav-text",
+    "footer_bg": "--footer-bg",
+    "footer_text": "--footer-text",
+    "button_bg": "--button-bg",
+    "button_text": "--button-text",
+    "callout_bg": "--callout-bg",
+    "callout_text": "--callout-text",
+    "hero_tint": "--hero-tint",
 }
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
@@ -133,6 +142,15 @@ def _default_theme() -> dict[str, str]:
         "card": "#ffffff",
         "highlight": "#57CC99",
         "highlight_text": "#22577A",
+        "nav_bg": "#22577A",
+        "nav_text": "#F8FDF9",
+        "footer_bg": "#22577A",
+        "footer_text": "#F8FDF9",
+        "button_bg": "#38A3A5",
+        "button_text": "#FFFFFF",
+        "callout_bg": "#FFFFFF",
+        "callout_text": "#22577A",
+        "hero_tint": "#22577A",
     }
 
 
