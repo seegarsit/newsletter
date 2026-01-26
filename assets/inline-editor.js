@@ -446,18 +446,6 @@
     });
   }
 
-  function rgbToHex(value) {
-    if (!value) return '';
-    if (value.startsWith('#')) return value;
-    const match = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-    if (!match) return '';
-    const hex = match
-      .slice(1, 4)
-      .map((segment) => Number(segment).toString(16).padStart(2, '0'))
-      .join('');
-    return `#${hex}`;
-  }
-
   function getTextStyles(data) {
     return data?.hero?.text_styles || {};
   }
@@ -1053,6 +1041,13 @@
       if (!path) return;
       applyElementStyle(element, styles[path] || {});
     });
+    const calloutStyle = styles.callout || {};
+    document.querySelectorAll('.callout').forEach((element) => {
+      if (!element.dataset.stylePath) {
+        element.dataset.stylePath = 'callout';
+      }
+      applyElementStyle(element, calloutStyle);
+    });
   }
 
   function syncEditableElements(data) {
@@ -1242,6 +1237,16 @@
       event.target.closest('[data-rich-toolbar]') ||
       event.target.closest('[data-inline-toolbar]')
     ) {
+      return;
+    }
+    const callout = event.target.closest('.callout');
+    if (callout) {
+      callout.dataset.stylePath = callout.dataset.stylePath || 'callout';
+      setActiveElementStyleTarget(callout);
+      const richContainer = callout.closest('[data-edit-path][data-edit-type="rich"]');
+      if (richContainer) {
+        setEditable(richContainer, 'rich');
+      }
       return;
     }
     const target = event.target.closest(

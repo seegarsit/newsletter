@@ -77,7 +77,11 @@
       hidden
     />
     {% endif %}
-    <header class="top-bar">
+    <header
+      class="top-bar"
+      {% if current_user.is_authenticated %}data-style-path="site.top_bar"{% endif %}
+      style="{{ inline_element_style(element_styles, 'site.top_bar') }}"
+    >
       <div class="container top-bar__content">
         <a class="logo" href="https://www.seegarsfence.com/">
           <img
@@ -154,7 +158,12 @@
         data-edit-type="image"
         style="--hero-image: url('{{ url_for('static', filename=issue.hero.image) }}');"
       >
-        <div class="hero__overlay" aria-hidden="true"></div>
+        <div
+          class="hero__overlay"
+          aria-hidden="true"
+          {% if current_user.is_authenticated %}data-style-path="hero.overlay"{% endif %}
+          style="{{ inline_element_style(element_styles, 'hero.overlay') }}"
+        ></div>
         <div class="container hero__content">
           {% if issue.hero.title or current_user.is_authenticated %}
           <h1
@@ -885,7 +894,11 @@
       {% endif %}
     </main>
 
-    <footer class="site-footer">
+    <footer
+      class="site-footer"
+      {% if current_user.is_authenticated %}data-style-path="site.footer"{% endif %}
+      style="{{ inline_element_style(element_styles, 'site.footer') }}"
+    >
       <div class="container">
         <p>&copy; <span id="current-year"></span> Seegars Fence Company. All rights reserved.</p>
         <div class="footer-links">

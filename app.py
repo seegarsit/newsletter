@@ -205,6 +205,7 @@ def _style_vars(values: dict[str, Any] | None) -> str:
     return "; ".join(segments)
 
 
+
 def _sort_editorial_cards(cards: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Sort editorial cards so the team letter is always first."""
 

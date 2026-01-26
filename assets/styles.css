@@ -148,6 +148,7 @@ ul li::before {
 
 .top-bar {
   background: var(--ink);
+  color: #f8fdf9;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -173,7 +174,7 @@ ul li::before {
 }
 
 .primary-nav a {
-  color: #f8fdf9;
+  color: inherit;
   font-size: 0.9rem;
   font-weight: 500;
   padding: 0.45rem 0.8rem;
@@ -217,7 +218,8 @@ ul li::before {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(120deg, rgba(34, 87, 122, 0.92), rgba(34, 87, 122, 0.5));
+  background-color: #22577a;
+  opacity: 0.75;
 }
 
 .hero__content {
@@ -997,11 +999,11 @@ body.is-lightbox-open {
 }
 
 .site-footer p {
-  color: rgba(255, 255, 255, 0.82);
+  color: inherit;
 }
 
 .footer-links a {
-  color: #fff;
+  color: inherit;
   margin-right: 0;
 }
 
@@ -1016,7 +1018,8 @@ body.is-lightbox-open {
   margin-top: 0.75rem;
   font-size: 0.7rem;
   letter-spacing: 0.4em;
-  color: rgba(255, 255, 255, 0.35);
+  color: inherit;
+  opacity: 0.35;
 }
 
 .module--preset-highlight .module__eyebrow,
