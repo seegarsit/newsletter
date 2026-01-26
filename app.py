@@ -20,8 +20,15 @@ from flask import (
     session,
     url_for,
 )
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from markupsafe import Markup, escape
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -55,7 +62,7 @@ login_manager.login_view = "admin_login"
 login_manager.init_app(app)
 
 db = SQLAlchemy(app)
-_db_initialized = False
+migrate = Migrate(app, db)
 
 ALLOWED_TAGS = [
     "p",
@@ -146,6 +153,10 @@ class Issue(db.Model):
     issue_month = db.Column(db.String(120), nullable=False)
     hero = db.Column(db.JSON, nullable=False)
     modules = db.Column(db.JSON, nullable=False)
+    draft_content = db.Column(db.JSON)
+    draft_updated_at = db.Column(db.DateTime)
+    published_content = db.Column(db.JSON)
+    published_at = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(
@@ -543,26 +554,18 @@ def _ensure_seed_data() -> None:
     if ISSUES_DIR.exists():
         payload = _read_json(ISSUES_DIR / "december-2025.json")
         migrated = _migrate_issue(payload)
+        published_at = datetime.utcnow()
         issue = Issue(
             slug="current",
             issue_month=migrated["issue_month"],
             hero=migrated["hero"],
             modules=migrated["modules"],
+            published_content=migrated,
+            published_at=published_at,
             is_active=True,
         )
         db.session.add(issue)
         db.session.commit()
-
-
-def _ensure_database_ready() -> None:
-    """Create tables and seed defaults once per process."""
-
-    global _db_initialized
-    if _db_initialized:
-        return
-    db.create_all()
-    _ensure_seed_data()
-    _db_initialized = True
 
 
 @app.cli.command("init-db")
@@ -588,13 +591,6 @@ def inject_helpers() -> dict[str, Any]:
         "inline_element_style": _inline_element_style,
         "celebration_lines": _celebration_lines,
     }
-
-
-@app.before_request
-def ensure_database_ready() -> None:
-    """Ensure database tables exist before serving requests."""
-
-    _ensure_database_ready()
 
 
 @app.before_request
@@ -722,6 +718,25 @@ def _get_current_issue() -> Issue | None:
 
     _ensure_seed_data()
     return Issue.query.filter_by(slug="current").first()
+
+
+def _issue_payload(issue: Issue) -> dict[str, Any]:
+    """Return an issue payload for API responses."""
+
+    return {
+        "slug": issue.slug,
+        "issue_month": issue.issue_month,
+        "hero": issue.hero,
+        "modules": issue.modules,
+    }
+
+
+def _serialize_timestamp(value: datetime | None) -> str | None:
+    """Serialize timestamps for JSON output."""
+
+    if not value:
+        return None
+    return value.isoformat()
 
 
 def _sanitize_body(body: dict[str, Any] | None) -> dict[str, Any]:
@@ -875,15 +890,13 @@ def admin_api_current() -> Response:
     if not issue:
         return Response(status=404)
 
+    if current_user.is_authenticated and issue.draft_content:
+        content = issue.draft_content
+    else:
+        content = _issue_payload(issue)
+
     return Response(
-        json.dumps(
-            {
-                "slug": issue.slug,
-                "issue_month": issue.issue_month,
-                "hero": issue.hero,
-                "modules": issue.modules,
-            }
-        ),
+        json.dumps(content),
         mimetype="application/json",
     )
 
@@ -899,13 +912,61 @@ def admin_api_update_current() -> Response:
 
     payload = request.get_json(silent=True) or {}
     cleaned = _sanitize_issue_payload(payload)
+    draft_payload = {"slug": "current", **cleaned}
+    issue.draft_content = draft_payload
+    issue.draft_updated_at = datetime.utcnow()
+    db.session.commit()
+    return Response(
+        json.dumps(
+            {
+                "content": draft_payload,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
+            }
+        ),
+        mimetype="application/json",
+    )
+
+
+@app.route("/admin/api/current/publish", methods=["POST"])
+@login_required
+def admin_api_publish_current() -> Response:
+    """Publish the current issue configuration."""
+
+    issue = _get_current_issue()
+    if not issue:
+        return Response(status=404)
+
+    payload = request.get_json(silent=True)
+    if not payload:
+        if issue.draft_content:
+            payload = issue.draft_content
+        else:
+            return Response(status=400)
+
+    cleaned = _sanitize_issue_payload(payload)
+    publish_payload = {"slug": "current", **cleaned}
     issue.issue_month = cleaned["issue_month"]
     issue.hero = cleaned["hero"]
     issue.modules = cleaned["modules"]
+    issue.published_content = publish_payload
+    issue.published_at = datetime.utcnow()
+    issue.draft_content = None
+    issue.draft_updated_at = None
     issue.is_active = True
     issue.slug = "current"
     db.session.commit()
-    return Response(status=204)
+
+    return Response(
+        json.dumps(
+            {
+                "content": publish_payload,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
+            }
+        ),
+        mimetype="application/json",
+    )
 
 
 @app.route("/admin/upload-image", methods=["POST"])

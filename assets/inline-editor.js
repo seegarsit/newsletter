@@ -4,6 +4,7 @@
   const staticBase = body.dataset.staticBase || '/assets/';
   const toggleButton = toolbar?.querySelector('[data-inline-toggle]');
   const saveButton = toolbar?.querySelector('[data-inline-save]');
+  const publishButton = toolbar?.querySelector('[data-inline-publish]');
   const cancelButton = toolbar?.querySelector('[data-inline-cancel]');
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
@@ -1176,7 +1177,26 @@
       body: JSON.stringify(draftData),
     });
     if (response.ok) {
-      originalData = cloneData(draftData);
+      const payload = await response.json();
+      const content = payload?.content || draftData;
+      originalData = cloneData(content);
+      draftData = cloneData(content);
+      toggleEditMode(false);
+    }
+  }
+
+  async function publishChanges() {
+    if (!draftData) return;
+    const response = await fetch('/admin/api/current/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(draftData),
+    });
+    if (response.ok) {
+      const payload = await response.json();
+      const content = payload?.content || draftData;
+      originalData = cloneData(content);
+      draftData = cloneData(content);
       toggleEditMode(false);
     }
   }
@@ -1364,6 +1384,7 @@
 
   toggleButton?.addEventListener('click', () => toggleEditMode());
   saveButton?.addEventListener('click', saveChanges);
+  publishButton?.addEventListener('click', publishChanges);
   cancelButton?.addEventListener('click', cancelChanges);
   document.addEventListener('click', (event) => {
     const mediaAddButton = event.target.closest('[data-media-add]');
