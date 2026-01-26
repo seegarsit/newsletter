@@ -1,5 +1,30 @@
 :root {
-  --accent-soft: rgba(56, 163, 165, 0.12);
+  --ink: #231f20;
+  --ink-muted: rgba(35, 31, 32, 0.72);
+  --ink-soft: rgba(35, 31, 32, 0.6);
+  --accent: #008752;
+  --accent-strong: #008752;
+  --surface: #f5f6f4;
+  --surface-alt: #dee0d9;
+  --card: #f5f6f4;
+  --highlight: #bcd531;
+  --highlight-soft: rgba(188, 213, 49, 0.2);
+  --highlight-text: #231f20;
+  --page-bg: #f5f6f4;
+  --text-color: #231f20;
+  --link-color: #008752;
+  --link-hover: #231f20;
+  --btn-bg: #008752;
+  --btn-text: #f5f6f4;
+  --btn-hover-bg: #008752;
+  --nav-bg: #008752;
+  --nav-text: #f5f6f4;
+  --callout-bg: #f5f6f4;
+  --callout-text: #231f20;
+  --callout-border: rgba(35, 31, 32, 0.12);
+  --card-bg: #f5f6f4;
+  --card-border: #dee0d9;
+  --accent-soft: rgba(0, 135, 82, 0.12);
   --danger: #b42318;
   --shadow: 0 18px 38px rgba(22, 18, 15, 0.12);
 }
@@ -7,7 +32,7 @@
 .admin-hero {
   background: var(--surface-alt);
   padding: 3rem 0 2rem;
-  border-bottom: 1px solid rgba(28, 27, 24, 0.08);
+  border-bottom: 1px solid rgba(35, 31, 32, 0.08);
 }
 
 .admin-hero__content h1 {
@@ -81,7 +106,7 @@
 .field input,
 .field textarea,
 .field select {
-  border: 1px solid rgba(28, 27, 24, 0.12);
+  border: 1px solid rgba(35, 31, 32, 0.12);
   border-radius: var(--radius-sm);
   padding: 0.7rem 0.85rem;
   font-size: 0.95rem;
@@ -107,7 +132,7 @@
 }
 
 .section {
-  border-top: 1px solid rgba(28, 27, 24, 0.12);
+  border-top: 1px solid rgba(35, 31, 32, 0.12);
   padding-top: 1.5rem;
 }
 
@@ -122,7 +147,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(28, 27, 24, 0.12);
+  border-bottom: 1px solid rgba(35, 31, 32, 0.12);
 }
 
 .issue-actions {
@@ -158,11 +183,11 @@
 }
 
 .module-card {
-  border: 1px solid rgba(28, 27, 24, 0.12);
+  border: 1px solid rgba(35, 31, 32, 0.12);
   border-radius: var(--radius-md);
   padding: 1.6rem;
   margin-bottom: 1.6rem;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(245, 246, 244, 0.9);
 }
 
 .module-card__header {
@@ -185,10 +210,10 @@
 }
 
 .sub-card {
-  border: 1px solid rgba(28, 27, 24, 0.12);
+  border: 1px solid rgba(35, 31, 32, 0.12);
   border-radius: var(--radius-sm);
   padding: 1rem;
-  background: #fff;
+  background: #f5f6f4;
 }
 
 .sub-card--tight {

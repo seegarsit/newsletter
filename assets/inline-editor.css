@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(34, 87, 122, 0.95);
-  color: #fff;
+  background: rgba(0, 135, 82, 0.95);
+  color: #f5f6f4;
   padding: 0.6rem 1.5rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
@@ -26,8 +26,8 @@
 .admin-toolbar__toggle,
 .admin-toolbar__button,
 .admin-toolbar__link {
-  background: #ffffff;
-  color: #22577a;
+  background: #f5f6f4;
+  color: #008752;
   border-radius: 999px;
   padding: 0.35rem 1rem;
   border: none;
@@ -58,9 +58,9 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-add-button,
 .inline-remove-button {
   margin-top: 0.75rem;
-  background: rgba(34, 87, 122, 0.1);
-  border: 1px dashed rgba(34, 87, 122, 0.6);
-  color: #22577a;
+  background: rgba(0, 135, 82, 0.12);
+  border: 1px dashed rgba(0, 135, 82, 0.6);
+  color: #008752;
   padding: 0.35rem 0.75rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
@@ -85,9 +85,9 @@ body:not(.inline-editing) .editorial-card__media-controls {
   width: 2rem;
   height: 2rem;
   border-radius: 999px;
-  border: 1px solid rgba(34, 87, 122, 0.35);
-  background: #fff;
-  color: #22577a;
+  border: 1px solid rgba(0, 135, 82, 0.35);
+  background: #f5f6f4;
+  color: #008752;
   font-weight: 700;
   cursor: grab;
   display: none;
@@ -109,7 +109,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 }
 
 .inline-editing [data-edit-path]:hover {
-  outline-color: rgba(34, 87, 122, 0.5);
+  outline-color: rgba(0, 135, 82, 0.5);
 }
 
 .inline-editing [data-edit-type='image'] {
@@ -117,8 +117,8 @@ body:not(.inline-editing) .editorial-card__media-controls {
 }
 
 .inline-editing [contenteditable='true'] {
-  outline: 2px solid rgba(56, 163, 165, 0.6);
-  background: rgba(255, 255, 255, 0.6);
+  outline: 2px solid rgba(188, 213, 49, 0.7);
+  background: rgba(245, 246, 244, 0.7);
 }
 
 .inline-editing .button__label {
@@ -151,12 +151,12 @@ body:not(.inline-editing) .editorial-card__media-controls {
   font-size: 0.7rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgba(34, 87, 122, 0.85);
+  color: rgba(35, 31, 32, 0.85);
 }
 
 .editorial-card__media-align select {
   border-radius: 0.5rem;
-  border: 1px solid rgba(34, 87, 122, 0.35);
+  border: 1px solid rgba(35, 31, 32, 0.25);
   padding: 0.35rem 0.5rem;
   font-size: 0.75rem;
 }
@@ -165,7 +165,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
   position: absolute;
   top: 0.4rem;
   right: 0.4rem;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(245, 246, 244, 0.95);
 }
 
 .inline-rich-toolbar {
@@ -175,7 +175,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
   transform: translateX(-50%);
   display: flex;
   gap: 0.5rem;
-  background: #fff;
+  background: #f5f6f4;
   border-radius: 999px;
   padding: 0.4rem 0.75rem;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
@@ -185,7 +185,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-rich-toolbar button {
   border: none;
   background: transparent;
-  color: #22577a;
+  color: #008752;
   font-weight: 600;
   cursor: pointer;
 }
@@ -193,7 +193,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-text-style-panel {
   position: fixed;
   width: min(240px, 90vw);
-  background: #fff;
+  background: #f5f6f4;
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
@@ -207,7 +207,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
   top: 5.5rem;
   right: 1.5rem;
   width: min(260px, 90vw);
-  background: #fff;
+  background: #f5f6f4;
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
@@ -221,7 +221,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
   top: 5.5rem;
   right: 1.5rem;
   width: min(260px, 90vw);
-  background: #fff;
+  background: #f5f6f4;
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
@@ -240,7 +240,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-theme-panel__header h2 {
   font-size: 0.95rem;
   margin: 0;
-  color: #22577a;
+  color: #008752;
 }
 
 .inline-theme-panel__actions {
@@ -251,7 +251,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-theme-panel__header button {
   border: none;
   background: transparent;
-  color: #22577a;
+  color: #008752;
   font-weight: 600;
   cursor: pointer;
 }
@@ -260,20 +260,20 @@ body:not(.inline-editing) .editorial-card__media-controls {
   display: grid;
   gap: 0.35rem;
   font-size: 0.85rem;
-  color: #22577a;
+  color: #231f20;
 }
 
 .inline-component-panel label {
   display: grid;
   gap: 0.35rem;
   font-size: 0.85rem;
-  color: #22577a;
+  color: #231f20;
 }
 
 .inline-theme-panel input[type='color'] {
   width: 100%;
   height: 2rem;
-  border: 1px solid rgba(34, 87, 122, 0.2);
+  border: 1px solid #dee0d9;
   border-radius: 0.5rem;
   padding: 0;
 }
@@ -281,7 +281,7 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-component-panel input[type='color'] {
   width: 100%;
   height: 2rem;
-  border: 1px solid rgba(34, 87, 122, 0.2);
+  border: 1px solid #dee0d9;
   border-radius: 0.5rem;
   padding: 0;
 }
@@ -292,9 +292,9 @@ body:not(.inline-editing) .editorial-card__media-controls {
 }
 
 .inline-component-panel__section button {
-  border: 1px solid rgba(34, 87, 122, 0.2);
-  background: #f8fdf9;
-  color: #22577a;
+  border: 1px solid #dee0d9;
+  background: #f5f6f4;
+  color: #008752;
   font-weight: 600;
   padding: 0.45rem 0.75rem;
   border-radius: 0.65rem;
@@ -311,13 +311,13 @@ body:not(.inline-editing) .editorial-card__media-controls {
 .inline-text-style-panel__header h2 {
   font-size: 0.95rem;
   margin: 0;
-  color: #22577a;
+  color: #008752;
 }
 
 .inline-text-style-panel__header button {
   border: none;
   background: transparent;
-  color: #22577a;
+  color: #008752;
   font-weight: 600;
   cursor: pointer;
 }
@@ -326,13 +326,13 @@ body:not(.inline-editing) .editorial-card__media-controls {
   display: grid;
   gap: 0.35rem;
   font-size: 0.85rem;
-  color: #22577a;
+  color: #231f20;
 }
 
 .inline-text-style-panel input[type='color'],
 .inline-text-style-panel input[type='number'] {
   width: 100%;
-  border: 1px solid rgba(34, 87, 122, 0.2);
+  border: 1px solid #dee0d9;
   border-radius: 0.5rem;
   padding: 0.35rem 0.5rem;
   font-size: 0.85rem;
