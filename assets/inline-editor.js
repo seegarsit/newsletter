@@ -244,6 +244,8 @@
     if (!themePanel) return;
     const shouldOpen = typeof force === 'boolean' ? force : themePanel.hasAttribute('hidden');
     if (shouldOpen) {
+      clearComponentPanel();
+      clearActiveTextStyleTarget();
       populateThemeInputs();
       themePanel.removeAttribute('hidden');
     } else {
@@ -658,14 +660,22 @@
     const margin = 16;
     const toolbarHeight =
       document.querySelector('[data-inline-toolbar]')?.getBoundingClientRect().height || 0;
+    const hasRightPanel =
+      (!themePanel?.hasAttribute('hidden') || !componentPanel?.hasAttribute('hidden')) &&
+      window.innerWidth >= 900;
     let top = rect.top;
     if (top + panelRect.height > window.innerHeight - margin) {
       top = window.innerHeight - panelRect.height - margin;
     }
     top = Math.max(toolbarHeight + margin, top);
     textStylePanel.style.top = `${top}px`;
-    textStylePanel.style.right = `${margin}px`;
-    textStylePanel.style.left = 'auto';
+    if (hasRightPanel) {
+      textStylePanel.style.left = `${margin}px`;
+      textStylePanel.style.right = 'auto';
+    } else {
+      textStylePanel.style.right = `${margin}px`;
+      textStylePanel.style.left = 'auto';
+    }
   }
 
   function setActiveTextStyleTarget(element) {
@@ -796,6 +806,8 @@
 
   function setComponentPanel(type, element) {
     if (!componentPanel || !draftData) return;
+    toggleThemePanel(false);
+    clearActiveTextStyleTarget();
     activeComponentType = type;
     activeComponentTarget = element;
     activeComponentStylePath = element?.dataset?.stylePath || null;
