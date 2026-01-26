@@ -42,15 +42,6 @@
   align-items: center;
 }
 
-.admin-toolbar__status {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  opacity: 0.9;
-}
-
 body.has-admin-toolbar {
   padding-top: 4rem;
 }
