@@ -1,7 +1,7 @@
 """Add draft and published tracking to issues.
 
 Revision ID: 20250914_add_issue_draft_published_fields
-Revises: 
+Revises: 20250915_widen_alembic
 Create Date: 2025-09-14 00:00:00.000000
 """
 from __future__ import annotations
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "20250914_add_issue_draft_published_fields"
-down_revision = None
+down_revision = "20250915_widen_alembic"
 branch_labels = None
 depends_on = None
 
