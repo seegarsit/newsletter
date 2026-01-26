@@ -202,6 +202,56 @@ body:not(.inline-editing) .editorial-card__media-controls {
   gap: 0.75rem;
 }
 
+.inline-theme-panel {
+  position: fixed;
+  top: 5.5rem;
+  right: 1.5rem;
+  width: min(260px, 90vw);
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+  z-index: 1002;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.inline-theme-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.inline-theme-panel__header h2 {
+  font-size: 0.95rem;
+  margin: 0;
+  color: #22577a;
+}
+
+.inline-theme-panel__header button {
+  border: none;
+  background: transparent;
+  color: #22577a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inline-theme-panel label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #22577a;
+}
+
+.inline-theme-panel input[type='color'] {
+  width: 100%;
+  height: 2rem;
+  border: 1px solid rgba(34, 87, 122, 0.2);
+  border-radius: 0.5rem;
+  padding: 0;
+}
+
 .inline-text-style-panel__header {
   display: flex;
   align-items: center;

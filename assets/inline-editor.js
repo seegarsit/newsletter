@@ -6,12 +6,16 @@
   const saveButton = toolbar?.querySelector('[data-inline-save]');
   const publishButton = toolbar?.querySelector('[data-inline-publish]');
   const cancelButton = toolbar?.querySelector('[data-inline-cancel]');
+  const themeToggle = toolbar?.querySelector('[data-theme-toggle]');
   const richToolbar = document.querySelector('[data-rich-toolbar]');
   const textStylePanel = document.querySelector('[data-text-style-panel]');
   const textStyleColor = document.querySelector('[data-text-style-color]');
   const textStyleSize = document.querySelector('[data-text-style-size]');
   const textStyleReset = document.querySelector('[data-text-style-reset]');
   const textStyleBackground = document.querySelector('[data-style-background]');
+  const themePanel = document.querySelector('[data-theme-panel]');
+  const themeClose = document.querySelector('[data-theme-close]');
+  const themeInputs = Array.from(document.querySelectorAll('[data-theme-key]'));
   const imageInput = document.querySelector('[data-image-input]');
   const editorialGrid = document.querySelector('[data-editorial-grid]');
 
@@ -36,6 +40,15 @@
     card: '--card',
     highlight: '--highlight',
     highlight_text: '--highlight-text',
+    nav_bg: '--nav-bg',
+    nav_text: '--nav-text',
+    footer_bg: '--footer-bg',
+    footer_text: '--footer-text',
+    button_bg: '--button-bg',
+    button_text: '--button-text',
+    callout_bg: '--callout-bg',
+    callout_text: '--callout-text',
+    hero_tint: '--hero-tint',
   };
 
   function cloneData(data) {
@@ -118,6 +131,57 @@
         body.style.setProperty(cssVar, value);
       }
     });
+  }
+
+  function ensureTheme(data) {
+    if (!data.hero.theme) {
+      data.hero.theme = {};
+    }
+    return data.hero.theme;
+  }
+
+  function populateThemeInputs() {
+    if (!draftData || !themeInputs.length) return;
+    const theme = ensureTheme(draftData);
+    themeInputs.forEach((input) => {
+      const key = input.dataset.themeKey;
+      if (!key) return;
+      const value = theme[key];
+      if (value) {
+        input.value = value;
+        return;
+      }
+      const cssVar = themeTokens[key];
+      if (cssVar) {
+        const computed = window.getComputedStyle(body).getPropertyValue(cssVar).trim();
+        const hexValue = rgbToHex(computed);
+        if (hexValue) {
+          input.value = hexValue;
+        }
+      }
+    });
+  }
+
+  function updateThemeValue(key, value) {
+    if (!draftData || !key) return;
+    const theme = ensureTheme(draftData);
+    if (value) {
+      theme[key] = value;
+    } else {
+      delete theme[key];
+    }
+    applyTheme(theme);
+  }
+
+  function toggleThemePanel(force) {
+    if (!themePanel) return;
+    const shouldOpen = typeof force === 'boolean' ? force : themePanel.hasAttribute('hidden');
+    if (shouldOpen) {
+      populateThemeInputs();
+      themePanel.removeAttribute('hidden');
+    } else {
+      themePanel.setAttribute('hidden', '');
+    }
   }
 
   function applyTextStyle(element, style) {
@@ -1156,6 +1220,7 @@
       richToolbar?.setAttribute('hidden', '');
       activeEditable = null;
       clearActiveTextStyleTarget();
+      toggleThemePanel(false);
     }
     renderAll(draftData || originalData);
   }
@@ -1386,6 +1451,13 @@
   saveButton?.addEventListener('click', saveChanges);
   publishButton?.addEventListener('click', publishChanges);
   cancelButton?.addEventListener('click', cancelChanges);
+  themeToggle?.addEventListener('click', () => toggleThemePanel());
+  themeClose?.addEventListener('click', () => toggleThemePanel(false));
+  themeInputs.forEach((input) => {
+    input.addEventListener('input', (event) => {
+      updateThemeValue(event.target.dataset.themeKey, event.target.value);
+    });
+  });
   document.addEventListener('click', (event) => {
     const mediaAddButton = event.target.closest('[data-media-add]');
     if (mediaAddButton) {
