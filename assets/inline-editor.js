@@ -15,7 +15,25 @@
   const textStyleBackground = document.querySelector('[data-style-background]');
   const themePanel = document.querySelector('[data-theme-panel]');
   const themeClose = document.querySelector('[data-theme-close]');
+  const themeReset = document.querySelector('[data-theme-reset]');
   const themeInputs = Array.from(document.querySelectorAll('[data-theme-key]'));
+  const componentPanel = document.querySelector('[data-component-panel]');
+  const componentTitle = componentPanel?.querySelector('[data-component-title]');
+  const componentReset = componentPanel?.querySelector('[data-component-reset]');
+  const componentSections = Array.from(
+    componentPanel?.querySelectorAll('[data-component-section]') || []
+  );
+  const navBgInput = componentPanel?.querySelector('[data-component-nav-bg]');
+  const navTextInput = componentPanel?.querySelector('[data-component-nav-text]');
+  const calloutBgInput = componentPanel?.querySelector('[data-component-callout-bg]');
+  const calloutTextInput = componentPanel?.querySelector('[data-component-callout-text]');
+  const calloutBorderInput = componentPanel?.querySelector('[data-component-callout-border]');
+  const sectionBgInput = componentPanel?.querySelector('[data-component-section-bg]');
+  const imageReplaceButton = componentPanel?.querySelector('[data-component-image-replace]');
+  const heroImageReplaceButton = componentPanel?.querySelector('[data-component-hero-image]');
+  const heroOverlayInput = componentPanel?.querySelector('[data-component-hero-overlay]');
+  const heroTitleInput = componentPanel?.querySelector('[data-component-hero-title]');
+  const heroSubtitleInput = componentPanel?.querySelector('[data-component-hero-subtitle]');
   const imageInput = document.querySelector('[data-image-input]');
   const editorialGrid = document.querySelector('[data-editorial-grid]');
 
@@ -28,6 +46,10 @@
   let activeStyleMode = null;
   let pendingImageAction = null;
   let draggingCard = null;
+  let activeComponentTarget = null;
+  let activeComponentType = null;
+  let activeComponentStylePath = null;
+  let activeComponentImageTarget = null;
 
   const themeTokens = {
     ink: '--ink',
@@ -40,6 +62,16 @@
     card: '--card',
     highlight: '--highlight',
     highlight_text: '--highlight-text',
+    page_bg: '--page-bg',
+    text_color: '--text-color',
+    link_color: '--link-color',
+    link_hover: '--link-hover',
+    btn_bg: '--btn-bg',
+    btn_text: '--btn-text',
+    btn_hover_bg: '--btn-hover-bg',
+    callout_border: '--callout-border',
+    card_bg: '--card-bg',
+    card_border: '--card-border',
     nav_bg: '--nav-bg',
     nav_text: '--nav-text',
     footer_bg: '--footer-bg',
@@ -51,8 +83,31 @@
     hero_tint: '--hero-tint',
   };
 
+  const colorPattern = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
+  }
+
+  function isValidHexColor(value) {
+    return colorPattern.test(value || '');
+  }
+
+  function rgbToHex(value) {
+    if (!value) return null;
+    const rgbMatch = value
+      .replace(/\s+/g, '')
+      .match(/^rgba?\((\d+),(\d+),(\d+)(?:,([\d.]+))?\)$/i);
+    if (!rgbMatch) return null;
+    const alpha = rgbMatch[4] !== undefined ? Number(rgbMatch[4]) : 1;
+    if (Number.isNaN(alpha) || alpha === 0) return null;
+    const [r, g, b] = rgbMatch.slice(1, 4).map((part) => {
+      const numeric = Number(part);
+      if (Number.isNaN(numeric)) return 0;
+      return Math.max(0, Math.min(255, numeric));
+    });
+    const toHex = (channel) => channel.toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
   }
 
   function findModule(data, moduleId) {
@@ -127,7 +182,7 @@
     if (!theme) return;
     Object.entries(themeTokens).forEach(([token, cssVar]) => {
       const value = theme[token];
-      if (value) {
+      if (value && isValidHexColor(value)) {
         body.style.setProperty(cssVar, value);
       }
     });
@@ -147,7 +202,7 @@
       const key = input.dataset.themeKey;
       if (!key) return;
       const value = theme[key];
-      if (value) {
+      if (value && isValidHexColor(value)) {
         input.value = value;
         return;
       }
@@ -157,7 +212,12 @@
         const hexValue = rgbToHex(computed);
         if (hexValue) {
           input.value = hexValue;
+          return;
         }
+      }
+      const fallback = input.dataset.defaultColor;
+      if (fallback && isValidHexColor(fallback)) {
+        input.value = fallback;
       }
     });
   }
@@ -165,10 +225,17 @@
   function updateThemeValue(key, value) {
     if (!draftData || !key) return;
     const theme = ensureTheme(draftData);
-    if (value) {
+    const cssVar = themeTokens[key];
+    if (value && isValidHexColor(value)) {
       theme[key] = value;
+      if (cssVar) {
+        body.style.setProperty(cssVar, value);
+      }
     } else {
       delete theme[key];
+      if (cssVar) {
+        body.style.removeProperty(cssVar);
+      }
     }
     applyTheme(theme);
   }
@@ -184,6 +251,15 @@
     }
   }
 
+  function resetTheme() {
+    if (!draftData) return;
+    draftData.hero.theme = {};
+    Object.values(themeTokens).forEach((cssVar) => {
+      body.style.removeProperty(cssVar);
+    });
+    populateThemeInputs();
+  }
+
   function applyTextStyle(element, style) {
     if (!element) return;
     element.style.color = style?.color || '';
@@ -192,8 +268,18 @@
 
   function applyElementStyle(element, style) {
     if (!element) return;
+    if (element.classList.contains('callout')) {
+      element.style.setProperty('--callout-bg', style?.background_color || '');
+      element.style.setProperty('--callout-text', style?.text_color || '');
+      element.style.setProperty('--callout-border', style?.border_color || '');
+      element.style.backgroundColor = '';
+      element.style.color = '';
+      element.style.borderColor = '';
+      return;
+    }
     element.style.backgroundColor = style?.background_color || '';
     element.style.color = style?.text_color || '';
+    element.style.borderColor = style?.border_color || '';
   }
 
   function getMediaItems(card) {
@@ -616,7 +702,8 @@
     const styles = ensureTextStyles(draftData);
     const next = { ...(styles[activeStylePath] || {}) };
     Object.entries(updates).forEach(([key, value]) => {
-      if (value) {
+      const isColorKey = key === 'color';
+      if (value && (!isColorKey || isValidHexColor(value))) {
         next[key] = value;
       } else {
         delete next[key];
@@ -638,7 +725,7 @@
     const styles = ensureElementStyles(draftData);
     const next = { ...(styles[activeStylePath] || {}) };
     Object.entries(updates).forEach(([key, value]) => {
-      if (value) {
+      if (value && isValidHexColor(value)) {
         next[key] = value;
       } else {
         delete next[key];
@@ -651,6 +738,211 @@
     }
     applyElementStyle(activeStyleTarget, next);
     positionTextStylePanel(activeStyleTarget);
+  }
+
+  function setElementStyleForPath(path, element, updates) {
+    if (!draftData || !path || !element) return;
+    const styles = ensureElementStyles(draftData);
+    const next = { ...(styles[path] || {}) };
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value && isValidHexColor(value)) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+    });
+    if (Object.keys(next).length === 0) {
+      delete styles[path];
+      applyElementStyle(element, {});
+    } else {
+      styles[path] = next;
+      applyElementStyle(element, next);
+    }
+  }
+
+  function clearElementStyleForPath(path, element) {
+    if (!draftData || !path || !element) return;
+    const styles = ensureElementStyles(draftData);
+    delete styles[path];
+    applyElementStyle(element, {});
+  }
+
+  function setTextStyleForPath(path, element, updates) {
+    if (!draftData || !path || !element) return;
+    const styles = ensureTextStyles(draftData);
+    const next = { ...(styles[path] || {}) };
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value && isValidHexColor(value)) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+    });
+    if (Object.keys(next).length === 0) {
+      delete styles[path];
+      applyTextStyle(element, {});
+    } else {
+      styles[path] = next;
+      applyTextStyle(element, next);
+    }
+  }
+
+  function clearTextStyleForPath(path, element) {
+    if (!draftData || !path || !element) return;
+    const styles = ensureTextStyles(draftData);
+    delete styles[path];
+    applyTextStyle(element, {});
+  }
+
+  function setComponentPanel(type, element) {
+    if (!componentPanel || !draftData) return;
+    activeComponentType = type;
+    activeComponentTarget = element;
+    activeComponentStylePath = element?.dataset?.stylePath || null;
+    activeComponentImageTarget =
+      element?.dataset?.editType === 'image' || element?.dataset?.editable === 'image'
+        ? element
+        : null;
+
+    componentSections.forEach((section) => {
+      section.hidden = section.dataset.componentSection !== type;
+    });
+    componentPanel.removeAttribute('hidden');
+
+    if (componentTitle) {
+      componentTitle.textContent =
+        {
+          nav: 'Navigation',
+          callout: 'Callout',
+          section: 'Section',
+          image: 'Image',
+          hero: 'Hero',
+        }[type] || 'Component';
+    }
+
+    if (componentReset) {
+      componentReset.hidden = !['callout', 'section', 'hero', 'nav'].includes(type);
+    }
+
+    if (type === 'nav') {
+      const theme = ensureTheme(draftData);
+      if (navBgInput) {
+        const value = theme.nav_bg;
+        navBgInput.value =
+          (value && isValidHexColor(value) && value) ||
+          rgbToHex(window.getComputedStyle(body).getPropertyValue('--nav-bg')) ||
+          navBgInput.dataset.defaultColor ||
+          '#000000';
+      }
+      if (navTextInput) {
+        const value = theme.nav_text;
+        navTextInput.value =
+          (value && isValidHexColor(value) && value) ||
+          rgbToHex(window.getComputedStyle(body).getPropertyValue('--nav-text')) ||
+          navTextInput.dataset.defaultColor ||
+          '#000000';
+      }
+      return;
+    }
+
+    if (type === 'callout') {
+      const styles = getElementStyles(draftData);
+      const style = (activeComponentStylePath && styles[activeComponentStylePath]) || {};
+      const computed = window.getComputedStyle(element);
+      if (calloutBgInput) {
+        calloutBgInput.value =
+          style.background_color ||
+          rgbToHex(computed.backgroundColor) ||
+          calloutBgInput.dataset.defaultColor ||
+          '#ffffff';
+      }
+      if (calloutTextInput) {
+        calloutTextInput.value =
+          style.text_color ||
+          rgbToHex(computed.color) ||
+          calloutTextInput.dataset.defaultColor ||
+          '#000000';
+      }
+      if (calloutBorderInput) {
+        calloutBorderInput.value =
+          style.border_color ||
+          rgbToHex(computed.borderColor) ||
+          calloutBorderInput.dataset.defaultColor ||
+          '#ffffff';
+      }
+      return;
+    }
+
+    if (type === 'section') {
+      const styles = getElementStyles(draftData);
+      const style = (activeComponentStylePath && styles[activeComponentStylePath]) || {};
+      const computed = window.getComputedStyle(element);
+      if (sectionBgInput) {
+        sectionBgInput.value =
+          style.background_color ||
+          rgbToHex(computed.backgroundColor) ||
+          sectionBgInput.dataset.defaultColor ||
+          '#ffffff';
+      }
+      return;
+    }
+
+    if (type === 'image') {
+      return;
+    }
+
+    if (type === 'hero') {
+      const overlay = document.querySelector('.hero__overlay');
+      const overlayStyle = getElementStyles(draftData)?.['hero.overlay'] || {};
+      if (heroOverlayInput && overlay) {
+        const computed = window.getComputedStyle(overlay).backgroundColor;
+        heroOverlayInput.value =
+          overlayStyle.background_color ||
+          rgbToHex(computed) ||
+          heroOverlayInput.dataset.defaultColor ||
+          '#22577a';
+      }
+      if (heroTitleInput) {
+        const title = document.querySelector('[data-edit-path="hero.title"]');
+        const titleStyle = getTextStyles(draftData)?.['hero.title'] || {};
+        const computed = title ? window.getComputedStyle(title).color : '';
+        heroTitleInput.value =
+          titleStyle.color ||
+          rgbToHex(computed) ||
+          heroTitleInput.dataset.defaultColor ||
+          '#ffffff';
+      }
+      if (heroSubtitleInput) {
+        const subtitle = document.querySelector('[data-edit-path="hero.subtitle"]');
+        const subtitleStyle = getTextStyles(draftData)?.['hero.subtitle'] || {};
+        const computed = subtitle ? window.getComputedStyle(subtitle).color : '';
+        heroSubtitleInput.value =
+          subtitleStyle.color ||
+          rgbToHex(computed) ||
+          heroSubtitleInput.dataset.defaultColor ||
+          '#ffffff';
+      }
+    }
+  }
+
+  function clearComponentPanel() {
+    activeComponentTarget = null;
+    activeComponentType = null;
+    activeComponentStylePath = null;
+    activeComponentImageTarget = null;
+    componentPanel?.setAttribute('hidden', '');
+  }
+
+  function ensureCalloutStylePath(callout) {
+    if (!callout || !draftData) return;
+    if (!callout.dataset.stylePath) {
+      callout.dataset.stylePath = `callout.${Date.now()}`;
+      const richContainer = callout.closest('[data-edit-path][data-edit-type="rich"]');
+      if (richContainer) {
+        setByPath(draftData, richContainer.dataset.editPath, richContainer.innerHTML.trim());
+      }
+    }
+    activeComponentStylePath = callout.dataset.stylePath;
   }
 
   function renderHero(data) {
@@ -951,6 +1243,7 @@
       const img = document.createElement('img');
       img.dataset.editPath = `modules.${module.id}.people.${index}.image`;
       img.dataset.editType = 'image';
+      img.dataset.editable = 'image';
       img.alt = `Portrait of ${person.name || 'Contributor'}`;
       img.src = `${staticBase}${person.image || 'images/logo_nav.png'}`;
       media.appendChild(img);
@@ -1105,12 +1398,13 @@
       if (!path) return;
       applyElementStyle(element, styles[path] || {});
     });
-    const calloutStyle = styles.callout || {};
     document.querySelectorAll('.callout').forEach((element) => {
-      if (!element.dataset.stylePath) {
-        element.dataset.stylePath = 'callout';
+      const path = element.dataset.stylePath;
+      if (path) {
+        applyElementStyle(element, styles[path] || {});
+        return;
       }
-      applyElementStyle(element, calloutStyle);
+      applyElementStyle(element, {});
     });
   }
 
@@ -1216,6 +1510,7 @@
       activeEditable = null;
       clearActiveTextStyleTarget();
       toggleThemePanel(false);
+      clearComponentPanel();
     }
     renderAll(draftData || originalData);
   }
@@ -1300,19 +1595,39 @@
     if (
       event.target.closest('[data-text-style-panel]') ||
       event.target.closest('[data-rich-toolbar]') ||
-      event.target.closest('[data-inline-toolbar]')
+      event.target.closest('[data-inline-toolbar]') ||
+      event.target.closest('[data-theme-panel]') ||
+      event.target.closest('[data-component-panel]')
     ) {
       return;
     }
+    const heroTarget = event.target.closest('[data-hero]');
+    const navTarget = event.target.closest('.top-bar, .bottom-bar, .site-nav');
     const callout = event.target.closest('.callout');
-    if (callout) {
-      callout.dataset.stylePath = callout.dataset.stylePath || 'callout';
-      setActiveElementStyleTarget(callout);
+    const sectionTarget = event.target.closest('[data-section]');
+    const imageTarget = event.target.closest('[data-edit-type="image"], [data-editable="image"]');
+    if (heroTarget) {
+      setComponentPanel('hero', heroTarget);
+    } else if (navTarget) {
+      setComponentPanel('nav', navTarget);
+    } else if (callout) {
+      ensureCalloutStylePath(callout);
+      setComponentPanel('callout', callout);
       const richContainer = callout.closest('[data-edit-path][data-edit-type="rich"]');
       if (richContainer) {
         setEditable(richContainer, 'rich');
       }
-      return;
+    } else if (
+      sectionTarget &&
+      !event.target.closest(
+        '[data-edit-path], [data-edit-url-path], [data-edit-type="image"], [data-editable="image"]'
+      )
+    ) {
+      setComponentPanel('section', sectionTarget);
+    } else if (imageTarget) {
+      setComponentPanel('image', imageTarget);
+    } else {
+      clearComponentPanel();
     }
     const target = event.target.closest(
       '[data-edit-path], [data-edit-url-path], [data-style-path]'
@@ -1324,6 +1639,9 @@
       }
       richToolbar?.setAttribute('hidden', '');
       clearActiveTextStyleTarget();
+      if (!activeComponentType) {
+        clearComponentPanel();
+      }
       return;
     }
 
@@ -1344,6 +1662,9 @@
     }
 
     if (target.dataset.stylePath && !target.dataset.editPath) {
+      if (['callout', 'section', 'nav', 'hero'].includes(activeComponentType || '')) {
+        return;
+      }
       setActiveElementStyleTarget(target);
       return;
     }
@@ -1351,11 +1672,14 @@
     const type = target.dataset.editType || 'text';
     if (type === 'image') {
       event.preventDefault();
-      handleImageClick(target);
       return;
     }
 
-    setActiveTextStyleTarget(target);
+    if (!(activeComponentType === 'hero' && target.closest('[data-hero]'))) {
+      setActiveTextStyleTarget(target);
+    } else {
+      clearActiveTextStyleTarget();
+    }
     setEditable(target, type);
   }
 
@@ -1458,10 +1782,104 @@
   cancelButton?.addEventListener('click', cancelChanges);
   themeToggle?.addEventListener('click', () => toggleThemePanel());
   themeClose?.addEventListener('click', () => toggleThemePanel(false));
+  themeReset?.addEventListener('click', resetTheme);
   themeInputs.forEach((input) => {
     input.addEventListener('input', (event) => {
       updateThemeValue(event.target.dataset.themeKey, event.target.value);
     });
+  });
+  navBgInput?.addEventListener('input', (event) => {
+    updateThemeValue('nav_bg', event.target.value);
+  });
+  navTextInput?.addEventListener('input', (event) => {
+    updateThemeValue('nav_text', event.target.value);
+  });
+  calloutBgInput?.addEventListener('input', (event) => {
+    if (!activeComponentStylePath || !activeComponentTarget) return;
+    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
+      background_color: event.target.value,
+    });
+  });
+  calloutTextInput?.addEventListener('input', (event) => {
+    if (!activeComponentStylePath || !activeComponentTarget) return;
+    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
+      text_color: event.target.value,
+    });
+  });
+  calloutBorderInput?.addEventListener('input', (event) => {
+    if (!activeComponentStylePath || !activeComponentTarget) return;
+    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
+      border_color: event.target.value,
+    });
+  });
+  sectionBgInput?.addEventListener('input', (event) => {
+    if (!activeComponentStylePath || !activeComponentTarget) return;
+    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
+      background_color: event.target.value,
+    });
+  });
+  imageReplaceButton?.addEventListener('click', () => {
+    if (!activeComponentImageTarget) return;
+    handleImageClick(activeComponentImageTarget);
+  });
+  heroImageReplaceButton?.addEventListener('click', () => {
+    if (!activeComponentTarget) return;
+    handleImageClick(activeComponentTarget);
+  });
+  heroOverlayInput?.addEventListener('input', (event) => {
+    const overlay = document.querySelector('.hero__overlay');
+    if (!overlay) return;
+    setElementStyleForPath('hero.overlay', overlay, {
+      background_color: event.target.value,
+    });
+  });
+  heroTitleInput?.addEventListener('input', (event) => {
+    const title = document.querySelector('[data-edit-path="hero.title"]');
+    if (!title) return;
+    setTextStyleForPath('hero.title', title, { color: event.target.value });
+  });
+  heroSubtitleInput?.addEventListener('input', (event) => {
+    const subtitle = document.querySelector('[data-edit-path="hero.subtitle"]');
+    if (!subtitle) return;
+    setTextStyleForPath('hero.subtitle', subtitle, { color: event.target.value });
+  });
+  componentReset?.addEventListener('click', () => {
+    if (!activeComponentType) return;
+    if (activeComponentType === 'nav') {
+      updateThemeValue('nav_bg', '');
+      updateThemeValue('nav_text', '');
+      setComponentPanel('nav', activeComponentTarget);
+      return;
+    }
+    if (activeComponentType === 'callout') {
+      if (activeComponentStylePath && activeComponentTarget) {
+        clearElementStyleForPath(activeComponentStylePath, activeComponentTarget);
+        setComponentPanel('callout', activeComponentTarget);
+      }
+      return;
+    }
+    if (activeComponentType === 'section') {
+      if (activeComponentStylePath && activeComponentTarget) {
+        clearElementStyleForPath(activeComponentStylePath, activeComponentTarget);
+        setComponentPanel('section', activeComponentTarget);
+      }
+      return;
+    }
+    if (activeComponentType === 'hero') {
+      const overlay = document.querySelector('.hero__overlay');
+      if (overlay) {
+        clearElementStyleForPath('hero.overlay', overlay);
+      }
+      const title = document.querySelector('[data-edit-path="hero.title"]');
+      if (title) {
+        clearTextStyleForPath('hero.title', title);
+      }
+      const subtitle = document.querySelector('[data-edit-path="hero.subtitle"]');
+      if (subtitle) {
+        clearTextStyleForPath('hero.subtitle', subtitle);
+      }
+      setComponentPanel('hero', activeComponentTarget);
+    }
   });
   document.addEventListener('click', (event) => {
     const mediaAddButton = event.target.closest('[data-media-add]');
@@ -1610,7 +2028,12 @@
       return;
     }
     if (command === 'callout') {
-      document.execCommand('insertHTML', false, '<div class="callout">Callout text</div>');
+      const calloutId = `callout.${Date.now()}`;
+      document.execCommand(
+        'insertHTML',
+        false,
+        `<div class="callout" data-style-path="${calloutId}">Callout text</div>`
+      );
       return;
     }
     document.execCommand(command, false, null);

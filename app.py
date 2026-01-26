@@ -83,6 +83,7 @@ ALLOWED_TAGS = [
 ALLOWED_ATTRS = {
     "a": ["href", "target", "rel"],
     "*": ["class"],
+    "div": ["data-style-path"],
 }
 ALLOWED_PROTOCOLS = ["http", "https", "mailto"]
 THEME_TOKENS = {
@@ -96,6 +97,16 @@ THEME_TOKENS = {
     "card": "--card",
     "highlight": "--highlight",
     "highlight_text": "--highlight-text",
+    "page_bg": "--page-bg",
+    "text_color": "--text-color",
+    "link_color": "--link-color",
+    "link_hover": "--link-hover",
+    "btn_bg": "--btn-bg",
+    "btn_text": "--btn-text",
+    "btn_hover_bg": "--btn-hover-bg",
+    "callout_border": "--callout-border",
+    "card_bg": "--card-bg",
+    "card_border": "--card-border",
     "nav_bg": "--nav-bg",
     "nav_text": "--nav-text",
     "footer_bg": "--footer-bg",
@@ -108,7 +119,7 @@ THEME_TOKENS = {
 }
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
-STYLE_COLOR_KEYS = ("background_color", "text_color")
+STYLE_COLOR_KEYS = ("background_color", "text_color", "border_color")
 META_SEPARATOR = " • "
 ALLOWED_MEDIA_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "webp"}
 ALLOWED_ALIGNMENTS = {"left", "center", "right"}
@@ -142,6 +153,13 @@ def _default_theme() -> dict[str, str]:
         "card": "#ffffff",
         "highlight": "#57CC99",
         "highlight_text": "#22577A",
+        "page_bg": "#C7F9CC",
+        "text_color": "#22577A",
+        "link_color": "#38A3A5",
+        "link_hover": "#22577A",
+        "btn_bg": "#38A3A5",
+        "btn_text": "#FFFFFF",
+        "btn_hover_bg": "#38A3A5",
         "nav_bg": "#22577A",
         "nav_text": "#F8FDF9",
         "footer_bg": "#22577A",
@@ -150,6 +168,9 @@ def _default_theme() -> dict[str, str]:
         "button_text": "#FFFFFF",
         "callout_bg": "#FFFFFF",
         "callout_text": "#22577A",
+        "callout_border": "",
+        "card_bg": "#FFFFFF",
+        "card_border": "",
         "hero_tint": "#22577A",
     }
 
@@ -431,6 +452,9 @@ def _inline_element_style(styles: dict[str, Any] | None, path: str) -> str:
     text_color = str(value.get("text_color", "")).strip()
     if COLOR_PATTERN.match(text_color):
         segments.append(f"color: {text_color}")
+    border_color = str(value.get("border_color", "")).strip()
+    if COLOR_PATTERN.match(border_color):
+        segments.append(f"border-color: {border_color}")
     return "; ".join(segments)
 
 
