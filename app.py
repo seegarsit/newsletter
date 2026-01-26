@@ -22,6 +22,7 @@ from flask import (
 )
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from markupsafe import Markup, escape
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -53,7 +54,7 @@ login_manager.login_view = "admin_login"
 login_manager.init_app(app)
 
 db = SQLAlchemy(app)
-_db_initialized = False
+migrate = Migrate(app, db)
 
 ALLOWED_TAGS = [
     "p",
@@ -550,44 +551,68 @@ def _ensure_seed_data() -> None:
     if Issue.query.first():
         return
 
-    if ISSUES_DIR.exists():
-        payload = _read_json(ISSUES_DIR / "december-2025.json")
-        migrated = _migrate_issue(payload)
-        published_payload = {
-            "issue_month": migrated["issue_month"],
-            "hero": migrated["hero"],
-            "modules": migrated["modules"],
-        }
-        issue = Issue(
-            slug="current",
-            issue_month=migrated["issue_month"],
-            hero=migrated["hero"],
-            modules=migrated["modules"],
-            published_content=published_payload,
-            published_at=datetime.utcnow(),
-            is_active=True,
-        )
+    try:
+        seed_path = ISSUES_DIR / "december-2025.json"
+        if seed_path.exists():
+            payload = _read_json(seed_path)
+            migrated = _migrate_issue(payload)
+            published_payload = {
+                "issue_month": migrated["issue_month"],
+                "hero": migrated["hero"],
+                "modules": migrated["modules"],
+            }
+            issue = Issue(
+                slug="current",
+                issue_month=migrated["issue_month"],
+                hero=migrated["hero"],
+                modules=migrated["modules"],
+                published_content=published_payload,
+                published_at=datetime.utcnow(),
+                is_active=True,
+            )
+        else:
+            issue_month = datetime.utcnow().strftime("%B %Y")
+            hero = {
+                "title": "",
+                "subtitle": "",
+                "image": "",
+                "cta": {"label": "", "url": ""},
+                "theme": _default_theme(),
+                "text_styles": {},
+                "element_styles": {},
+            }
+            modules: list[dict[str, Any]] = []
+            published_payload = {
+                "issue_month": issue_month,
+                "hero": hero,
+                "modules": modules,
+            }
+            issue = Issue(
+                slug="current",
+                issue_month=issue_month,
+                hero=hero,
+                modules=modules,
+                published_content=published_payload,
+                published_at=datetime.utcnow(),
+                is_active=True,
+            )
         db.session.add(issue)
         db.session.commit()
-
-
-def _ensure_database_ready() -> None:
-    """Create tables and seed defaults once per process."""
-
-    global _db_initialized
-    if _db_initialized:
-        return
-    db.create_all()
-    _ensure_seed_data()
-    _db_initialized = True
+    except Exception:
+        app.logger.exception("Failed to seed default issue data.")
+        raise
 
 
 @app.cli.command("init-db")
 def init_db() -> None:
     """Create database tables and seed initial data."""
 
-    db.create_all()
-    _ensure_seed_data()
+    try:
+        db.create_all()
+        _ensure_seed_data()
+    except Exception:
+        app.logger.exception("Failed to initialize the database.")
+        raise
 
 
 @app.context_processor
@@ -605,13 +630,6 @@ def inject_helpers() -> dict[str, Any]:
         "inline_element_style": _inline_element_style,
         "celebration_lines": _celebration_lines,
     }
-
-
-@app.before_request
-def ensure_database_ready() -> None:
-    """Ensure database tables exist before serving requests."""
-
-    _ensure_database_ready()
 
 
 @app.before_request
