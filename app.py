@@ -37,15 +37,17 @@ app.config["ADMIN_EMAIL"] = os.environ.get("ADMIN_EMAIL")
 app.config["ADMIN_PASSWORD"] = os.environ.get("ADMIN_PASSWORD")
 app.config["SITE_USERNAME"] = os.environ.get("SITE_USERNAME", "SEEGARS")
 app.config["SITE_PASSWORD"] = os.environ.get("SITE_PASSWORD", "Sfc1949!")
-database_url = os.environ.get("DATABASE_URL")
+default_database_url = (
+    "postgresql+psycopg://seegarsit_db_user:x6HcYaFnxMN5x4bCVcC9NC11GkL7GOF8"
+    "@dpg-d3uiemfdiees73eadfg0-a/seegarsit_db"
+)
+database_url = os.environ.get("DATABASE_URL", default_database_url)
 if database_url:
     if database_url.startswith("postgres://"):
         database_url = database_url.replace("postgres://", "postgresql://", 1)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = (
-        f"sqlite:///{DATA_DIR / 'newsletter.db'}"
-    )
+    app.config["SQLALCHEMY_DATABASE_URI"] = default_database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 login_manager = LoginManager()
