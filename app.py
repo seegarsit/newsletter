@@ -146,6 +146,10 @@ class Issue(db.Model):
     issue_month = db.Column(db.String(120), nullable=False)
     hero = db.Column(db.JSON, nullable=False)
     modules = db.Column(db.JSON, nullable=False)
+    published_content = db.Column(db.JSON)
+    draft_content = db.Column(db.JSON)
+    published_at = db.Column(db.DateTime)
+    draft_updated_at = db.Column(db.DateTime)
     is_active = db.Column(db.Boolean, default=False, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(
@@ -235,6 +239,14 @@ def _join_meta(parts: list[str]) -> str:
     """Join meta parts into a standardized string."""
 
     return META_SEPARATOR.join([part for part in parts if part])
+
+
+def _serialize_timestamp(value: datetime | None) -> str | None:
+    """Serialize timestamps for API responses."""
+
+    if not value:
+        return None
+    return value.isoformat()
 
 
 def _normalize_birthday(entry: dict[str, Any]) -> dict[str, str]:
@@ -543,11 +555,18 @@ def _ensure_seed_data() -> None:
     if ISSUES_DIR.exists():
         payload = _read_json(ISSUES_DIR / "december-2025.json")
         migrated = _migrate_issue(payload)
+        published_payload = {
+            "issue_month": migrated["issue_month"],
+            "hero": migrated["hero"],
+            "modules": migrated["modules"],
+        }
         issue = Issue(
             slug="current",
             issue_month=migrated["issue_month"],
             hero=migrated["hero"],
             modules=migrated["modules"],
+            published_content=published_payload,
+            published_at=datetime.utcnow(),
             is_active=True,
         )
         db.session.add(issue)
@@ -625,7 +644,12 @@ def index() -> str:
     if not issue:
         return render_template("index.html", issue=None)
 
-    return render_template("index.html", issue=issue)
+    if current_user.is_authenticated:
+        payload = _select_editor_payload(issue)
+    else:
+        payload = _select_public_payload(issue)
+
+    return render_template("index.html", issue=_issue_view(issue, payload))
 
 
 def _safe_next_url(next_url: str | None) -> str:
@@ -644,6 +668,7 @@ def site_login() -> str | Response:
         return redirect(url_for("index"))
 
     issue = _get_current_issue()
+    issue_view = _issue_view(issue, _select_public_payload(issue)) if issue else None
     if request.method == "POST":
         username = request.form.get("username", "")
         password = request.form.get("password", "")
@@ -657,7 +682,7 @@ def site_login() -> str | Response:
 
         flash("Invalid username or password.", "error")
 
-    return render_template("login.html", issue=issue)
+    return render_template("login.html", issue=issue_view)
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -711,6 +736,7 @@ def _get_current_issue() -> Issue | None:
         if not issue.is_active:
             issue.is_active = True
             db.session.commit()
+        _ensure_published_payload(issue)
         return issue
 
     issue = Issue.query.first()
@@ -718,10 +744,58 @@ def _get_current_issue() -> Issue | None:
         issue.slug = "current"
         issue.is_active = True
         db.session.commit()
+        _ensure_published_payload(issue)
         return issue
 
     _ensure_seed_data()
     return Issue.query.filter_by(slug="current").first()
+
+
+def _ensure_published_payload(issue: Issue) -> None:
+    """Backfill published content for older issue rows."""
+
+    if issue.published_content:
+        return
+
+    issue.published_content = _payload_from_issue(issue)
+    if not issue.published_at:
+        issue.published_at = issue.updated_at or issue.created_at or datetime.utcnow()
+    db.session.commit()
+
+
+def _payload_from_issue(issue: Issue) -> dict[str, Any]:
+    """Build a payload from the issue's published fields."""
+
+    return {
+        "issue_month": issue.issue_month,
+        "hero": issue.hero,
+        "modules": issue.modules,
+    }
+
+
+def _select_editor_payload(issue: Issue) -> dict[str, Any]:
+    """Return draft content when present, otherwise published content."""
+
+    if issue.draft_content:
+        return issue.draft_content
+    return issue.published_content or _payload_from_issue(issue)
+
+
+def _select_public_payload(issue: Issue) -> dict[str, Any]:
+    """Return the published content for public rendering."""
+
+    return issue.published_content or _payload_from_issue(issue)
+
+
+def _issue_view(issue: Issue, payload: dict[str, Any]) -> dict[str, Any]:
+    """Build a view model for templates."""
+
+    return {
+        "slug": issue.slug,
+        "issue_month": payload.get("issue_month", ""),
+        "hero": payload.get("hero", {}),
+        "modules": payload.get("modules", []),
+    }
 
 
 def _sanitize_body(body: dict[str, Any] | None) -> dict[str, Any]:
@@ -875,13 +949,18 @@ def admin_api_current() -> Response:
     if not issue:
         return Response(status=404)
 
+    published_payload = _select_public_payload(issue)
+    draft_payload = issue.draft_content
+    editor_payload = _select_editor_payload(issue)
+
     return Response(
         json.dumps(
             {
-                "slug": issue.slug,
-                "issue_month": issue.issue_month,
-                "hero": issue.hero,
-                "modules": issue.modules,
+                "content": editor_payload,
+                "published_content": published_payload,
+                "draft_content": draft_payload,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
             }
         ),
         mimetype="application/json",
@@ -891,7 +970,7 @@ def admin_api_current() -> Response:
 @app.route("/admin/api/current", methods=["POST"])
 @login_required
 def admin_api_update_current() -> Response:
-    """Update the current issue configuration."""
+    """Save draft content for the current issue."""
 
     issue = _get_current_issue()
     if not issue:
@@ -899,13 +978,87 @@ def admin_api_update_current() -> Response:
 
     payload = request.get_json(silent=True) or {}
     cleaned = _sanitize_issue_payload(payload)
+    issue.draft_content = cleaned
+    issue.draft_updated_at = datetime.utcnow()
+    db.session.commit()
+
+    return Response(
+        json.dumps(
+            {
+                "content": cleaned,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
+            }
+        ),
+        mimetype="application/json",
+    )
+
+
+@app.route("/admin/api/current/draft", methods=["POST"])
+@login_required
+def admin_api_save_draft() -> Response:
+    """Save draft content for the current issue."""
+
+    issue = _get_current_issue()
+    if not issue:
+        return Response(status=404)
+
+    payload = request.get_json(silent=True) or {}
+    cleaned = _sanitize_issue_payload(payload)
+    issue.draft_content = cleaned
+    issue.draft_updated_at = datetime.utcnow()
+    db.session.commit()
+
+    return Response(
+        json.dumps(
+            {
+                "content": cleaned,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
+            }
+        ),
+        mimetype="application/json",
+    )
+
+
+@app.route("/admin/api/current/publish", methods=["POST"])
+@login_required
+def admin_api_publish() -> Response:
+    """Publish the current issue using draft content."""
+
+    issue = _get_current_issue()
+    if not issue:
+        return Response(status=404)
+
+    payload = request.get_json(silent=True)
+    if payload:
+        cleaned = _sanitize_issue_payload(payload)
+        issue.draft_content = cleaned
+        issue.draft_updated_at = datetime.utcnow()
+    elif issue.draft_content:
+        cleaned = issue.draft_content
+    else:
+        cleaned = _select_public_payload(issue)
+
+    issue.published_content = cleaned
+    issue.published_at = datetime.utcnow()
     issue.issue_month = cleaned["issue_month"]
     issue.hero = cleaned["hero"]
     issue.modules = cleaned["modules"]
     issue.is_active = True
     issue.slug = "current"
     db.session.commit()
-    return Response(status=204)
+
+    return Response(
+        json.dumps(
+            {
+                "content": cleaned,
+                "draft_updated_at": _serialize_timestamp(issue.draft_updated_at),
+                "published_at": _serialize_timestamp(issue.published_at),
+            }
+        ),
+        mimetype="application/json",
+    )
 
 
 @app.route("/admin/upload-image", methods=["POST"])
