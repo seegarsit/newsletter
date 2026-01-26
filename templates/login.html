@@ -17,7 +17,11 @@
     class="login-page"
     {% if issue %}style="{{ theme_style(issue.hero.get('theme', {})) }}{% if inline_element_style(element_styles, 'site.background') %}; {{ inline_element_style(element_styles, 'site.background') }}{% endif %}"{% endif %}
   >
-    <header class="top-bar">
+    <header
+      class="top-bar"
+      {% if current_user.is_authenticated %}data-style-path="site.top_bar"{% endif %}
+      style="{{ inline_element_style(element_styles, 'site.top_bar') }}"
+    >
       <div class="container top-bar__content">
         <a class="logo" href="https://www.seegarsfence.com/">
           <img
@@ -91,7 +95,12 @@
         aria-labelledby="hero-heading"
         style="--hero-image: url('{{ url_for('static', filename=issue.hero.image) }}');"
       >
-        <div class="hero__overlay" aria-hidden="true"></div>
+        <div
+          class="hero__overlay"
+          aria-hidden="true"
+          {% if current_user.is_authenticated %}data-style-path="hero.overlay"{% endif %}
+          style="{{ inline_element_style(element_styles, 'hero.overlay') }}"
+        ></div>
         <div class="container hero__content">
           <p class="hero__issue">
             Secure Newsletter Access
