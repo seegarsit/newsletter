@@ -59,9 +59,9 @@
           <h2>Text Styling</h2>
           <button type="button" data-text-style-reset>Reset</button>
         </div>
-        <label>
+        <label data-style-text-color-field>
           Text color
-          <input type="color" data-text-style-color />
+          <input type="text" placeholder="#22577A" data-text-style-color />
         </label>
         <label data-text-size-field>
           Text size (px)
@@ -69,7 +69,27 @@
         </label>
         <label data-style-background-field>
           Background color
-          <input type="color" data-style-background />
+          <input type="text" placeholder="#FFFFFF" data-style-background />
+        </label>
+        <label data-style-border-field hidden>
+          Border color
+          <input type="text" placeholder="#DDDDDD" data-style-border />
+        </label>
+        <label data-style-bullet-field hidden>
+          Bullet color
+          <input type="text" placeholder="#38A3A5" data-style-bullet />
+        </label>
+        <label data-style-hover-bg-field hidden>
+          Hover background
+          <input type="text" placeholder="#38A3A5" data-style-hover-background />
+        </label>
+        <label data-style-hover-text-field hidden>
+          Hover text
+          <input type="text" placeholder="#FFFFFF" data-style-hover-text />
+        </label>
+        <label data-style-link-field hidden>
+          Button link
+          <input type="text" placeholder="https://example.com" data-style-link />
         </label>
       </div>
       <div class="inline-theme-panel" data-theme-panel hidden>
@@ -82,143 +102,113 @@
         </div>
         <label>
           Ink
-          <input type="color" data-theme-key="ink" data-default-color="#22577A" />
+          <input type="text" data-theme-key="ink" data-default-color="#22577A" />
         </label>
         <label>
           Ink muted
-          <input type="color" data-theme-key="ink_muted" data-default-color="#2C6A8C" />
+          <input type="text" data-theme-key="ink_muted" data-default-color="#2C6A8C" />
         </label>
         <label>
           Ink soft
-          <input type="color" data-theme-key="ink_soft" data-default-color="#3A7A96" />
+          <input type="text" data-theme-key="ink_soft" data-default-color="#3A7A96" />
         </label>
         <label>
           Accent
-          <input type="color" data-theme-key="accent" data-default-color="#38A3A5" />
+          <input type="text" data-theme-key="accent" data-default-color="#38A3A5" />
         </label>
         <label>
           Accent strong
-          <input type="color" data-theme-key="accent_strong" data-default-color="#22577A" />
+          <input type="text" data-theme-key="accent_strong" data-default-color="#22577A" />
         </label>
         <label>
           Surface
-          <input type="color" data-theme-key="surface" data-default-color="#C7F9CC" />
+          <input type="text" data-theme-key="surface" data-default-color="#C7F9CC" />
         </label>
         <label>
           Surface alt
-          <input type="color" data-theme-key="surface_alt" data-default-color="#80ED99" />
+          <input type="text" data-theme-key="surface_alt" data-default-color="#80ED99" />
         </label>
         <label>
           Card base
-          <input type="color" data-theme-key="card" data-default-color="#FFFFFF" />
+          <input type="text" data-theme-key="card" data-default-color="#FFFFFF" />
         </label>
         <label>
           Highlight
-          <input type="color" data-theme-key="highlight" data-default-color="#57CC99" />
+          <input type="text" data-theme-key="highlight" data-default-color="#57CC99" />
         </label>
         <label>
           Highlight soft
-          <input type="color" data-theme-key="highlight_soft" data-default-color="#D7FBE5" />
+          <input type="text" data-theme-key="highlight_soft" data-default-color="#D7FBE5" />
         </label>
         <label>
           Highlight text
-          <input type="color" data-theme-key="highlight_text" data-default-color="#22577A" />
+          <input type="text" data-theme-key="highlight_text" data-default-color="#22577A" />
         </label>
         <label>
           List bullet
-          <input type="color" data-theme-key="list_bullet" data-default-color="#38A3A5" />
+          <input type="text" data-theme-key="list_bullet" data-default-color="#38A3A5" />
         </label>
         <label>
           Page background
-          <input type="color" data-theme-key="page_bg" data-default-color="#C7F9CC" />
+          <input type="text" data-theme-key="page_bg" data-default-color="#C7F9CC" />
         </label>
         <label>
           Text color
-          <input type="color" data-theme-key="text_color" data-default-color="#22577A" />
+          <input type="text" data-theme-key="text_color" data-default-color="#22577A" />
         </label>
         <label>
           Link color
-          <input type="color" data-theme-key="link_color" data-default-color="#38A3A5" />
+          <input type="text" data-theme-key="link_color" data-default-color="#38A3A5" />
         </label>
         <label>
           Link hover
-          <input type="color" data-theme-key="link_hover" data-default-color="#22577A" />
+          <input type="text" data-theme-key="link_hover" data-default-color="#22577A" />
         </label>
         <label>
           Button background
-          <input type="color" data-theme-key="btn_bg" data-default-color="#38A3A5" />
+          <input type="text" data-theme-key="btn_bg" data-default-color="#38A3A5" />
         </label>
         <label>
           Button text
-          <input type="color" data-theme-key="btn_text" data-default-color="#FFFFFF" />
+          <input type="text" data-theme-key="btn_text" data-default-color="#FFFFFF" />
         </label>
         <label>
           Button hover
-          <input type="color" data-theme-key="btn_hover_bg" data-default-color="#38A3A5" />
+          <input type="text" data-theme-key="btn_hover_bg" data-default-color="#38A3A5" />
         </label>
         <label>
           Nav background
-          <input type="color" data-theme-key="nav_bg" data-default-color="#22577A" />
+          <input type="text" data-theme-key="nav_bg" data-default-color="#22577A" />
         </label>
         <label>
           Nav text
-          <input type="color" data-theme-key="nav_text" data-default-color="#F8FDF9" />
+          <input type="text" data-theme-key="nav_text" data-default-color="#F8FDF9" />
         </label>
         <label>
           Callout background
-          <input type="color" data-theme-key="callout_bg" data-default-color="#FFFFFF" />
+          <input type="text" data-theme-key="callout_bg" data-default-color="#FFFFFF" />
         </label>
         <label>
           Callout text
-          <input type="color" data-theme-key="callout_text" data-default-color="#22577A" />
+          <input type="text" data-theme-key="callout_text" data-default-color="#22577A" />
         </label>
         <label>
           Callout border
-          <input type="color" data-theme-key="callout_border" data-default-color="#22577A" />
+          <input type="text" data-theme-key="callout_border" data-default-color="#22577A" />
         </label>
         <label>
           Card background
-          <input type="color" data-theme-key="card_bg" data-default-color="#FFFFFF" />
+          <input type="text" data-theme-key="card_bg" data-default-color="#FFFFFF" />
         </label>
         <label>
           Card border
-          <input type="color" data-theme-key="card_border" data-default-color="#FFFFFF" />
+          <input type="text" data-theme-key="card_border" data-default-color="#FFFFFF" />
         </label>
       </div>
       <div class="inline-component-panel" data-component-panel hidden>
         <div class="inline-theme-panel__header" data-panel-handle>
           <h2 data-component-title>Component</h2>
           <button type="button" data-component-reset>Reset</button>
-        </div>
-        <div class="inline-component-panel__section" data-component-section="nav" hidden>
-          <label>
-            Nav background
-            <input type="color" data-component-nav-bg data-default-color="#22577A" />
-          </label>
-          <label>
-            Nav text
-            <input type="color" data-component-nav-text data-default-color="#F8FDF9" />
-          </label>
-        </div>
-        <div class="inline-component-panel__section" data-component-section="callout" hidden>
-          <label>
-            Callout background
-            <input type="color" data-component-callout-bg data-default-color="#FFFFFF" />
-          </label>
-          <label>
-            Callout text
-            <input type="color" data-component-callout-text data-default-color="#22577A" />
-          </label>
-          <label>
-            Callout border
-            <input type="color" data-component-callout-border data-default-color="#22577A" />
-          </label>
-        </div>
-        <div class="inline-component-panel__section" data-component-section="section" hidden>
-          <label>
-            Section background
-            <input type="color" data-component-section-bg data-default-color="#FFFFFF" />
-          </label>
         </div>
         <div class="inline-component-panel__section" data-component-section="image" hidden>
           <button type="button" data-component-image-replace>Replace image</button>
@@ -227,15 +217,15 @@
           <button type="button" data-component-hero-image>Replace hero image</button>
           <label>
             Overlay tint
-            <input type="color" data-component-hero-overlay data-default-color="#22577A" />
+            <input type="text" data-component-hero-overlay data-default-color="#22577A" />
           </label>
           <label>
             Title text color
-            <input type="color" data-component-hero-title data-default-color="#FFFFFF" />
+            <input type="text" data-component-hero-title data-default-color="#FFFFFF" />
           </label>
           <label>
             Subtitle text color
-            <input type="color" data-component-hero-subtitle data-default-color="#FFFFFF" />
+            <input type="text" data-component-hero-subtitle data-default-color="#FFFFFF" />
           </label>
         </div>
       </div>

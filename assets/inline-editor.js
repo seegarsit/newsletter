@@ -13,6 +13,19 @@
   const textStyleSize = document.querySelector('[data-text-style-size]');
   const textStyleReset = document.querySelector('[data-text-style-reset]');
   const textStyleBackground = document.querySelector('[data-style-background]');
+  const textStyleBorder = document.querySelector('[data-style-border]');
+  const textStyleBullet = document.querySelector('[data-style-bullet]');
+  const textStyleHoverBackground = document.querySelector('[data-style-hover-background]');
+  const textStyleHoverText = document.querySelector('[data-style-hover-text]');
+  const textStyleLink = document.querySelector('[data-style-link]');
+  const textStyleColorField = document.querySelector('[data-style-text-color-field]');
+  const textStyleSizeField = document.querySelector('[data-text-size-field]');
+  const textStyleBackgroundField = document.querySelector('[data-style-background-field]');
+  const textStyleBorderField = document.querySelector('[data-style-border-field]');
+  const textStyleBulletField = document.querySelector('[data-style-bullet-field]');
+  const textStyleHoverBackgroundField = document.querySelector('[data-style-hover-bg-field]');
+  const textStyleHoverTextField = document.querySelector('[data-style-hover-text-field]');
+  const textStyleLinkField = document.querySelector('[data-style-link-field]');
   const themePanel = document.querySelector('[data-theme-panel]');
   const themeClose = document.querySelector('[data-theme-close]');
   const themeReset = document.querySelector('[data-theme-reset]');
@@ -23,12 +36,6 @@
   const componentSections = Array.from(
     componentPanel?.querySelectorAll('[data-component-section]') || []
   );
-  const navBgInput = componentPanel?.querySelector('[data-component-nav-bg]');
-  const navTextInput = componentPanel?.querySelector('[data-component-nav-text]');
-  const calloutBgInput = componentPanel?.querySelector('[data-component-callout-bg]');
-  const calloutTextInput = componentPanel?.querySelector('[data-component-callout-text]');
-  const calloutBorderInput = componentPanel?.querySelector('[data-component-callout-border]');
-  const sectionBgInput = componentPanel?.querySelector('[data-component-section-bg]');
   const imageReplaceButton = componentPanel?.querySelector('[data-component-image-replace]');
   const heroImageReplaceButton = componentPanel?.querySelector('[data-component-hero-image]');
   const heroOverlayInput = componentPanel?.querySelector('[data-component-hero-overlay]');
@@ -47,10 +54,13 @@
   let activeStyleMode = null;
   let pendingImageAction = null;
   let draggingCard = null;
+  let draggingMedia = null;
   let activeComponentTarget = null;
   let activeComponentType = null;
   let activeComponentStylePath = null;
   let activeComponentImageTarget = null;
+  let activeLinkTarget = null;
+  let activeLinkPath = null;
 
   const themeTokens = {
     ink: '--ink',
@@ -87,6 +97,14 @@
   };
 
   const colorPattern = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+  const elementStyleColorKeys = new Set([
+    'background_color',
+    'text_color',
+    'border_color',
+    'hover_background_color',
+    'hover_text_color',
+    'list_bullet',
+  ]);
   const draggablePanels = [
     { panel: textStylePanel, handle: textStylePanel?.querySelector(panelHandleSelector) },
     { panel: themePanel, handle: themePanel?.querySelector(panelHandleSelector) },
@@ -216,6 +234,32 @@
     });
     const toHex = (channel) => channel.toString(16).padStart(2, '0');
     return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  }
+
+  function normalizeColorValue(value, fallback) {
+    if (!value) return fallback;
+    const trimmed = String(value).trim();
+    if (isValidHexColor(trimmed)) return trimmed;
+    const hex = rgbToHex(trimmed);
+    return hex || fallback;
+  }
+
+  function getThemeColorValue(cssVar) {
+    const value = window.getComputedStyle(body).getPropertyValue(cssVar).trim();
+    return normalizeColorValue(value, '');
+  }
+
+  function isButtonElement(element) {
+    return (
+      element?.classList?.contains('button') ||
+      element?.classList?.contains('resource-button')
+    );
+  }
+
+  function elementHasList(element) {
+    if (!element) return false;
+    if (['UL', 'OL'].includes(element.tagName)) return true;
+    return Boolean(element.querySelector('ul, ol'));
   }
 
   function findModule(data, moduleId) {
@@ -383,14 +427,31 @@
       element.style.setProperty('--callout-bg', style?.background_color || '');
       element.style.setProperty('--callout-text', style?.text_color || '');
       element.style.setProperty('--callout-border', style?.border_color || '');
+      element.style.setProperty('--list-bullet', style?.list_bullet || '');
       element.style.backgroundColor = '';
       element.style.color = '';
       element.style.borderColor = '';
+      element.style.fontSize = style?.font_size || '';
+      return;
+    }
+    if (isButtonElement(element)) {
+      element.style.setProperty('--button-bg', style?.background_color || '');
+      element.style.setProperty('--button-text', style?.text_color || '');
+      element.style.setProperty('--button-border', style?.border_color || '');
+      element.style.setProperty('--button-hover-bg', style?.hover_background_color || '');
+      element.style.setProperty('--button-hover-text', style?.hover_text_color || '');
+      element.style.setProperty('--list-bullet', style?.list_bullet || '');
+      element.style.backgroundColor = '';
+      element.style.color = '';
+      element.style.borderColor = '';
+      element.style.fontSize = style?.font_size || '';
       return;
     }
     element.style.backgroundColor = style?.background_color || '';
     element.style.color = style?.text_color || '';
     element.style.borderColor = style?.border_color || '';
+    element.style.fontSize = style?.font_size || '';
+    element.style.setProperty('--list-bullet', style?.list_bullet || '');
   }
 
   function getMediaItems(card) {
@@ -511,19 +572,32 @@
       const controls = document.createElement('div');
       controls.className = 'editorial-card__media-controls';
 
-      const addButton = document.createElement('button');
-      addButton.type = 'button';
-      addButton.className = 'inline-add-button inline-add-button--compact';
-      addButton.dataset.mediaAdd = 'true';
-      addButton.dataset.moduleId = moduleId;
-      addButton.dataset.cardId = card.id;
-      addButton.textContent = 'Add image';
-      controls.appendChild(addButton);
+      controls.appendChild(createAddMediaButton(moduleId, card.id));
 
       footer.appendChild(controls);
     }
 
     return footer;
+  }
+
+  function createAddMediaButton(moduleId, cardId) {
+    const addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.className = 'inline-add-button inline-add-button--compact';
+    addButton.dataset.mediaAdd = 'true';
+    addButton.dataset.mediaDrag = 'true';
+    addButton.dataset.moduleId = moduleId;
+    addButton.dataset.cardId = cardId;
+    addButton.draggable = true;
+    addButton.textContent = 'Add image';
+    return addButton;
+  }
+
+  function createMediaControls(moduleId, cardId) {
+    const controls = document.createElement('div');
+    controls.className = 'editorial-card__media-controls';
+    controls.appendChild(createAddMediaButton(moduleId, cardId));
+    return controls;
   }
 
   const editorialLightbox = document.querySelector('[data-editorial-lightbox]');
@@ -744,8 +818,9 @@
       textStyleSize.value = Number.isNaN(numeric) ? '' : numeric;
     }
     if (textStyleColor) {
-      textStyleColor.value = current.color || rgbToHex(computed.color) || '#000000';
+      textStyleColor.value = normalizeColorValue(current.color || computed.color, '#000000');
     }
+    updateStylePanelFields(element, 'text');
   }
 
   function populateElementStyleInputs(element) {
@@ -754,11 +829,76 @@
     const current = styles[element.dataset.stylePath] || {};
     const computed = window.getComputedStyle(element);
     if (textStyleColor) {
-      textStyleColor.value = current.text_color || rgbToHex(computed.color) || '#000000';
+      textStyleColor.value = normalizeColorValue(
+        current.text_color || computed.color,
+        '#000000'
+      );
     }
     if (textStyleBackground) {
       textStyleBackground.value =
-        current.background_color || rgbToHex(computed.backgroundColor) || '#ffffff';
+        normalizeColorValue(current.background_color || computed.backgroundColor, '#ffffff');
+    }
+    if (textStyleBorder) {
+      textStyleBorder.value = normalizeColorValue(
+        current.border_color || computed.borderColor,
+        '#ffffff'
+      );
+    }
+    if (textStyleSize) {
+      const sizeValue = current.font_size || computed.fontSize || '';
+      const numeric = parseFloat(sizeValue);
+      textStyleSize.value = Number.isNaN(numeric) ? '' : numeric;
+    }
+    if (textStyleBullet) {
+      const bulletValue = current.list_bullet || computed.getPropertyValue('--list-bullet');
+      textStyleBullet.value = normalizeColorValue(bulletValue, '#38A3A5');
+    }
+    if (textStyleHoverBackground) {
+      const fallback = getThemeColorValue('--btn-hover-bg') || '#38A3A5';
+      textStyleHoverBackground.value = normalizeColorValue(
+        current.hover_background_color,
+        fallback
+      );
+    }
+    if (textStyleHoverText) {
+      const fallback = getThemeColorValue('--btn-text') || '#ffffff';
+      textStyleHoverText.value = normalizeColorValue(current.hover_text_color, fallback);
+    }
+    if (textStyleLink) {
+      const linkValue = activeLinkPath ? getByPath(draftData, activeLinkPath) : '';
+      textStyleLink.value = linkValue || activeLinkTarget?.getAttribute('href') || '';
+    }
+    updateStylePanelFields(element, 'element');
+  }
+
+  function updateStylePanelFields(element, mode) {
+    if (!textStylePanel) return;
+    const isElementMode = mode === 'element';
+    const isButton = isButtonElement(element);
+    const hasList = elementHasList(element);
+    if (textStyleSizeField) {
+      textStyleSizeField.hidden = !mode;
+    }
+    if (textStyleBackgroundField) {
+      textStyleBackgroundField.hidden = !isElementMode;
+    }
+    if (textStyleBorderField) {
+      textStyleBorderField.hidden = !isElementMode;
+    }
+    if (textStyleBulletField) {
+      textStyleBulletField.hidden = !isElementMode || !hasList;
+    }
+    if (textStyleHoverBackgroundField) {
+      textStyleHoverBackgroundField.hidden = !isElementMode || !isButton;
+    }
+    if (textStyleHoverTextField) {
+      textStyleHoverTextField.hidden = !isElementMode || !isButton;
+    }
+    if (textStyleLinkField) {
+      textStyleLinkField.hidden = !activeLinkPath;
+    }
+    if (textStyleColorField) {
+      textStyleColorField.hidden = !mode;
     }
   }
 
@@ -793,6 +933,8 @@
     activeStyleTarget = element;
     activeStylePath = element.dataset.editPath;
     activeStyleMode = 'text';
+    activeLinkTarget = null;
+    activeLinkPath = null;
     populateTextStyleInputs(element);
     textStylePanel.dataset.mode = 'text';
     textStylePanel.removeAttribute('hidden');
@@ -804,6 +946,8 @@
     activeStyleTarget = element;
     activeStylePath = element.dataset.stylePath;
     activeStyleMode = 'element';
+    activeLinkTarget = element?.closest?.('[data-edit-url-path]') || null;
+    activeLinkPath = activeLinkTarget?.dataset.editUrlPath || null;
     populateElementStyleInputs(element);
     textStylePanel.dataset.mode = 'element';
     textStylePanel.removeAttribute('hidden');
@@ -814,6 +958,8 @@
     activeStyleTarget = null;
     activeStylePath = null;
     activeStyleMode = null;
+    activeLinkTarget = null;
+    activeLinkPath = null;
     textStylePanel?.setAttribute('hidden', '');
   }
 
@@ -845,11 +991,12 @@
     const styles = ensureElementStyles(draftData);
     const next = { ...(styles[activeStylePath] || {}) };
     Object.entries(updates).forEach(([key, value]) => {
-      if (value && isValidHexColor(value)) {
+      const isColorKey = elementStyleColorKeys.has(key);
+      if (value && (!isColorKey || isValidHexColor(value))) {
         next[key] = value;
-      } else {
-        delete next[key];
+        return;
       }
+      delete next[key];
     });
     if (Object.keys(next).length === 0) {
       delete styles[activeStylePath];
@@ -865,11 +1012,12 @@
     const styles = ensureElementStyles(draftData);
     const next = { ...(styles[path] || {}) };
     Object.entries(updates).forEach(([key, value]) => {
-      if (value && isValidHexColor(value)) {
+      const isColorKey = elementStyleColorKeys.has(key);
+      if (value && (!isColorKey || isValidHexColor(value))) {
         next[key] = value;
-      } else {
-        delete next[key];
+        return;
       }
+      delete next[key];
     });
     if (Object.keys(next).length === 0) {
       delete styles[path];
@@ -935,83 +1083,13 @@
     if (componentTitle) {
       componentTitle.textContent =
         {
-          nav: 'Navigation',
-          callout: 'Callout',
-          section: 'Section',
           image: 'Image',
           hero: 'Hero',
         }[type] || 'Component';
     }
 
     if (componentReset) {
-      componentReset.hidden = !['callout', 'section', 'hero', 'nav'].includes(type);
-    }
-
-    if (type === 'nav') {
-      const theme = ensureTheme(draftData);
-      if (navBgInput) {
-        const value = theme.nav_bg;
-        navBgInput.value =
-          (value && isValidHexColor(value) && value) ||
-          rgbToHex(window.getComputedStyle(body).getPropertyValue('--nav-bg')) ||
-          navBgInput.dataset.defaultColor ||
-          '#000000';
-      }
-      if (navTextInput) {
-        const value = theme.nav_text;
-        navTextInput.value =
-          (value && isValidHexColor(value) && value) ||
-          rgbToHex(window.getComputedStyle(body).getPropertyValue('--nav-text')) ||
-          navTextInput.dataset.defaultColor ||
-          '#000000';
-      }
-      return;
-    }
-
-    if (type === 'callout') {
-      const styles = getElementStyles(draftData);
-      const style = (activeComponentStylePath && styles[activeComponentStylePath]) || {};
-      const computed = window.getComputedStyle(element);
-      if (calloutBgInput) {
-        calloutBgInput.value =
-          style.background_color ||
-          rgbToHex(computed.backgroundColor) ||
-          calloutBgInput.dataset.defaultColor ||
-          '#ffffff';
-      }
-      if (calloutTextInput) {
-        calloutTextInput.value =
-          style.text_color ||
-          rgbToHex(computed.color) ||
-          calloutTextInput.dataset.defaultColor ||
-          '#000000';
-      }
-      if (calloutBorderInput) {
-        calloutBorderInput.value =
-          style.border_color ||
-          rgbToHex(computed.borderColor) ||
-          calloutBorderInput.dataset.defaultColor ||
-          '#ffffff';
-      }
-      return;
-    }
-
-    if (type === 'section') {
-      const styles = getElementStyles(draftData);
-      const style = (activeComponentStylePath && styles[activeComponentStylePath]) || {};
-      const computed = window.getComputedStyle(element);
-      if (sectionBgInput) {
-        sectionBgInput.value =
-          style.background_color ||
-          rgbToHex(computed.backgroundColor) ||
-          sectionBgInput.dataset.defaultColor ||
-          '#ffffff';
-      }
-      return;
-    }
-
-    if (type === 'image') {
-      return;
+      componentReset.hidden = type !== 'hero';
     }
 
     if (type === 'hero') {
@@ -1045,6 +1123,11 @@
           heroSubtitleInput.dataset.defaultColor ||
           '#ffffff';
       }
+      return;
+    }
+
+    if (type === 'image') {
+      return;
     }
   }
 
@@ -1089,6 +1172,7 @@
     const article = document.createElement('article');
     const stackedIds = ['team-letter', 'hr-corner', 'tech-talk'];
     const isStacked = stackedIds.includes(card.id);
+    const mediaPosition = card.media_position || 'bottom';
     article.className = `editorial-card${isStacked ? ' editorial-card--stack' : ''} editorial-card--preset-${card.style_preset || 'default'} editorial-card--align-${card.alignment || 'left'}`;
     article.id = card.id;
     article.setAttribute('aria-labelledby', `${card.id}-title`);
@@ -1116,6 +1200,13 @@
     }
 
     article.appendChild(header);
+
+    const mediaFooter = createMediaFooter(card, moduleId);
+    const mediaControls = editMode && !mediaFooter ? createMediaControls(moduleId, card.id) : null;
+
+    if (mediaPosition === 'top' && (mediaFooter || mediaControls)) {
+      article.appendChild(mediaFooter || mediaControls);
+    }
 
     if ((card.body && card.body.content) || editMode) {
       const body = document.createElement('div');
@@ -1145,38 +1236,12 @@
       link.appendChild(label);
       actions.appendChild(link);
 
-      if (editMode && getMediaItems(card).length === 0) {
-        const addMediaButton = document.createElement('button');
-        addMediaButton.type = 'button';
-        addMediaButton.className = 'inline-add-button inline-add-button--compact';
-        addMediaButton.dataset.mediaAdd = 'true';
-        addMediaButton.dataset.moduleId = moduleId;
-        addMediaButton.dataset.cardId = card.id;
-        addMediaButton.textContent = 'Add image';
-        actions.appendChild(addMediaButton);
-      }
-
       article.appendChild(actions);
       hasActions = true;
     }
 
-    if (editMode && getMediaItems(card).length === 0 && !hasActions) {
-      const controls = document.createElement('div');
-      controls.className = 'editorial-card__actions';
-      const addMediaButton = document.createElement('button');
-      addMediaButton.type = 'button';
-      addMediaButton.className = 'inline-add-button inline-add-button--compact';
-      addMediaButton.dataset.mediaAdd = 'true';
-      addMediaButton.dataset.moduleId = moduleId;
-      addMediaButton.dataset.cardId = card.id;
-      addMediaButton.textContent = 'Add image';
-      controls.appendChild(addMediaButton);
-      article.appendChild(controls);
-    }
-
-    const mediaFooter = createMediaFooter(card, moduleId);
-    if (mediaFooter) {
-      article.appendChild(mediaFooter);
+    if (mediaPosition !== 'top' && (mediaFooter || mediaControls)) {
+      article.appendChild(mediaFooter || mediaControls);
     }
 
     if (editMode) {
@@ -1725,32 +1790,34 @@
       return;
     }
     const heroTarget = event.target.closest('[data-hero]');
-    const navTarget = event.target.closest('.top-bar, .bottom-bar, .site-nav');
     const callout = event.target.closest('.callout');
-    const sectionTarget = event.target.closest('[data-section]');
+    const buttonTarget = event.target.closest('.button, .resource-button');
     const imageTarget = event.target.closest('[data-edit-type="image"], [data-editable="image"]');
     if (heroTarget) {
       setComponentPanel('hero', heroTarget);
-    } else if (navTarget) {
-      setComponentPanel('nav', navTarget);
-    } else if (callout) {
-      ensureCalloutStylePath(callout);
-      setComponentPanel('callout', callout);
-      const richContainer = callout.closest('[data-edit-path][data-edit-type="rich"]');
-      if (richContainer) {
-        setEditable(richContainer, 'rich');
-      }
-    } else if (
-      sectionTarget &&
-      !event.target.closest(
-        '[data-edit-path], [data-edit-url-path], [data-edit-type="image"], [data-editable="image"]'
-      )
-    ) {
-      setComponentPanel('section', sectionTarget);
     } else if (imageTarget) {
       setComponentPanel('image', imageTarget);
     } else {
       clearComponentPanel();
+    }
+
+    if (callout) {
+      ensureCalloutStylePath(callout);
+      setActiveElementStyleTarget(callout);
+      const richContainer = callout.closest('[data-edit-path][data-edit-type="rich"]');
+      if (richContainer) {
+        setEditable(richContainer, 'rich');
+      }
+      return;
+    }
+
+    if (buttonTarget) {
+      setActiveElementStyleTarget(buttonTarget);
+      const labelTarget = event.target.closest('[data-edit-path]');
+      if (labelTarget && labelTarget.dataset.editType !== 'image') {
+        setEditable(labelTarget, labelTarget.dataset.editType || 'text');
+      }
+      return;
     }
     const target = event.target.closest(
       '[data-edit-path], [data-edit-url-path], [data-style-path]'
@@ -1775,19 +1842,19 @@
     const urlPath = target.dataset.editUrlPath;
     if (urlPath) {
       event.preventDefault();
-      const currentValue = getByPath(draftData, urlPath) || '';
-      const next = window.prompt('Enter URL', currentValue);
-      if (next !== null) {
-        setByPath(draftData, urlPath, next.trim());
-        target.setAttribute('href', next.trim());
+      if (target.dataset.stylePath) {
+        setActiveElementStyleTarget(target);
       }
+      activeLinkTarget = target;
+      activeLinkPath = urlPath;
+      if (textStyleLink) {
+        textStyleLink.value = getByPath(draftData, urlPath) || target.getAttribute('href') || '';
+      }
+      updateStylePanelFields(activeStyleTarget, activeStyleMode);
       return;
     }
 
     if (target.dataset.stylePath && !target.dataset.editPath) {
-      if (['callout', 'section', 'nav', 'hero'].includes(activeComponentType || '')) {
-        return;
-      }
       setActiveElementStyleTarget(target);
       return;
     }
@@ -1818,6 +1885,7 @@
         style_preset: 'default',
         alignment: 'left',
         media: [],
+        media_position: 'bottom',
       });
       renderEditorial(module);
     }
@@ -1907,36 +1975,6 @@
       updateThemeValue(event.target.dataset.themeKey, event.target.value);
     });
   });
-  navBgInput?.addEventListener('input', (event) => {
-    updateThemeValue('nav_bg', event.target.value);
-  });
-  navTextInput?.addEventListener('input', (event) => {
-    updateThemeValue('nav_text', event.target.value);
-  });
-  calloutBgInput?.addEventListener('input', (event) => {
-    if (!activeComponentStylePath || !activeComponentTarget) return;
-    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
-      background_color: event.target.value,
-    });
-  });
-  calloutTextInput?.addEventListener('input', (event) => {
-    if (!activeComponentStylePath || !activeComponentTarget) return;
-    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
-      text_color: event.target.value,
-    });
-  });
-  calloutBorderInput?.addEventListener('input', (event) => {
-    if (!activeComponentStylePath || !activeComponentTarget) return;
-    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
-      border_color: event.target.value,
-    });
-  });
-  sectionBgInput?.addEventListener('input', (event) => {
-    if (!activeComponentStylePath || !activeComponentTarget) return;
-    setElementStyleForPath(activeComponentStylePath, activeComponentTarget, {
-      background_color: event.target.value,
-    });
-  });
   imageReplaceButton?.addEventListener('click', () => {
     if (!activeComponentImageTarget) return;
     handleImageClick(activeComponentImageTarget);
@@ -1964,26 +2002,6 @@
   });
   componentReset?.addEventListener('click', () => {
     if (!activeComponentType) return;
-    if (activeComponentType === 'nav') {
-      updateThemeValue('nav_bg', '');
-      updateThemeValue('nav_text', '');
-      setComponentPanel('nav', activeComponentTarget);
-      return;
-    }
-    if (activeComponentType === 'callout') {
-      if (activeComponentStylePath && activeComponentTarget) {
-        clearElementStyleForPath(activeComponentStylePath, activeComponentTarget);
-        setComponentPanel('callout', activeComponentTarget);
-      }
-      return;
-    }
-    if (activeComponentType === 'section') {
-      if (activeComponentStylePath && activeComponentTarget) {
-        clearElementStyleForPath(activeComponentStylePath, activeComponentTarget);
-        setComponentPanel('section', activeComponentTarget);
-      }
-      return;
-    }
     if (activeComponentType === 'hero') {
       const overlay = document.querySelector('.hero__overlay');
       if (overlay) {
@@ -2087,6 +2105,18 @@
 
   editorialGrid?.addEventListener('dragstart', (event) => {
     if (!editMode) return;
+    const mediaHandle = event.target.closest('[data-media-drag]');
+    if (mediaHandle) {
+      const card = mediaHandle.closest('[data-card-id]');
+      if (!card) return;
+      draggingMedia = {
+        moduleId: mediaHandle.dataset.moduleId,
+        cardId: mediaHandle.dataset.cardId,
+      };
+      event.dataTransfer?.setData('text/plain', card.dataset.cardId || '');
+      event.dataTransfer?.setDragImage(card, 20, 20);
+      return;
+    }
     const handle = event.target.closest('[data-drag-handle]');
     if (!handle) return;
     const card = handle.closest('[data-card-id]');
@@ -2098,22 +2128,40 @@
   });
 
   editorialGrid?.addEventListener('dragover', (event) => {
-    if (!editMode || !draggingCard) return;
-    event.preventDefault();
-    const targetCard = event.target.closest('.editorial-card[data-card-id]');
-    if (!targetCard || targetCard === draggingCard) return;
-    const rect = targetCard.getBoundingClientRect();
-    const offset = event.clientY - rect.top;
-    const shouldInsertAfter = offset > rect.height / 2;
-    const referenceNode = shouldInsertAfter ? targetCard.nextSibling : targetCard;
-    if (referenceNode !== draggingCard) {
-      editorialGrid.insertBefore(draggingCard, referenceNode);
+    if (!editMode) return;
+    if (draggingMedia) {
+      event.preventDefault();
+      return;
+    }
+    if (draggingCard) {
+      event.preventDefault();
+      const targetCard = event.target.closest('.editorial-card[data-card-id]');
+      if (!targetCard || targetCard === draggingCard) return;
+      const rect = targetCard.getBoundingClientRect();
+      const offset = event.clientY - rect.top;
+      const shouldInsertAfter = offset > rect.height / 2;
+      const referenceNode = shouldInsertAfter ? targetCard.nextSibling : targetCard;
+      if (referenceNode !== draggingCard) {
+        editorialGrid.insertBefore(draggingCard, referenceNode);
+      }
     }
   });
 
   editorialGrid?.addEventListener('drop', (event) => {
     if (!editMode) return;
     event.preventDefault();
+    if (draggingMedia && draftData) {
+      const targetCard = event.target.closest('.editorial-card[data-card-id]');
+      if (!targetCard || targetCard.dataset.cardId !== draggingMedia.cardId) return;
+      const module = findModule(draftData, draggingMedia.moduleId);
+      const card = module?.cards?.find((item) => item.id === draggingMedia.cardId);
+      if (!card) return;
+      const rect = targetCard.getBoundingClientRect();
+      const position = event.clientY < rect.top + rect.height / 2 ? 'top' : 'bottom';
+      card.media_position = position;
+      renderEditorial(module);
+      return;
+    }
     const module = draftData ? findModule(draftData, 'editorial') : null;
     updateEditorialOrderFromGrid(module);
     if (module) renderEditorial(module);
@@ -2124,6 +2172,7 @@
       draggingCard.classList.remove('editorial-card--dragging');
     }
     draggingCard = null;
+    draggingMedia = null;
   });
 
   document.addEventListener('blur', (event) => {
@@ -2161,7 +2210,11 @@
   textStyleSize?.addEventListener('input', (event) => {
     const value = event.target.value;
     const size = value ? `${Number(value)}px` : '';
-    updateTextStyle({ font_size: size });
+    if (activeStyleMode === 'text') {
+      updateTextStyle({ font_size: size });
+    } else if (activeStyleMode === 'element') {
+      updateElementStyle({ font_size: size });
+    }
   });
 
   textStyleColor?.addEventListener('input', (event) => {
@@ -2174,6 +2227,31 @@
 
   textStyleBackground?.addEventListener('input', (event) => {
     updateElementStyle({ background_color: event.target.value });
+  });
+
+  textStyleBorder?.addEventListener('input', (event) => {
+    updateElementStyle({ border_color: event.target.value });
+  });
+
+  textStyleBullet?.addEventListener('input', (event) => {
+    updateElementStyle({ list_bullet: event.target.value });
+  });
+
+  textStyleHoverBackground?.addEventListener('input', (event) => {
+    updateElementStyle({ hover_background_color: event.target.value });
+  });
+
+  textStyleHoverText?.addEventListener('input', (event) => {
+    updateElementStyle({ hover_text_color: event.target.value });
+  });
+
+  textStyleLink?.addEventListener('input', (event) => {
+    if (!draftData || !activeLinkPath) return;
+    const value = event.target.value.trim();
+    setByPath(draftData, activeLinkPath, value);
+    if (activeLinkTarget) {
+      activeLinkTarget.setAttribute('href', value || '#');
+    }
   });
 
   textStyleReset?.addEventListener('click', () => {
