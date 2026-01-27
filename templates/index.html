@@ -55,7 +55,7 @@
       <button type="button" data-rich-command="callout">Callout</button>
     </div>
       <div class="inline-text-style-panel" data-text-style-panel hidden>
-        <div class="inline-text-style-panel__header">
+        <div class="inline-text-style-panel__header" data-panel-handle>
           <h2>Text Styling</h2>
           <button type="button" data-text-style-reset>Reset</button>
         </div>
@@ -73,13 +73,61 @@
         </label>
       </div>
       <div class="inline-theme-panel" data-theme-panel hidden>
-        <div class="inline-theme-panel__header">
+        <div class="inline-theme-panel__header" data-panel-handle>
           <h2>Theme</h2>
           <div class="inline-theme-panel__actions">
             <button type="button" data-theme-reset>Reset Theme</button>
             <button type="button" data-theme-close>Close</button>
           </div>
         </div>
+        <label>
+          Ink
+          <input type="color" data-theme-key="ink" data-default-color="#22577A" />
+        </label>
+        <label>
+          Ink muted
+          <input type="color" data-theme-key="ink_muted" data-default-color="#2C6A8C" />
+        </label>
+        <label>
+          Ink soft
+          <input type="color" data-theme-key="ink_soft" data-default-color="#3A7A96" />
+        </label>
+        <label>
+          Accent
+          <input type="color" data-theme-key="accent" data-default-color="#38A3A5" />
+        </label>
+        <label>
+          Accent strong
+          <input type="color" data-theme-key="accent_strong" data-default-color="#22577A" />
+        </label>
+        <label>
+          Surface
+          <input type="color" data-theme-key="surface" data-default-color="#C7F9CC" />
+        </label>
+        <label>
+          Surface alt
+          <input type="color" data-theme-key="surface_alt" data-default-color="#80ED99" />
+        </label>
+        <label>
+          Card base
+          <input type="color" data-theme-key="card" data-default-color="#FFFFFF" />
+        </label>
+        <label>
+          Highlight
+          <input type="color" data-theme-key="highlight" data-default-color="#57CC99" />
+        </label>
+        <label>
+          Highlight soft
+          <input type="color" data-theme-key="highlight_soft" data-default-color="#D7FBE5" />
+        </label>
+        <label>
+          Highlight text
+          <input type="color" data-theme-key="highlight_text" data-default-color="#22577A" />
+        </label>
+        <label>
+          List bullet
+          <input type="color" data-theme-key="list_bullet" data-default-color="#38A3A5" />
+        </label>
         <label>
           Page background
           <input type="color" data-theme-key="page_bg" data-default-color="#C7F9CC" />
@@ -138,7 +186,7 @@
         </label>
       </div>
       <div class="inline-component-panel" data-component-panel hidden>
-        <div class="inline-theme-panel__header">
+        <div class="inline-theme-panel__header" data-panel-handle>
           <h2 data-component-title>Component</h2>
           <button type="button" data-component-reset>Reset</button>
         </div>

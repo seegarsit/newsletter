@@ -36,6 +36,7 @@
   const heroSubtitleInput = componentPanel?.querySelector('[data-component-hero-subtitle]');
   const imageInput = document.querySelector('[data-image-input]');
   const editorialGrid = document.querySelector('[data-editorial-grid]');
+  const panelHandleSelector = '[data-panel-handle]';
 
   let originalData = null;
   let draftData = null;
@@ -61,7 +62,9 @@
     surface_alt: '--surface-alt',
     card: '--card',
     highlight: '--highlight',
+    highlight_soft: '--highlight-soft',
     highlight_text: '--highlight-text',
+    list_bullet: '--list-bullet',
     page_bg: '--page-bg',
     text_color: '--text-color',
     link_color: '--link-color',
@@ -84,6 +87,111 @@
   };
 
   const colorPattern = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+  const draggablePanels = [
+    { panel: textStylePanel, handle: textStylePanel?.querySelector(panelHandleSelector) },
+    { panel: themePanel, handle: themePanel?.querySelector(panelHandleSelector) },
+    { panel: componentPanel, handle: componentPanel?.querySelector(panelHandleSelector) },
+  ];
+
+  function isCompactLayout() {
+    return window.matchMedia('(max-width: 900px)').matches;
+  }
+
+  function resetPanelPosition(panel) {
+    if (!panel) return;
+    panel.style.removeProperty('top');
+    panel.style.removeProperty('left');
+    panel.style.removeProperty('right');
+    panel.style.removeProperty('bottom');
+    panel.dataset.panelDragged = '';
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  function setPanelPosition(panel, top, left) {
+    if (!panel) return;
+    panel.style.top = `${top}px`;
+    panel.style.left = `${left}px`;
+    panel.style.right = 'auto';
+    panel.style.bottom = 'auto';
+    panel.dataset.panelDragged = 'true';
+  }
+
+  function positionSidePanels() {
+    if (isCompactLayout()) return;
+    const themeVisible = themePanel && !themePanel.hasAttribute('hidden');
+    const componentVisible = componentPanel && !componentPanel.hasAttribute('hidden');
+    if (!themeVisible && componentVisible && componentPanel?.dataset.panelDragged !== 'true') {
+      resetPanelPosition(componentPanel);
+      return;
+    }
+    if (!themeVisible || !componentVisible) return;
+    if (componentPanel?.dataset.panelDragged === 'true') return;
+    resetPanelPosition(componentPanel);
+    const themeRect = themePanel.getBoundingClientRect();
+    const componentRect = componentPanel.getBoundingClientRect();
+    const gap = 16;
+    const belowTop = themeRect.bottom + gap;
+    if (belowTop + componentRect.height <= window.innerHeight - gap) {
+      componentPanel.style.top = `${belowTop}px`;
+      return;
+    }
+    const nextLeft = gap;
+    const nextTop = clamp(themeRect.top, gap, window.innerHeight - componentRect.height - gap);
+    componentPanel.style.top = `${nextTop}px`;
+    componentPanel.style.left = `${nextLeft}px`;
+    componentPanel.style.right = 'auto';
+  }
+
+  function initDraggablePanel(panel, handle) {
+    if (!panel || !handle) return;
+    handle.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      if (isCompactLayout()) return;
+      if (event.target.closest('button, input, select, textarea, a')) return;
+      const rect = panel.getBoundingClientRect();
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+      const margin = 12;
+
+      const moveHandler = (moveEvent) => {
+        const nextLeft = clamp(
+          moveEvent.clientX - offsetX,
+          margin,
+          window.innerWidth - rect.width - margin
+        );
+        const nextTop = clamp(
+          moveEvent.clientY - offsetY,
+          margin,
+          window.innerHeight - rect.height - margin
+        );
+        setPanelPosition(panel, nextTop, nextLeft);
+      };
+
+      const endHandler = () => {
+        handle.releasePointerCapture(event.pointerId);
+        handle.removeEventListener('pointermove', moveHandler);
+        handle.removeEventListener('pointerup', endHandler);
+        handle.removeEventListener('pointercancel', endHandler);
+      };
+
+      handle.setPointerCapture(event.pointerId);
+      handle.addEventListener('pointermove', moveHandler);
+      handle.addEventListener('pointerup', endHandler);
+      handle.addEventListener('pointercancel', endHandler);
+      event.preventDefault();
+    });
+  }
+
+  function handlePanelResize() {
+    if (isCompactLayout()) {
+      draggablePanels.forEach(({ panel }) => resetPanelPosition(panel));
+      return;
+    }
+    positionSidePanels();
+  }
 
   function cloneData(data) {
     return JSON.parse(JSON.stringify(data));
@@ -251,6 +359,7 @@
     } else {
       themePanel.setAttribute('hidden', '');
     }
+    positionSidePanels();
   }
 
   function resetTheme() {
@@ -655,6 +764,7 @@
 
   function positionTextStylePanel(element) {
     if (!textStylePanel || !element) return;
+    if (textStylePanel.dataset.panelDragged === 'true') return;
     const rect = element.getBoundingClientRect();
     const panelRect = textStylePanel.getBoundingClientRect();
     const margin = 16;
@@ -820,6 +930,7 @@
       section.hidden = section.dataset.componentSection !== type;
     });
     componentPanel.removeAttribute('hidden');
+    positionSidePanels();
 
     if (componentTitle) {
       componentTitle.textContent =
@@ -2088,6 +2199,7 @@
     if (activeStyleTarget) {
       positionTextStylePanel(activeStyleTarget);
     }
+    handlePanelResize();
   });
 
   window.addEventListener('scroll', () => {
@@ -2119,6 +2231,10 @@
     }
     pendingImageAction = null;
     imageInput.value = '';
+  });
+
+  draggablePanels.forEach(({ panel, handle }) => {
+    initDraggablePanel(panel, handle);
   });
 
   if (toolbar) {

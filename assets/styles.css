@@ -10,6 +10,7 @@
   --highlight: #57CC99;
   --highlight-soft: #d7fbe5;
   --highlight-text: #22577A;
+  --list-bullet: var(--accent);
   --page-bg: #C7F9CC;
   --text-color: #22577A;
   --link-color: #38A3A5;
@@ -132,7 +133,7 @@ ul li::before {
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--list-bullet, var(--accent));
   position: absolute;
   left: 0;
   top: 0.7rem;

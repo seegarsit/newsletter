@@ -251,6 +251,13 @@ body:not(.inline-editing) .editorial-card__media-controls {
   gap: 0.75rem;
 }
 
+.inline-text-style-panel__header[data-panel-handle],
+.inline-theme-panel__header[data-panel-handle] {
+  cursor: move;
+  user-select: none;
+  touch-action: none;
+}
+
 .inline-theme-panel__header h2 {
   font-size: 0.95rem;
   margin: 0;
