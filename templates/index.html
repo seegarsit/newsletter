@@ -366,7 +366,7 @@
             {{ issue.hero.subtitle | replace('\n', '<br />') | safe }}
           </p>
           {% endif %}
-          {% if issue.hero.cta.label and issue.hero.cta.url or current_user.is_authenticated %}
+          {% if issue.hero.cta.label and issue.hero.cta.url %}
           <a
             class="button button--primary"
             href="{{ issue.hero.cta.url or '#' }}"
@@ -514,7 +514,7 @@
                 {{ render_body(card.body) }}
               </div>
               {% endif %}
-              {% if card.id != 'tech-talk' and (card.cta.label and card.cta.url or current_user.is_authenticated) %}
+              {% if card.id != 'tech-talk' and card.cta.label and card.cta.url %}
               <div class="editorial-card__actions">
                 <a
                   class="button button--primary"
