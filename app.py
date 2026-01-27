@@ -121,7 +121,14 @@ THEME_TOKENS = {
 }
 COLOR_PATTERN = re.compile(r"^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
 FONT_SIZE_PATTERN = re.compile(r"^\d+(\.\d+)?px$")
-STYLE_COLOR_KEYS = ("background_color", "text_color", "border_color")
+STYLE_COLOR_KEYS = (
+    "background_color",
+    "text_color",
+    "border_color",
+    "hover_background_color",
+    "hover_text_color",
+    "list_bullet",
+)
 META_SEPARATOR = " • "
 ALLOWED_MEDIA_EXTENSIONS = {"png", "jpg", "jpeg", "pdf", "webp"}
 ALLOWED_ALIGNMENTS = {"left", "center", "right"}
@@ -414,6 +421,9 @@ def _sanitize_element_styles(styles: dict[str, Any] | None) -> dict[str, dict[st
             color = str(value.get(style_key, "")).strip()
             if COLOR_PATTERN.match(color):
                 entry[style_key] = color
+        font_size = str(value.get("font_size", "")).strip()
+        if FONT_SIZE_PATTERN.match(font_size):
+            entry["font_size"] = font_size
         if entry:
             cleaned[key] = entry
     return cleaned
@@ -453,12 +463,27 @@ def _inline_element_style(styles: dict[str, Any] | None, path: str) -> str:
     background_color = str(value.get("background_color", "")).strip()
     if COLOR_PATTERN.match(background_color):
         segments.append(f"background-color: {background_color}")
+        segments.append(f"--button-bg: {background_color}")
     text_color = str(value.get("text_color", "")).strip()
     if COLOR_PATTERN.match(text_color):
         segments.append(f"color: {text_color}")
+        segments.append(f"--button-text: {text_color}")
     border_color = str(value.get("border_color", "")).strip()
     if COLOR_PATTERN.match(border_color):
         segments.append(f"border-color: {border_color}")
+        segments.append(f"--button-border: {border_color}")
+    hover_background_color = str(value.get("hover_background_color", "")).strip()
+    if COLOR_PATTERN.match(hover_background_color):
+        segments.append(f"--button-hover-bg: {hover_background_color}")
+    hover_text_color = str(value.get("hover_text_color", "")).strip()
+    if COLOR_PATTERN.match(hover_text_color):
+        segments.append(f"--button-hover-text: {hover_text_color}")
+    list_bullet = str(value.get("list_bullet", "")).strip()
+    if COLOR_PATTERN.match(list_bullet):
+        segments.append(f"--list-bullet: {list_bullet}")
+    font_size = str(value.get("font_size", "")).strip()
+    if FONT_SIZE_PATTERN.match(font_size):
+        segments.append(f"font-size: {font_size}")
     return "; ".join(segments)
 
 

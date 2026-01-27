@@ -73,6 +73,10 @@ body:not(.inline-editing) .editorial-card__media-controls {
   cursor: pointer;
 }
 
+.inline-add-button[data-media-drag='true'] {
+  cursor: grab;
+}
+
 .inline-add-button--compact,
 .inline-remove-button--compact {
   margin-top: 0.5rem;
