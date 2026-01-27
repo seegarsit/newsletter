@@ -1798,11 +1798,7 @@
       return;
     }
 
-    if (!(activeComponentType === 'hero' && target.closest('[data-hero]'))) {
-      setActiveTextStyleTarget(target);
-    } else {
-      clearActiveTextStyleTarget();
-    }
+    setActiveTextStyleTarget(target);
     setEditable(target, type);
   }
 
