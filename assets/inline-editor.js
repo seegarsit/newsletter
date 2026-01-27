@@ -1127,7 +1127,7 @@
     }
 
     let hasActions = false;
-    if (card.cta && card.id !== 'tech-talk' && (card.cta.label && card.cta.url || editMode)) {
+    if (card.cta && card.id !== 'tech-talk' && card.cta.label && card.cta.url) {
       const actions = document.createElement('div');
       actions.className = 'editorial-card__actions';
       const link = document.createElement('a');

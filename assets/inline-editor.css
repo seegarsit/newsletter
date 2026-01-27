@@ -132,11 +132,6 @@ body:not(.inline-editing) .editorial-card__media-controls {
   min-width: 4rem;
 }
 
-.inline-editing .button__label:empty::before {
-  content: 'Edit label';
-  opacity: 0.6;
-}
-
 .inline-editing .editorial-card--dragging {
   opacity: 0.65;
 }
