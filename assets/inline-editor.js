@@ -392,6 +392,17 @@
     applyTheme(theme);
   }
 
+  function buildThemeSnapshot() {
+    const snapshot = {};
+    Object.entries(themeTokens).forEach(([token, cssVar]) => {
+      const value = getThemeColorValue(cssVar);
+      if (value && isValidHexColor(value)) {
+        snapshot[token] = value;
+      }
+    });
+    return snapshot;
+  }
+
   function toggleThemePanel(force) {
     if (!themePanel) return;
     const shouldOpen = typeof force === 'boolean' ? force : themePanel.hasAttribute('hidden');
@@ -421,13 +432,22 @@
     element.style.fontSize = style?.font_size || '';
   }
 
+  function setStyleVariable(element, name, value) {
+    if (!element || !name) return;
+    if (value) {
+      element.style.setProperty(name, value);
+      return;
+    }
+    element.style.removeProperty(name);
+  }
+
   function applyElementStyle(element, style) {
     if (!element) return;
     if (element.classList.contains('callout')) {
-      element.style.setProperty('--callout-bg', style?.background_color || '');
-      element.style.setProperty('--callout-text', style?.text_color || '');
-      element.style.setProperty('--callout-border', style?.border_color || '');
-      element.style.setProperty('--list-bullet', style?.list_bullet || '');
+      setStyleVariable(element, '--callout-bg', style?.background_color || '');
+      setStyleVariable(element, '--callout-text', style?.text_color || '');
+      setStyleVariable(element, '--callout-border', style?.border_color || '');
+      setStyleVariable(element, '--list-bullet', style?.list_bullet || '');
       element.style.backgroundColor = '';
       element.style.color = '';
       element.style.borderColor = '';
@@ -435,12 +455,12 @@
       return;
     }
     if (isButtonElement(element)) {
-      element.style.setProperty('--button-bg', style?.background_color || '');
-      element.style.setProperty('--button-text', style?.text_color || '');
-      element.style.setProperty('--button-border', style?.border_color || '');
-      element.style.setProperty('--button-hover-bg', style?.hover_background_color || '');
-      element.style.setProperty('--button-hover-text', style?.hover_text_color || '');
-      element.style.setProperty('--list-bullet', style?.list_bullet || '');
+      setStyleVariable(element, '--button-bg', style?.background_color || '');
+      setStyleVariable(element, '--button-text', style?.text_color || '');
+      setStyleVariable(element, '--button-border', style?.border_color || '');
+      setStyleVariable(element, '--button-hover-bg', style?.hover_background_color || '');
+      setStyleVariable(element, '--button-hover-text', style?.hover_text_color || '');
+      setStyleVariable(element, '--list-bullet', style?.list_bullet || '');
       element.style.backgroundColor = '';
       element.style.color = '';
       element.style.borderColor = '';
@@ -451,7 +471,7 @@
     element.style.color = style?.text_color || '';
     element.style.borderColor = style?.border_color || '';
     element.style.fontSize = style?.font_size || '';
-    element.style.setProperty('--list-bullet', style?.list_bullet || '');
+    setStyleVariable(element, '--list-bullet', style?.list_bullet || '');
   }
 
   function getMediaItems(card) {
@@ -1714,6 +1734,9 @@
 
   async function saveChanges() {
     if (!draftData) return;
+    if (draftData.hero) {
+      draftData.hero.theme = buildThemeSnapshot();
+    }
     const response = await fetch('/admin/api/current', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1730,6 +1753,9 @@
 
   async function publishChanges() {
     if (!draftData) return;
+    if (draftData.hero) {
+      draftData.hero.theme = buildThemeSnapshot();
+    }
     const response = await fetch('/admin/api/current/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
