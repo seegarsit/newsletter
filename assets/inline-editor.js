@@ -1158,7 +1158,7 @@
           overlayStyle.background_color ||
           rgbToHex(computed) ||
           heroOverlayInput.dataset.defaultColor ||
-          '#22577a';
+          '#008852';
       }
       if (heroTitleInput) {
         const title = document.querySelector('[data-edit-path="hero.title"]');

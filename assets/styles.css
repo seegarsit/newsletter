@@ -550,8 +550,8 @@ ul li::before {
 }
 
 .editorial-card--rail-tech-talk .section-rail {
-  --rail-accent: #2f6fe4;
-  --rail-bg: rgba(47, 111, 228, 0.12);
+  --rail-accent: #008852;
+  --rail-bg: rgba(0, 136, 82, 0.12);
 }
 
 .editorial-card__header {
@@ -1106,7 +1106,7 @@ body.is-lightbox-open {
 }
 
 .admin-toolbar {
-  background: #0f2f44;
+  background: #008852;
   color: #f8fdf9;
   font-size: 0.85rem;
 }
@@ -1130,7 +1130,7 @@ body.is-lightbox-open {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(15, 47, 68, 0.9);
+  background: rgba(0, 136, 82, 0.9);
   color: #f8fdf9;
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
