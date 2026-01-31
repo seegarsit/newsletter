@@ -443,6 +443,8 @@ def _inline_text_style(styles: dict[str, Any] | None, path: str) -> str:
     color = str(value.get("color", "")).strip()
     if COLOR_PATTERN.match(color):
         segments.append(f"color: {color}")
+        segments.append(f"--link-color: {color}")
+        segments.append(f"--link-hover: {color}")
     font_size = str(value.get("font_size", "")).strip()
     if FONT_SIZE_PATTERN.match(font_size):
         segments.append(f"font-size: {font_size}")
