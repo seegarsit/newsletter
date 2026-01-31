@@ -453,9 +453,12 @@
   function applyElementStyle(element, style) {
     if (!element) return;
     if (element.classList.contains('callout')) {
+      const defaultCalloutBorder = '#008852';
+      const isPlaceholderCallout = element.textContent?.trim() === 'Callout text';
+      const calloutBorder = style?.border_color || (isPlaceholderCallout ? defaultCalloutBorder : '');
       setStyleVariable(element, '--callout-bg', style?.background_color || '');
       setStyleVariable(element, '--callout-text', style?.text_color || '');
-      setStyleVariable(element, '--callout-border', style?.border_color || '');
+      setStyleVariable(element, '--callout-border', calloutBorder);
       setStyleVariable(element, '--list-bullet', style?.list_bullet || '');
       element.style.backgroundColor = '';
       element.style.color = '';
