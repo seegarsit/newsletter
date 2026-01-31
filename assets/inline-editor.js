@@ -871,10 +871,10 @@
     }
     if (textStyleBullet) {
       const bulletValue = current.list_bullet || computed.getPropertyValue('--list-bullet');
-      textStyleBullet.value = normalizeColorValue(bulletValue, '#38A3A5');
+      textStyleBullet.value = normalizeColorValue(bulletValue, '#000000');
     }
     if (textStyleHoverBackground) {
-      const fallback = getThemeColorValue('--btn-hover-bg') || '#38A3A5';
+      const fallback = getThemeColorValue('--btn-hover-bg') || '#BCD531';
       textStyleHoverBackground.value = normalizeColorValue(
         current.hover_background_color,
         fallback
