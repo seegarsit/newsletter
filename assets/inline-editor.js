@@ -1773,6 +1773,9 @@
 
   async function saveChanges() {
     if (!draftData) return;
+    if (draftData.hero) {
+      draftData.hero.theme = buildThemeSnapshot();
+    }
     const response = await fetch('/admin/api/current', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1789,6 +1792,9 @@
 
   async function publishChanges() {
     if (!draftData) return;
+    if (draftData.hero) {
+      draftData.hero.theme = buildThemeSnapshot();
+    }
     const response = await fetch('/admin/api/current/publish', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
