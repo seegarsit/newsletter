@@ -26,6 +26,7 @@
   --card-bg: #ffffff;
   --card-border: #008852;
   --button-bg: #008852;
+  --button-border: #008852;
   --button-text: #ffffff;
   --button-hover-bg: #BCD531;
   --button-hover-text: #ffffff;
@@ -324,7 +325,7 @@ ul li::before {
 
 .login-field input {
   border-radius: 12px;
-  border: 1px solid rgba(34, 87, 122, 0.2);
+  border: 1px solid rgba(0, 136, 82, 0.2);
   padding: 0.7rem 0.9rem;
   font-size: 1rem;
 }
@@ -343,7 +344,7 @@ ul li::before {
 }
 
 .login-message {
-  background: rgba(34, 87, 122, 0.08);
+  background: rgba(0, 136, 82, 0.08);
   border-radius: 12px;
   padding: 0.6rem 0.9rem;
   color: var(--ink);
@@ -501,7 +502,7 @@ ul li::before {
   align-items: center;
   gap: 1.1rem;
   padding: 1.2rem 0.6rem;
-  background: var(--rail-bg, rgba(34, 87, 122, 0.08));
+  background: var(--rail-bg, rgba(0, 136, 82, 0.08));
   border-radius: 18px;
   color: var(--rail-accent, var(--ink));
   min-height: 100%;
@@ -574,8 +575,8 @@ ul li::before {
 .editorial-card__media-footer {
   grid-area: media-footer;
   padding: 1.25rem;
-  border-top: 1px solid rgba(34, 87, 122, 0.08);
-  background: rgba(34, 87, 122, 0.03);
+  border-top: 1px solid rgba(0, 136, 82, 0.08);
+  background: rgba(0, 136, 82, 0.03);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
@@ -604,8 +605,8 @@ ul li::before {
 
 .editorial-card__media-thumb {
   width: 100%;
-  border: 1px solid rgba(34, 87, 122, 0.12);
-  background: rgba(34, 87, 122, 0.04);
+  border: 1px solid rgba(0, 136, 82, 0.12);
+  background: rgba(0, 136, 82, 0.04);
   border-radius: var(--radius-md);
   overflow: hidden;
   display: flex;
@@ -655,7 +656,7 @@ ul li::before {
 .editorial-card__media-thumb--more {
   font-weight: 600;
   color: var(--ink);
-  background: rgba(34, 87, 122, 0.08);
+  background: rgba(0, 136, 82, 0.08);
 }
 
 .editorial-card__media-remove {
@@ -731,7 +732,7 @@ ul li::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(34, 87, 122, 0.04);
+  background: rgba(0, 136, 82, 0.04);
   border-radius: var(--radius-md);
   padding: 1rem;
 }
@@ -753,7 +754,7 @@ ul li::before {
 
 .editorial-lightbox__close {
   border: none;
-  background: rgba(34, 87, 122, 0.1);
+  background: rgba(0, 136, 82, 0.1);
   color: var(--ink);
   font-size: 1.2rem;
   font-weight: 700;
@@ -906,7 +907,7 @@ body.is-lightbox-open {
   padding: 1.25rem 1.5rem;
   border-radius: 1rem;
   background: var(--callout-bg, rgba(255, 255, 255, 0.5));
-  border: 1px solid var(--callout-border, rgba(34, 87, 122, 0.2));
+  border: 1px solid var(--callout-border, #008852);
   --callout-text: #000000;
   color: var(--callout-text, var(--text-color, var(--ink)));
   margin: 1.2rem 0;

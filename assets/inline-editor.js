@@ -13,19 +13,25 @@
   const textStyleSize = document.querySelector('[data-text-style-size]');
   const textStyleReset = document.querySelector('[data-text-style-reset]');
   const textStyleBackground = document.querySelector('[data-style-background]');
+  const textStyleButtonBackground = document.querySelector('[data-style-button-background]');
   const textStyleBorder = document.querySelector('[data-style-border]');
+  const textStyleButtonBorder = document.querySelector('[data-style-button-border]');
   const textStyleBullet = document.querySelector('[data-style-bullet]');
   const textStyleHoverBackground = document.querySelector('[data-style-hover-background]');
   const textStyleHoverText = document.querySelector('[data-style-hover-text]');
   const textStyleLink = document.querySelector('[data-style-link]');
+  const textStyleButtonText = document.querySelector('[data-style-button-text]');
   const textStyleColorField = document.querySelector('[data-style-text-color-field]');
   const textStyleSizeField = document.querySelector('[data-text-size-field]');
   const textStyleBackgroundField = document.querySelector('[data-style-background-field]');
+  const textStyleButtonBackgroundField = document.querySelector('[data-style-button-bg-field]');
   const textStyleBorderField = document.querySelector('[data-style-border-field]');
+  const textStyleButtonBorderField = document.querySelector('[data-style-button-border-field]');
   const textStyleBulletField = document.querySelector('[data-style-bullet-field]');
   const textStyleHoverBackgroundField = document.querySelector('[data-style-hover-bg-field]');
   const textStyleHoverTextField = document.querySelector('[data-style-hover-text-field]');
   const textStyleLinkField = document.querySelector('[data-style-link-field]');
+  const textStyleButtonTextField = document.querySelector('[data-style-button-text-field]');
   const themePanel = document.querySelector('[data-theme-panel]');
   const themeClose = document.querySelector('[data-theme-close]');
   const themeReset = document.querySelector('[data-theme-reset]');
@@ -861,16 +867,34 @@
       textStyleBackground.value =
         normalizeColorValue(current.background_color || computed.backgroundColor, '#ffffff');
     }
+    if (textStyleButtonBackground) {
+      textStyleButtonBackground.value = normalizeColorValue(
+        current.background_color || computed.backgroundColor,
+        '#008852'
+      );
+    }
     if (textStyleBorder) {
       textStyleBorder.value = normalizeColorValue(
         current.border_color || computed.borderColor,
         '#ffffff'
       );
     }
+    if (textStyleButtonBorder) {
+      textStyleButtonBorder.value = normalizeColorValue(
+        current.border_color || computed.borderColor,
+        '#008852'
+      );
+    }
     if (textStyleSize) {
       const sizeValue = current.font_size || computed.fontSize || '';
       const numeric = parseFloat(sizeValue);
       textStyleSize.value = Number.isNaN(numeric) ? '' : numeric;
+    }
+    if (textStyleButtonText) {
+      textStyleButtonText.value = normalizeColorValue(
+        current.text_color || computed.color,
+        '#ffffff'
+      );
     }
     if (textStyleBullet) {
       const bulletValue = current.list_bullet || computed.getPropertyValue('--list-bullet');
@@ -899,14 +923,21 @@
     const isElementMode = mode === 'element';
     const isButton = isButtonElement(element);
     const hasList = elementHasList(element);
+    const showButtonFields = isElementMode && isButton;
     if (textStyleSizeField) {
       textStyleSizeField.hidden = !mode;
     }
     if (textStyleBackgroundField) {
-      textStyleBackgroundField.hidden = !isElementMode;
+      textStyleBackgroundField.hidden = !isElementMode || isButton;
+    }
+    if (textStyleButtonBackgroundField) {
+      textStyleButtonBackgroundField.hidden = !showButtonFields;
     }
     if (textStyleBorderField) {
-      textStyleBorderField.hidden = !isElementMode;
+      textStyleBorderField.hidden = !isElementMode || isButton;
+    }
+    if (textStyleButtonBorderField) {
+      textStyleButtonBorderField.hidden = !showButtonFields;
     }
     if (textStyleBulletField) {
       textStyleBulletField.hidden = !isElementMode || !hasList;
@@ -921,7 +952,10 @@
       textStyleLinkField.hidden = !activeLinkPath;
     }
     if (textStyleColorField) {
-      textStyleColorField.hidden = !mode;
+      textStyleColorField.hidden = !mode || showButtonFields;
+    }
+    if (textStyleButtonTextField) {
+      textStyleButtonTextField.hidden = !showButtonFields;
     }
   }
 
@@ -2258,7 +2292,15 @@
     updateElementStyle({ background_color: event.target.value });
   });
 
+  textStyleButtonBackground?.addEventListener('input', (event) => {
+    updateElementStyle({ background_color: event.target.value });
+  });
+
   textStyleBorder?.addEventListener('input', (event) => {
+    updateElementStyle({ border_color: event.target.value });
+  });
+
+  textStyleButtonBorder?.addEventListener('input', (event) => {
     updateElementStyle({ border_color: event.target.value });
   });
 
@@ -2272,6 +2314,10 @@
 
   textStyleHoverText?.addEventListener('input', (event) => {
     updateElementStyle({ hover_text_color: event.target.value });
+  });
+
+  textStyleButtonText?.addEventListener('input', (event) => {
+    updateElementStyle({ text_color: event.target.value });
   });
 
   textStyleLink?.addEventListener('input', (event) => {
