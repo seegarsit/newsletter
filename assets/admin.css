@@ -12,7 +12,7 @@
   --highlight-text: #231f20;
   --page-bg: #f5f6f4;
   --text-color: #231f20;
-  --link-color: #008752;
+  --link-color: #008852;
   --link-hover: #231f20;
   --btn-bg: #008752;
   --btn-text: #f5f6f4;
@@ -20,7 +20,7 @@
   --nav-bg: #008752;
   --nav-text: #f5f6f4;
   --callout-bg: #f5f6f4;
-  --callout-text: #231f20;
+  --callout-text: #000000;
   --callout-border: rgba(35, 31, 32, 0.12);
   --card-bg: #f5f6f4;
   --card-border: #dee0d9;

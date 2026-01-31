@@ -428,7 +428,10 @@
 
   function applyTextStyle(element, style) {
     if (!element) return;
-    element.style.color = style?.color || '';
+    const color = style?.color || '';
+    element.style.color = color;
+    setStyleVariable(element, '--link-color', color);
+    setStyleVariable(element, '--link-hover', color);
     element.style.fontSize = style?.font_size || '';
   }
 
