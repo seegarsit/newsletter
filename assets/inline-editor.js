@@ -454,7 +454,8 @@
     if (!element) return;
     if (element.classList.contains('callout')) {
       const defaultCalloutBorder = '#008852';
-      const calloutBorder = style?.border_color || defaultCalloutBorder;
+      const isPlaceholderCallout = element.textContent?.trim() === 'Callout text';
+      const calloutBorder = style?.border_color || (isPlaceholderCallout ? defaultCalloutBorder : '');
       setStyleVariable(element, '--callout-bg', style?.background_color || '');
       setStyleVariable(element, '--callout-text', style?.text_color || '');
       setStyleVariable(element, '--callout-border', calloutBorder);
