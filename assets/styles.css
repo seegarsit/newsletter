@@ -1,30 +1,37 @@
 :root {
-  --ink: #22577A;
-  --ink-muted: #2C6A8C;
-  --ink-soft: #3A7A96;
-  --accent: #38A3A5;
-  --accent-strong: #22577A;
-  --surface: #C7F9CC;
-  --surface-alt: #80ED99;
+  --ink: #000000;
+  --ink-muted: #000000;
+  --ink-soft: #808080;
+  --accent: #008852;
+  --accent-strong: #008852;
+  --surface: #dbebe0;
+  --surface-alt: #dbebe0;
   --card: #ffffff;
-  --highlight: #57CC99;
-  --highlight-soft: #d7fbe5;
-  --highlight-text: #22577A;
-  --list-bullet: var(--accent);
-  --page-bg: #C7F9CC;
-  --text-color: #22577A;
-  --link-color: #38A3A5;
-  --link-hover: #22577A;
-  --btn-bg: #38A3A5;
-  --btn-text: #FFFFFF;
-  --btn-hover-bg: #38A3A5;
-  --nav-bg: #22577A;
-  --nav-text: #F8FDF9;
-  --callout-bg: #FFFFFF;
-  --callout-text: #22577A;
-  --callout-border: rgba(34, 87, 122, 0.2);
-  --card-bg: #FFFFFF;
-  --card-border: transparent;
+  --highlight: #dbebe0;
+  --highlight-soft: #dbebe0;
+  --highlight-text: #000000;
+  --list-bullet: #000000;
+  --page-bg: #ffffff;
+  --text-color: #000000;
+  --link-color: #008852;
+  --link-hover: #008852;
+  --btn-bg: #008852;
+  --btn-text: #ffffff;
+  --btn-hover-bg: #BCD531;
+  --nav-bg: #008852;
+  --nav-text: #ffffff;
+  --callout-bg: #ffffff;
+  --callout-text: #000000;
+  --callout-border: #008852;
+  --card-bg: #ffffff;
+  --card-border: #008852;
+  --button-bg: #008852;
+  --button-text: #ffffff;
+  --button-hover-bg: #BCD531;
+  --button-hover-text: #ffffff;
+  --hero-tint: #231f20;
+  --eyebrow-color: #000000;
+  --heading-color: #008852;
   --shadow: 0 26px 60px rgba(22, 18, 15, 0.12);
   --shadow-soft: 0 14px 32px rgba(22, 18, 15, 0.08);
   --radius-xl: 26px;
@@ -97,6 +104,10 @@ h4 {
   line-height: 1.2;
   margin: 0 0 0.75rem;
   color: var(--text-color, var(--ink));
+}
+
+h1 {
+  color: var(--heading-color, var(--accent));
 }
 
 p {
@@ -238,7 +249,7 @@ ul li::before {
 .hero__overlay {
   position: absolute;
   inset: 0;
-  background-color: var(--hero-tint, #22577a);
+  background-color: var(--hero-tint, #231f20);
   opacity: 0.75;
   pointer-events: none;
 }
@@ -269,7 +280,7 @@ ul li::before {
 .hero__tagline span {
   display: block;
   font-size: 1.15rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
 }
 
 .hero--login {
@@ -384,6 +395,10 @@ ul li::before {
   margin-bottom: 2rem;
 }
 
+.module__header h2 {
+  color: var(--heading-color, var(--accent));
+}
+
 .module__header--center {
   text-align: center;
 }
@@ -402,7 +417,7 @@ ul li::before {
   letter-spacing: 0.2em;
   font-weight: 600;
   font-size: 0.75rem;
-  color: var(--accent);
+  color: var(--eyebrow-color, #000000);
   margin-bottom: 0.6rem;
 }
 
@@ -759,7 +774,7 @@ body.is-lightbox-open {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: var(--ink-soft);
+  color: #000000;
 }
 
 .editorial-card__body {
@@ -858,6 +873,10 @@ body.is-lightbox-open {
   height: 100%;
 }
 
+.celebration-card h3 {
+  color: #008852;
+}
+
 .celebrations-list li {
   padding-left: 0;
 }
@@ -874,13 +893,13 @@ body.is-lightbox-open {
   display: block;
   font-weight: 700;
   font-size: 13pt;
-  color: var(--ink);
+  color: #008852;
 }
 
 .celebrations-list__meta {
   display: block;
   font-size: 12pt;
-  color: var(--ink-soft);
+  color: #808080;
 }
 
 .callout {
@@ -910,6 +929,9 @@ body.is-lightbox-open {
   justify-items: center;
   width: 100%;
   height: 100%;
+  background: #008852;
+  color: #ffffff;
+  border-color: #008852;
 }
 
 .contributor-card__section {
@@ -942,15 +964,21 @@ body.is-lightbox-open {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.7rem;
-  color: var(--ink-soft);
+  color: inherit;
 }
 
 .contributor-card__name {
   margin-bottom: 0;
+  color: inherit;
 }
 
 .contributor-card__title {
   margin-bottom: 0;
+  color: inherit;
+}
+
+.contributor-card__meta {
+  color: inherit;
 }
 
 .resource-group {
