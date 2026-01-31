@@ -907,6 +907,7 @@ body.is-lightbox-open {
   border-radius: 1rem;
   background: var(--callout-bg, rgba(255, 255, 255, 0.5));
   border: 1px solid var(--callout-border, rgba(34, 87, 122, 0.2));
+  --callout-text: #000000;
   color: var(--callout-text, var(--text-color, var(--ink)));
   margin: 1.2rem 0;
 }
