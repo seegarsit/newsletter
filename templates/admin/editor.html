@@ -213,6 +213,46 @@
               <option value="rich" {% if module.body.mode == 'rich' %}selected{% endif %}>Rich</option>
             </select>
           </label>
+          {% elif module.type == 'contributors' %}
+          <input type="hidden" name="module-{{ loop.index0 }}-people-count" value="{{ module.people | length }}" />
+          <div class="sub-list" data-contributor-list>
+            {% for person in module.people %}
+            <div class="sub-card" data-contributor data-contributor-index="{{ loop.index0 }}">
+              <div class="sub-card__header">
+                <h5>{{ person.name or 'Contributor' }}</h5>
+                <label class="checkbox">
+                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-remove" />
+                  <span>Remove</span>
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Name</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-name" value="{{ person.name }}" />
+                </label>
+                <label class="field">
+                  <span>Title</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-title" value="{{ person.title }}" />
+                </label>
+              </div>
+              <div class="grid-two">
+                <label class="field">
+                  <span>Section</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-section" value="{{ person.section }}" />
+                </label>
+                <label class="field">
+                  <span>Image path</span>
+                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-image" value="{{ person.image }}" />
+                </label>
+              </div>
+              <label class="field">
+                <span>Secondary text</span>
+                <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-secondary" value="{{ person.secondary }}" />
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+          <button class="button button--ghost" type="button" data-add-contributor>Add contributor</button>
           {% elif module.type == 'celebrations' %}
           <label class="field">
             <span>Intro text</span>
@@ -278,46 +318,6 @@
             {% endfor %}
           </div>
           <button class="button button--ghost" type="button" data-add-anniversary>Add anniversary</button>
-          {% elif module.type == 'contributors' %}
-          <input type="hidden" name="module-{{ loop.index0 }}-people-count" value="{{ module.people | length }}" />
-          <div class="sub-list" data-contributor-list>
-            {% for person in module.people %}
-            <div class="sub-card" data-contributor data-contributor-index="{{ loop.index0 }}">
-              <div class="sub-card__header">
-                <h5>{{ person.name or 'Contributor' }}</h5>
-                <label class="checkbox">
-                  <input type="checkbox" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-remove" />
-                  <span>Remove</span>
-                </label>
-              </div>
-              <div class="grid-two">
-                <label class="field">
-                  <span>Name</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-name" value="{{ person.name }}" />
-                </label>
-                <label class="field">
-                  <span>Title</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-title" value="{{ person.title }}" />
-                </label>
-              </div>
-              <div class="grid-two">
-                <label class="field">
-                  <span>Section</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-section" value="{{ person.section }}" />
-                </label>
-                <label class="field">
-                  <span>Image path</span>
-                  <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-image" value="{{ person.image }}" />
-                </label>
-              </div>
-              <label class="field">
-                <span>Secondary text</span>
-                <input type="text" name="module-{{ loop.prevloop.index0 }}-person-{{ loop.index0 }}-secondary" value="{{ person.secondary }}" />
-              </label>
-            </div>
-            {% endfor %}
-          </div>
-          <button class="button button--ghost" type="button" data-add-contributor>Add contributor</button>
           {% elif module.type == 'resource_hub' %}
           <label class="field">
             <span>Intro text</span>
