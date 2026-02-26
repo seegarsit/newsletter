@@ -1590,25 +1590,15 @@ body {
 
     /* Celebrations — stack name/detail vertically when space is tight */
     .celebration-entry {
-        flex-wrap: wrap;
-    }
-
-    .celebration-dots {
-        display: none;
+        font-size: 0.78rem;
     }
 
     .celebration-name {
-        width: 100%;
-    }
-
-    .celebration-detail {
-        margin-left: 0;
+        font-size: 0.78rem;
     }
 
     .celebration-location {
-        width: auto;
-        margin-left: 8px;
-        margin-top: 0;
+        font-size: 0.58rem;
     }
 
     /* Further scale drop caps for narrow screens */
