@@ -170,6 +170,18 @@ body {
     color: var(--seegars-green);
 }
 
+.social-icon-img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    filter: grayscale(100%) brightness(0.4);
+    transition: filter 0.2s;
+}
+
+.social-link:hover .social-icon-img {
+    filter: none;
+}
+
 .home-link {
     color: var(--ink-faded);
     text-decoration: none;
@@ -678,7 +690,9 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 9999;
     justify-content: center;
     align-items: center;
@@ -687,6 +701,11 @@ body {
 
 .lightbox.active {
     display: flex;
+}
+
+.newspaper.lightbox-open {
+    filter: blur(6px);
+    pointer-events: none;
 }
 
 .lightbox-img {
@@ -927,6 +946,24 @@ body {
    ================================================================ */
 .celebrations-section {
     padding: 0 var(--gutter);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fireworks canvas overlay */
+.fireworks-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.celebrations-section > *:not(.fireworks-canvas) {
+    position: relative;
+    z-index: 1;
 }
 
 .celebrations-header {
@@ -1173,6 +1210,74 @@ body {
 }
 
 /* ================================================================
+   RIGHTNOW MEDIA
+   ================================================================ */
+.rightnow-section {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: var(--rule-sepia);
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.rightnow-image {
+    width: 220px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    object-fit: contain;
+    align-self: center;
+    cursor: pointer;
+}
+
+.rightnow-title {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--seegars-green-light);
+    margin-bottom: 8px;
+}
+
+.rightnow-body p {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--ink);
+    margin-bottom: 10px;
+}
+
+.rightnow-btn {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--paper-bg);
+    background: var(--seegars-green-light);
+    padding: 8px 18px;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.rightnow-btn:hover {
+    background: var(--seegars-green);
+}
+
+@media (max-width: 767px) {
+    .rightnow-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .rightnow-image {
+        width: 140px;
+    }
+}
+
+/* ================================================================
    FOOTER
    ================================================================ */
 .newspaper-footer {
@@ -1301,11 +1406,11 @@ body {
     }
 
     .masthead-motto-bar {
-        flex-direction: row;
+        flex-direction: column;
         text-align: center;
         justify-content: center;
-        gap: 0;
-        line-height: 1.4;
+        gap: 2px;
+        line-height: 1.5;
     }
 
     .motto-item {
@@ -1313,7 +1418,7 @@ body {
     }
 
     .motto-dot {
-        margin: 0 6px;
+        display: none;
     }
 
     /* Larger tap targets for social links on touch devices */
@@ -1323,6 +1428,11 @@ body {
     }
 
     .social-link svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .social-icon-img {
         width: 20px;
         height: 20px;
     }

@@ -209,6 +209,10 @@ NEWSLETTER = {
         {"name": "Microsoft 365 Home", "url": "https://portal.office.com/", "description": "Access Office apps"},
     ],
 
+    "rightnow_media": {
+        "url": "https://app.rightnowmedia.org/en/user/SFC",
+    },
+
     "social_links": {
         "facebook": "https://www.facebook.com/seegarsfencecompany/",
         "instagram": "https://www.instagram.com/seegarsfence/",
