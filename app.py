@@ -18,14 +18,14 @@ NEWSLETTER = {
 
     "lead_section": {
         "type": "spirit_contest",
-        "title": "S.P.I.R.I.T Logo Contest",
+        "title": "SPIRIT Logo Contest",
         "prize": "$500.00 to the winner!",
         "author": "Christina Williams",
         "author_title": "Marketing Manager",
         "headshot": "christina.png",
         "image": "spirit.png",
         "content": [
-            "We\u2019re excited to announce a Company Logo Redesign Contest open to all employees! This is your opportunity to help shape the future look of our brand by creating a new and improved S.P.I.R.I.T logo that truly reflects who we are\u2014our culture, our values, and our team-first approach. We\u2019re looking for a design that visually represents the pride we take in our work, the strength of our teamwork, and the SPIRIT (Service, Professionalism, Integrity, Relationships, Initiative, and Teamwork) that sets our company apart. The winning designer will receive a $500 reward and the honor of seeing their creativity become part of our company\u2019s identity. Let your creativity shine and show us what our culture looks like through your eyes!",
+            "We\u2019re excited to announce a Company Logo Redesign Contest open to all employees! This is your opportunity to help shape the future look of our brand by creating a new and improved SPIRIT logo that truly reflects who we are\u2014our culture, our values, and our team-first approach. We\u2019re looking for a design that visually represents the pride we take in our work, the strength of our teamwork, and the SPIRIT (Service, Professionalism, Integrity, Relationships, Initiative, and Teamwork) that sets our company apart. The winning designer will receive a $500 reward and the honor of seeing their creativity become part of our company\u2019s identity. Let your creativity shine and show us what our culture looks like through your eyes!",
             "This contest is designed to be fully inclusive\u2014whether you\u2019re a skilled digital designer or simply have a great idea and want to hand-draw your concept, all submission formats are welcome.",
             "Submissions are due to John Seegars (<a href='mailto:johns@seegarsfence.com'>johns@seegarsfence.com</a>) by <strong>Wednesday, April 1, 2026</strong>."
         ]
@@ -183,7 +183,7 @@ NEWSLETTER = {
         {"name": "Brittany Sistare", "years": 2, "location": "Spartanburg"},
         {"name": "Brandon Watson", "years": 2, "location": "Spartanburg"},
         {"name": "Raymond L. Mantooth", "years": 1, "location": "Raleigh"},
-        {"name": "Kayla Mccarty", "years": 1, "location": "Spartanburg"},
+        {"name": "Kayla McCarty", "years": 1, "location": "Spartanburg"},
         {"name": "James W. McGirt", "years": 1, "location": "Fayetteville"},
         {"name": "Caleb Milian", "years": 1, "location": "Augusta"},
         {"name": "Greg Morton", "years": 1, "location": "Goldsboro"},
@@ -192,7 +192,7 @@ NEWSLETTER = {
     ],
 
     "contributors": [
-        {"name": "Christina Williams", "title": "Marketing Manager", "section": "S.P.I.R.I.T Contest"},
+        {"name": "Christina Williams", "title": "Marketing Manager", "section": "SPIRIT Contest"},
         {"name": "John Seegars", "title": "Vice President", "section": "Feature Article"},
         {"name": "Veronica Aycock", "title": "Exec. Vice President", "section": "HR Corner"},
         {"name": "Chanda Best", "title": "Safety Manager", "section": "Safety First"},

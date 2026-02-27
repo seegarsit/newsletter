@@ -56,6 +56,14 @@ body {
     line-height: 1.7;
 }
 
+a {
+    color: var(--sepia);
+    transition: color 0.2s;
+}
+a:hover {
+    color: var(--seegars-green);
+}
+
 /* ─── Paper Container ─── */
 .newspaper {
     max-width: var(--max-width);
@@ -549,9 +557,9 @@ body {
     object-fit: cover;
     object-position: center top;
     margin: 4px 12px 8px 0;
-    padding: 3px;
-    filter: grayscale(100%);
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+    padding: 0;
+    border-radius: 50%;
+    filter: grayscale(100%) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.35));
     shape-outside: margin-box;
 }
 
@@ -566,6 +574,12 @@ body {
     font-size: 0.9rem;
     color: var(--sepia);
     letter-spacing: 0.3em;
+    font-family: 'Segoe UI Symbol', 'Apple Symbols', sans-serif;
+    text-decoration: none;
+}
+
+.divider-ornament * {
+    font-variant-emoji: text;
 }
 
 /* Scroll fade animation */
@@ -652,6 +666,13 @@ body {
 
 .spirit-image-wrapper {
     margin-top: 1.2em;
+    text-align: center;
+}
+
+.spirit-image-float {
+    float: right;
+    width: 45%;
+    margin: 0 0 4px 16px;
     text-align: center;
 }
 
@@ -770,27 +791,20 @@ body {
 .hr-criteria-list,
 .hr-bullet-list {
     margin: 0.5em 0 1em;
-    padding-left: 1.2em;
-    font-size: 0.88rem;
-    line-height: 1.65;
+    padding-left: 1.4em;
+    font-size: 0.95rem;
+    line-height: 1.75;
 }
 
 .hr-criteria-list li,
 .hr-bullet-list li {
     margin-bottom: 0.6em;
-}
-
-.hr-criteria-list li {
     list-style-type: disc;
-}
-
-.hr-bullet-list li {
-    list-style-type: square;
 }
 
 /* ─── Vintage Ad ─── */
 .vintage-ad {
-    margin-top: 20px;
+    margin-top: 60px;
     padding: 4px;
     border: 2px solid var(--ink);
 }
@@ -802,28 +816,30 @@ body {
 
 .ad-inner {
     border: 1px solid var(--sepia-rule);
-    padding: 16px 12px;
+    padding: 24px 16px;
     text-align: center;
 }
 
 .ad-stars {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     color: var(--sepia);
     letter-spacing: 0.3em;
-    margin: 4px 0;
+    margin: 6px 0;
 }
 
 .ad-company {
     font-family: var(--font-headline);
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    margin: 6px 0 2px;
+    letter-spacing: 0.15em;
+    margin: 8px 0 4px;
     color: var(--seegars-green-light);
+    white-space: nowrap;
 }
 
 .ad-tagline {
     font-family: var(--font-label);
-    font-size: 0.65rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     color: var(--ink-faded);
@@ -833,15 +849,15 @@ body {
     width: 60%;
     height: 1px;
     background: var(--sepia-rule);
-    margin: 8px auto;
+    margin: 12px auto;
 }
 
 .ad-body {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: 0.82rem;
+    font-size: 1.05rem;
     color: var(--ink-light);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .ad-cta {
@@ -930,6 +946,11 @@ body {
     margin-right: auto;
 }
 
+.safety-image-top {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
 /* ================================================================
    TECH TALK — Full Width
    ================================================================ */
@@ -990,7 +1011,7 @@ body {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: var(--ink-faded);
+    color: var(--seegars-green);
 }
 
 .celebrations-columns {
@@ -1052,14 +1073,63 @@ body {
     white-space: nowrap;
 }
 
-.celebrate-image {
-    margin-top: 20px;
+/* ─── Celebrate sign (replaces image) ─── */
+.celebrate-sign {
+    margin-top: 24px;
+    padding: 4px;
+    border: 2px solid var(--ink);
+}
+
+.celebrate-sign-border {
+    border: 1px solid var(--ink);
+    padding: 2px;
+}
+
+.celebrate-sign-inner {
+    border: 1px solid var(--sepia-rule);
+    padding: 20px 16px;
     text-align: center;
 }
 
-.celebrate-image img {
-    max-width: 100%;
-    height: auto;
+.celebrate-sign-stars {
+    font-size: 0.7rem;
+    color: var(--sepia);
+    letter-spacing: 0.3em;
+    margin: 4px 0;
+}
+
+.celebrate-sign-rule {
+    width: 60%;
+    height: 1px;
+    background: var(--sepia-rule);
+    margin: 8px auto;
+}
+
+.celebrate-sign-heading {
+    font-family: var(--font-headline);
+    font-size: 1.8rem;
+    font-weight: 800;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.2;
+}
+
+.celebrate-sign-amp {
+    font-family: var(--font-headline);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--sepia);
+    margin: 4px 0;
+}
+
+.celebrate-sign-from {
+    font-family: var(--font-label);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--seegars-green-light);
+    margin-top: 10px;
 }
 
 /* ================================================================
@@ -1152,7 +1222,7 @@ body {
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: var(--ink-faded);
+    color: var(--seegars-green);
 }
 
 .classifieds-grid {
@@ -1765,6 +1835,102 @@ body {
 
     .fold-indicator {
         display: none;
+    }
+}
+
+/* ================================================================
+   THE FUNNIES — Comic Strip
+   ================================================================ */
+.funnies-section {
+    padding: 0 var(--gutter);
+    padding-bottom: 30px;
+}
+
+.funnies-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.funnies-rule {
+    height: 1px;
+    background: var(--sepia-rule);
+    margin: 6px 0;
+}
+
+.funnies-title {
+    font-family: var(--font-headline);
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: 0.05em;
+}
+
+.funnies-subtitle {
+    font-family: var(--font-label);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--seegars-green);
+}
+
+.comic-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+    border: 3px solid var(--ink);
+    background: #e8e0c8;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Newspaper aging overlay */
+.comic-strip::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(139, 115, 85, 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse at 80% 30%, rgba(139, 115, 85, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.comic-panel {
+    position: relative;
+    overflow: hidden;
+}
+
+.comic-panel:not(:last-child) {
+    border-right: 2.5px solid var(--ink);
+}
+
+.comic-panel img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    filter: contrast(1.05) brightness(0.95);
+}
+
+.funnies-credit {
+    text-align: right;
+    font-family: var(--font-label);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--sepia);
+    margin-top: 6px;
+    font-style: italic;
+}
+
+@media (max-width: 767px) {
+    .comic-strip {
+        grid-template-columns: 1fr;
+    }
+
+    .comic-panel:not(:last-child) {
+        border-right: none;
+        border-bottom: 2.5px solid var(--ink);
     }
 }
 

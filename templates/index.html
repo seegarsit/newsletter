@@ -24,18 +24,6 @@
         </div>
         <div class="masthead-nav">
             <a href="#top" class="home-link">HOME</a>
-            <div class="nav-dropdown">
-                <button class="nav-dropdown-btn" aria-expanded="false" aria-haspopup="true">IN THIS ISSUE &#9662;</button>
-                <div class="nav-dropdown-menu">
-                    <a href="#spirit-contest">S.P.I.R.I.T Contest</a>
-                    <a href="#feature">The Power of Relationships</a>
-                    <a href="#safety">Safety</a>
-                    <a href="#hr-corner">HR Corner</a>
-                    <a href="#tech-talk">Your Newsletter. Your Stories.</a>
-                    <a href="#celebrations">Birthdays &amp; Anniversaries</a>
-                    <a href="#resources">Resources</a>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -86,6 +74,14 @@
                 <span class="byline">By <strong>{{ n.lead_section.author }}</strong>, <span class="byline-title">{{ n.lead_section.author_title }}</span></span>
             </div>
             <div class="article-body">
+                <div class="spirit-image-wrapper spirit-image-float">
+                    <img src="{{ url_for('static', filename='images/' + n.lead_section.image) }}"
+                         alt="Current SPIRIT Logo — Seegars Fence Company"
+                         class="spirit-logo clickable-image"
+                         tabindex="0"
+                         role="button"
+                         aria-label="Click to enlarge the current SPIRIT logo">
+                </div>
                 {% for paragraph in n.lead_section.content %}
                     {% if loop.first %}
                         <img src="{{ url_for('static', filename='images/' + n.lead_section.headshot) }}" alt="{{ n.lead_section.author }}" class="contributor-headshot">
@@ -95,81 +91,16 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="spirit-image-wrapper">
-                <img src="{{ url_for('static', filename='images/' + n.lead_section.image) }}"
-                     alt="Current S.P.I.R.I.T Logo — Seegars Fence Company"
-                     class="spirit-logo clickable-image"
-                     tabindex="0"
-                     role="button"
-                     aria-label="Click to enlarge the current S.P.I.R.I.T logo">
-                <p class="spirit-image-caption">Current S.P.I.R.I.T Logo &mdash; click to enlarge</p>
-            </div>
         </article>
 
-        {# Divider between SPIRIT contest and John's sections #}
+        {# Divider between SPIRIT contest and HR Corner #}
         <div class="inner-article-divider">
-            <span class="divider-ornament">&#10087;&ensp;&#9830;&ensp;&#10087;</span>
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
 
-
-        {# FEATURE ARTICLE — Below Team Letter, still in left column #}
-        <article class="feature-article section-fade" id="feature">
-            <h2 class="headline headline-feature">{{ n.feature_article.title }}</h2>
-            <p class="headline-subtitle">{{ n.feature_article.subtitle }}</p>
-            <div class="article-meta">
-                <span class="byline">By <strong>{{ n.feature_article.author }}</strong>, <span class="byline-title">{{ n.feature_article.author_title }}</span></span>
-            </div>
-            <div class="article-body">
-                {% for paragraph in n.feature_article.content %}
-                    {% if loop.first %}
-                        <img src="{{ url_for('static', filename='images/' + n.feature_article.headshot) }}" alt="{{ n.feature_article.author }}" class="contributor-headshot">
-                        <p>&mdash; {{ paragraph }}</p>
-                    {% elif loop.index == 3 %}
-                        <blockquote class="pull-quote">
-                            <p>&ldquo;{{ n.feature_article.pull_quote }}&rdquo;</p>
-                        </blockquote>
-                        <p>{{ paragraph }}</p>
-                    {% else %}
-                        <p>{{ paragraph }}</p>
-                    {% endif %}
-                {% endfor %}
-            </div>
-        </article>
-
-        {# Divider between John's and Chanda's sections #}
-        <div class="inner-article-divider">
-            <span class="divider-ornament">&#10087;&ensp;&#9830;&ensp;&#10087;</span>
-        </div>
-
-        {# SAFETY FIRST — Below Feature Article, still in left column #}
-        <article class="safety-article section-fade" id="safety">
-            <h3 class="headline headline-section">{{ n.safety.title }}</h3>
-            <div class="article-meta">
-                <span class="byline">By <strong>{{ n.safety.author }}</strong>, <span class="byline-title">{{ n.safety.author_title }}</span></span>
-            </div>
-            <div class="article-body">
-                <img src="{{ url_for('static', filename='images/' + n.safety.headshot) }}" alt="{{ n.safety.author }}" class="contributor-headshot">
-                <p class="safety-purpose">&mdash; <strong>Purpose:</strong> {{ n.safety.purpose }}</p>
-
-                <h4 class="safety-subheading">1) {{ n.safety.subtitle }}</h4>
-                <p>{{ n.safety.intro }}</p>
-                <ul class="safety-requirements">
-                    {% for item in n.safety.requirements %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-                <p class="safety-closing">{{ n.safety.closing }}</p>
-            </div>
-            <div class="safety-image safety-image-inline">
-                <img src="{{ url_for('static', filename='images/' + n.safety.image) }}" alt="Personal Protective Equipment (PPE)">
-            </div>
-        </article>
-    </div>
-
-    <aside class="sidebar-area">
-        {# HR CORNER — Sidebar #}
+        {# HR CORNER — Left column #}
         <article class="sidebar-article section-fade" id="hr-corner">
-            <h3 class="headline headline-sidebar">{{ n.hr_corner.title }}</h3>
+            <h3 class="headline headline-feature">{{ n.hr_corner.title }}</h3>
             {% if n.hr_corner.subtitle %}
                 <p class="hr-subtitle">{{ n.hr_corner.subtitle }}</p>
             {% endif %}
@@ -209,13 +140,109 @@
             </div>
         </article>
 
+        {# Divider between HR Corner and Tech Talk #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# TECH TALK — Left column, single column #}
+        <article class="tech-article section-fade" id="tech-talk">
+            <h3 class="headline headline-feature">{{ n.tech_talk.title }}</h3>
+            <div class="article-meta">
+                <span class="byline">By <strong>{{ n.tech_talk.author }}</strong>, <span class="byline-title">{{ n.tech_talk.author_title }}</span></span>
+            </div>
+            <div class="article-body">
+                {% for paragraph in n.tech_talk.content %}
+                    {% if loop.first %}
+                        <img src="{{ url_for('static', filename='images/' + n.tech_talk.headshot) }}" alt="{{ n.tech_talk.author }}" class="contributor-headshot">
+                        <p>&mdash; {{ paragraph }}</p>
+                    {% else %}
+                        <p>{{ paragraph }}</p>
+                    {% endif %}
+                {% endfor %}
+
+                {% if n.tech_talk.subheading_1 %}
+                    <h3 class="article-subheading">{{ n.tech_talk.subheading_1 }}</h3>
+                {% endif %}
+                {% for paragraph in n.tech_talk.content_2 %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+
+                {% if n.tech_talk.subheading_2 %}
+                    <h3 class="article-subheading">{{ n.tech_talk.subheading_2 }}</h3>
+                {% endif %}
+                {% for paragraph in n.tech_talk.content_3 %}
+                    {% if loop.last %}
+                        <p><em>{{ paragraph|safe }}</em></p>
+                    {% else %}
+                        <p>{{ paragraph|safe }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+
+    <aside class="sidebar-area">
+        {# FEATURE ARTICLE — Right column #}
+        <article class="feature-article section-fade" id="feature">
+            <h3 class="headline headline-sidebar">{{ n.feature_article.title }}</h3>
+            <p class="headline-subtitle">{{ n.feature_article.subtitle }}</p>
+            <div class="article-meta">
+                <span class="byline">By <strong>{{ n.feature_article.author }}</strong>, <span class="byline-title">{{ n.feature_article.author_title }}</span></span>
+            </div>
+            <div class="article-body">
+                {% for paragraph in n.feature_article.content %}
+                    {% if loop.first %}
+                        <img src="{{ url_for('static', filename='images/' + n.feature_article.headshot) }}" alt="{{ n.feature_article.author }}" class="contributor-headshot">
+                        <p>&mdash; {{ paragraph }}</p>
+                    {% elif loop.index == 3 %}
+                        <blockquote class="pull-quote">
+                            <p>&ldquo;{{ n.feature_article.pull_quote }}&rdquo;</p>
+                        </blockquote>
+                        <p>{{ paragraph }}</p>
+                    {% else %}
+                        <p>{{ paragraph }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </article>
+
+        {# Divider between John's and Chanda's sections #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# SAFETY FIRST — Right column #}
+        <article class="safety-article section-fade" id="safety">
+            <div class="safety-image safety-image-inline safety-image-top">
+                <img src="{{ url_for('static', filename='images/' + n.safety.image) }}" alt="Personal Protective Equipment (PPE)">
+            </div>
+            <h3 class="headline headline-sidebar">{{ n.safety.title }}</h3>
+            <div class="article-meta">
+                <span class="byline">By <strong>{{ n.safety.author }}</strong>, <span class="byline-title">{{ n.safety.author_title }}</span></span>
+            </div>
+            <div class="article-body">
+                <img src="{{ url_for('static', filename='images/' + n.safety.headshot) }}" alt="{{ n.safety.author }}" class="contributor-headshot">
+                <p class="safety-purpose">&mdash; <strong>Purpose:</strong> {{ n.safety.purpose }}</p>
+
+                <h4 class="safety-subheading">1) {{ n.safety.subtitle }}</h4>
+                <p>{{ n.safety.intro }}</p>
+                <ul class="safety-requirements">
+                    {% for item in n.safety.requirements %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                <p class="safety-closing">{{ n.safety.closing }}</p>
+            </div>
+        </article>
+
         {# Fake vintage ad #}
         <div class="vintage-ad">
             <div class="ad-border">
                 <div class="ad-inner">
                     <div class="ad-stars">&#10029; &#10029; &#10029;</div>
                     <div class="ad-company">Seegars Fence Co.</div>
-                    <div class="ad-tagline">Building Fences Since 1949</div>
+                    <div class="ad-tagline">SETTING THE STANDARD SINCE 1949</div>
                     <div class="ad-rule"></div>
                     <div class="ad-body">Built Right<br>Backed By Values<br>Trusted For Generations</div>
                     <div class="ad-stars">&#10029; &#10029; &#10029;</div>
@@ -226,49 +253,7 @@
 </section>
 
 <div class="section-divider">
-    <span class="divider-ornament">&#10053;&ensp;&#10053;&ensp;&#10053;</span>
-</div>
-
-{# ═══════════════════════ TECH TALK — Full Width ═══════════════════════ #}
-<section class="tech-section section-fade" id="tech-talk">
-    <article class="tech-article">
-        <h2 class="headline headline-section">{{ n.tech_talk.title }}</h2>
-        <div class="article-meta">
-            <span class="byline">By <strong>{{ n.tech_talk.author }}</strong>, <span class="byline-title">{{ n.tech_talk.author_title }}</span></span>
-        </div>
-        <div class="article-body article-body-columns">
-            {% for paragraph in n.tech_talk.content %}
-                {% if loop.first %}
-                    <img src="{{ url_for('static', filename='images/' + n.tech_talk.headshot) }}" alt="{{ n.tech_talk.author }}" class="contributor-headshot">
-                    <p>&mdash; {{ paragraph }}</p>
-                {% else %}
-                    <p>{{ paragraph }}</p>
-                {% endif %}
-            {% endfor %}
-
-            {% if n.tech_talk.subheading_1 %}
-                <h3 class="article-subheading">{{ n.tech_talk.subheading_1 }}</h3>
-            {% endif %}
-            {% for paragraph in n.tech_talk.content_2 %}
-                <p>{{ paragraph }}</p>
-            {% endfor %}
-
-            {% if n.tech_talk.subheading_2 %}
-                <h3 class="article-subheading">{{ n.tech_talk.subheading_2 }}</h3>
-            {% endif %}
-            {% for paragraph in n.tech_talk.content_3 %}
-                {% if loop.last %}
-                    <p><em>{{ paragraph|safe }}</em></p>
-                {% else %}
-                    <p>{{ paragraph|safe }}</p>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </article>
-</section>
-
-<div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&ensp;&#10087;</span>
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
 {# ═══════════════════════ BIRTHDAYS & ANNIVERSARIES ═══════════════════════ #}
@@ -310,15 +295,26 @@
                 </div>
                 {% endfor %}
             </div>
-            <div class="celebrate-image">
-                <img src="{{ url_for('static', filename='images/celebrate.png') }}" alt="Celebrate">
+            <div class="celebrate-sign">
+                <div class="celebrate-sign-border">
+                    <div class="celebrate-sign-inner">
+                        <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
+                        <div class="celebrate-sign-rule"></div>
+                        <p class="celebrate-sign-heading">Happy Birthday</p>
+                        <p class="celebrate-sign-amp">&amp;</p>
+                        <p class="celebrate-sign-heading">Happy Anniversary</p>
+                        <div class="celebrate-sign-rule"></div>
+                        <p class="celebrate-sign-from">From the Seegars Fence Company Team</p>
+                        <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&ensp;&#10087;</span>
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
 {# ═══════════════════════ RESOURCES / CLASSIFIEDS ═══════════════════════ #}
@@ -350,6 +346,34 @@
             <a href="{{ n.rightnow_media.url }}" class="rightnow-btn" target="_blank" rel="noopener">Access RightNow Media &rarr;</a>
         </div>
     </div>
+</section>
+
+<div class="section-divider">
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+</div>
+
+{# ═══════════════════════ THE CREW ═══════════════════════ #}
+<section class="funnies-section section-fade" id="the-crew">
+    <div class="funnies-header">
+        <div class="funnies-rule"></div>
+        <h2 class="funnies-title">The Crew</h2>
+        <p class="funnies-subtitle">A Seegars Fence Company Production</p>
+        <div class="funnies-rule"></div>
+    </div>
+
+    <div class="comic-strip">
+        <div class="comic-panel">
+            <img src="{{ url_for('static', filename='images/1.png') }}" alt="The Crew — Panel 1">
+        </div>
+        <div class="comic-panel">
+            <img src="{{ url_for('static', filename='images/2.png') }}" alt="The Crew — Panel 2">
+        </div>
+        <div class="comic-panel">
+            <img src="{{ url_for('static', filename='images/3.png') }}" alt="The Crew — Panel 3">
+        </div>
+    </div>
+
+    <p class="funnies-credit">The Crew &mdash; &copy; {{ n.year }} Seegars Fence Co.</p>
 </section>
 
 {# ═══════════════════════ FOOTER ═══════════════════════ #}
