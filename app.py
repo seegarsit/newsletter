@@ -57,7 +57,7 @@ NEWSLETTER = {
     "issue": 3,
     "location": "North Carolina \u2022 South Carolina \u2022 Georgia",
     "edition": "MORNING EDITION",
-    "motto": "Changing the world one linear foot at the time.",
+    "motto": "Changing the world one linear foot at a time.",
     "tagline": "A family business distinguished by exceptional values and quality.",
     "established": 1949,
 
