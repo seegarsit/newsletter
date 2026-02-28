@@ -271,6 +271,11 @@
                 btn.classList.remove('visible');
             }
         }, { passive: true });
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
     }
 
     /* ─── Sticky Masthead Bar ─── */
