@@ -31,6 +31,14 @@ class PollVote(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
 
+class PageView(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    visitor_id = db.Column(db.String(64), nullable=False)
+    month = db.Column(db.String(7), nullable=False)  # "2026-03"
+    visited_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    __table_args__ = (db.UniqueConstraint("visitor_id", "month", name="uq_visitor_month"),)
+
+
 with app.app_context():
     db.create_all()
 
@@ -181,7 +189,7 @@ NEWSLETTER = {
         {"name": "Ben Seegars Jr", "date": "March 9", "location": "Goldsboro"},
         {"name": "Homer Pike", "date": "March 11", "location": "Goldsboro"},
         {"name": "Max Batchelor", "date": "March 12", "location": "Goldsboro"},
-        {"name": "Dale McGinnis", "date": "March 12", "location": "Allison"},
+        {"name": "Dale McGinnis", "date": "March 12", "location": "Allison Fence Co."},
         {"name": "Tim Williams", "date": "March 12", "location": "Goldsboro"},
         {"name": "Fernando Cannon", "date": "March 13", "location": "Columbia"},
         {"name": "Keith Hefner", "date": "March 18", "location": "Jacksonville"},
@@ -193,7 +201,7 @@ NEWSLETTER = {
         {"name": "Joseph Harrison", "date": "March 22", "location": "Wayne Co."},
         {"name": "Latezea Lyles-Thompson", "date": "March 23", "location": "Columbia"},
         {"name": "Jose Cervera", "date": "March 24", "location": "Raleigh"},
-        {"name": "Cameron Martin", "date": "March 25", "location": "Allison"},
+        {"name": "Cameron Martin", "date": "March 25", "location": "Allison Fence Co."},
         {"name": "Jose Santiago", "date": "March 25", "location": "Goldsboro"},
         {"name": "Zander Fewell", "date": "March 27", "location": "Raleigh"},
         {"name": "David Gottschammer", "date": "March 28", "location": "Jacksonville"},
@@ -211,14 +219,14 @@ NEWSLETTER = {
         {"name": "Victor Silva", "years": 19, "location": "Goldsboro"},
         {"name": "Brandon Bossolono", "years": 17, "location": "Greenville"},
         {"name": "Darryl Kennedy", "years": 16, "location": "Greensboro"},
-        {"name": "Travis Caviness", "years": 12, "location": "Allison"},
+        {"name": "Travis Caviness", "years": 12, "location": "Allison Fence Co."},
         {"name": "Amy Alford", "years": 11, "location": "Fayetteville"},
         {"name": "Evan Proctor", "years": 9, "location": "Wayne Co."},
         {"name": "Ralph Turnage", "years": 8, "location": "Goldsboro"},
         {"name": "Chad Alford", "years": 7, "location": "Fayetteville"},
         {"name": "Brenda Haun", "years": 6, "location": "Newport"},
         {"name": "Amy Lancaster", "years": 6, "location": "Goldsboro"},
-        {"name": "Curtis L. Boyd", "years": 5, "location": "Allison"},
+        {"name": "Curtis L. Boyd", "years": 5, "location": "Allison Fence Co."},
         {"name": "Chris Buck", "years": 2, "location": "Goldsboro"},
         {"name": "Brittany Sistare", "years": 2, "location": "Spartanburg"},
         {"name": "Brandon Watson", "years": 2, "location": "Spartanburg"},
@@ -287,7 +295,18 @@ NEWSLETTER = {
 
 @app.route("/")
 def index():
-    return render_template("index.html", n=NEWSLETTER)
+    current_month = datetime.now(timezone.utc).strftime("%Y-%m")
+    visitor = _voter_id()
+
+    # Record this visitor for the current month (ignore if already exists)
+    existing = PageView.query.filter_by(visitor_id=visitor, month=current_month).first()
+    if not existing:
+        db.session.add(PageView(visitor_id=visitor, month=current_month))
+        db.session.commit()
+
+    reader_count = PageView.query.filter_by(month=current_month).count()
+
+    return render_template("index.html", n=NEWSLETTER, reader_count=reader_count)
 
 
 @app.route("/api/poll/results")

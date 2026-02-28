@@ -273,36 +273,65 @@
         }, { passive: true });
     }
 
+    /* ─── Sticky Masthead Bar ─── */
+    function initStickyBar() {
+        var bar = document.querySelector('.masthead-top-bar');
+        var sentinel = document.querySelector('.masthead .masthead-rule-thin');
+        if (!bar || !sentinel) return;
+
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    bar.classList.remove('stuck');
+                } else {
+                    bar.classList.add('stuck');
+                }
+            });
+        }, { threshold: 0 });
+
+        observer.observe(sentinel);
+    }
+
     /* ─── Weather Widget ─── */
     function initWeather() {
         var widget = document.getElementById('weather-widget');
         if (!widget) return;
 
+        /* SVG weather icons */
+        var svgSun = '<svg viewBox="0 0 48 48"><g class="wx-rays"><line x1="24" y1="3" x2="24" y2="9" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="24" y1="39" x2="24" y2="45" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="24" x2="9" y2="24" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="39" y1="24" x2="45" y2="24" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="8.8" x2="13.2" y2="13.2" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="34.8" x2="39.2" y2="39.2" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="39.2" x2="13.2" y2="34.8" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="13.2" x2="39.2" y2="8.8" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/></g><circle cx="24" cy="24" r="10" fill="#8b7355"/></svg>';
+        var svgSunCloud = '<svg viewBox="0 0 48 48"><circle cx="18" cy="16" r="8" fill="#8b7355"/><g class="wx-rays" style="transform-origin:18px 16px"><line x1="18" y1="2" x2="18" y2="7" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="16" x2="9" y2="16" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="6.1" x2="11.6" y2="9.6" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="25.9" x2="11.6" y2="22.4" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></g><g class="wx-cloud" fill="#555"><circle cx="22" cy="28" r="7"/><circle cx="31" cy="23" r="8"/><circle cx="39" cy="28" r="5"/><rect x="15" y="28" width="29" height="7" rx="3"/></g></svg>';
+        var svgCloud = '<svg viewBox="0 0 48 48"><g class="wx-cloud" fill="#555"><circle cx="16" cy="24" r="7"/><circle cx="26" cy="19" r="9"/><circle cx="36" cy="24" r="6"/><rect x="10" y="24" width="32" height="7" rx="3"/></g></svg>';
+        var svgFog = '<svg viewBox="0 0 48 48"><line class="wx-fog" x1="8" y1="16" x2="40" y2="16" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.6"/><line class="wx-fog wx-fog-2" x1="12" y1="24" x2="36" y2="24" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.5"/><line class="wx-fog wx-fog-3" x1="6" y1="32" x2="42" y2="32" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.4"/></svg>';
+        var svgLightRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="18" y1="29" x2="16" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="28" y1="29" x2="26" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></svg>';
+        var svgRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="17" y1="29" x2="15" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="26" y1="29" x2="24" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-3" x1="35" y1="29" x2="33" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></svg>';
+        var svgSnow = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><circle class="wx-flake" cx="17" cy="31" r="2" fill="#a89478"/><circle class="wx-flake wx-flake-2" cx="26" cy="33" r="2" fill="#a89478"/><circle class="wx-flake wx-flake-3" cx="35" cy="31" r="2" fill="#a89478"/></svg>';
+        var svgThunder = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="16" r="7"/><circle cx="26" cy="11" r="9"/><circle cx="36" cy="16" r="6"/><rect x="10" y="16" width="32" height="7" rx="3"/></g><polygon class="wx-bolt" points="27,22 21,33 26,31 22,42 30,29 25,31 28,22" fill="#8b7355"/></svg>';
+
         var weatherCodes = {
-            0: { desc: 'Clear Sky', icon: '\u2600' },
-            1: { desc: 'Mostly Clear', icon: '\uD83C\uDF24' },
-            2: { desc: 'Partly Cloudy', icon: '\u26C5' },
-            3: { desc: 'Overcast', icon: '\u2601' },
-            45: { desc: 'Foggy', icon: '\uD83C\uDF2B' },
-            48: { desc: 'Icy Fog', icon: '\uD83C\uDF2B' },
-            51: { desc: 'Light Drizzle', icon: '\uD83C\uDF26' },
-            53: { desc: 'Drizzle', icon: '\uD83C\uDF26' },
-            55: { desc: 'Heavy Drizzle', icon: '\uD83C\uDF27' },
-            61: { desc: 'Light Rain', icon: '\uD83C\uDF26' },
-            63: { desc: 'Rain', icon: '\uD83C\uDF27' },
-            65: { desc: 'Heavy Rain', icon: '\uD83C\uDF27' },
-            71: { desc: 'Light Snow', icon: '\uD83C\uDF28' },
-            73: { desc: 'Snow', icon: '\uD83C\uDF28' },
-            75: { desc: 'Heavy Snow', icon: '\uD83C\uDF28' },
-            77: { desc: 'Snow Grains', icon: '\uD83C\uDF28' },
-            80: { desc: 'Light Showers', icon: '\uD83C\uDF26' },
-            81: { desc: 'Showers', icon: '\uD83C\uDF27' },
-            82: { desc: 'Heavy Showers', icon: '\uD83C\uDF27' },
-            85: { desc: 'Snow Showers', icon: '\uD83C\uDF28' },
-            86: { desc: 'Heavy Snow Showers', icon: '\uD83C\uDF28' },
-            95: { desc: 'Thunderstorm', icon: '\u26C8' },
-            96: { desc: 'Thunderstorm w/ Hail', icon: '\u26C8' },
-            99: { desc: 'Severe Thunderstorm', icon: '\u26C8' }
+            0: { desc: 'Clear Sky', icon: svgSun },
+            1: { desc: 'Mostly Clear', icon: svgSunCloud },
+            2: { desc: 'Partly Cloudy', icon: svgSunCloud },
+            3: { desc: 'Overcast', icon: svgCloud },
+            45: { desc: 'Foggy', icon: svgFog },
+            48: { desc: 'Icy Fog', icon: svgFog },
+            51: { desc: 'Light Drizzle', icon: svgLightRain },
+            53: { desc: 'Drizzle', icon: svgLightRain },
+            55: { desc: 'Heavy Drizzle', icon: svgRain },
+            61: { desc: 'Light Rain', icon: svgLightRain },
+            63: { desc: 'Rain', icon: svgRain },
+            65: { desc: 'Heavy Rain', icon: svgRain },
+            71: { desc: 'Light Snow', icon: svgSnow },
+            73: { desc: 'Snow', icon: svgSnow },
+            75: { desc: 'Heavy Snow', icon: svgSnow },
+            77: { desc: 'Snow Grains', icon: svgSnow },
+            80: { desc: 'Light Showers', icon: svgLightRain },
+            81: { desc: 'Showers', icon: svgRain },
+            82: { desc: 'Heavy Showers', icon: svgRain },
+            85: { desc: 'Snow Showers', icon: svgSnow },
+            86: { desc: 'Heavy Snow Showers', icon: svgSnow },
+            95: { desc: 'Thunderstorm', icon: svgThunder },
+            96: { desc: 'Thunderstorm w/ Hail', icon: svgThunder },
+            99: { desc: 'Severe Thunderstorm', icon: svgThunder }
         };
 
         var dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -320,7 +349,7 @@
                     var c = data.current;
                     var temp = Math.round(c.temperature_2m);
                     var code = c.weather_code;
-                    var info = weatherCodes[code] || { desc: 'Unknown', icon: '\u2601' };
+                    var info = weatherCodes[code] || { desc: 'Unknown', icon: svgCloud };
 
                     var forecastHtml = '<div class="weather-forecast">';
                     for (var i = 0; i < 7; i++) {
@@ -329,7 +358,7 @@
                         var hi = Math.round(data.daily.temperature_2m_max[i]);
                         var lo = Math.round(data.daily.temperature_2m_min[i]);
                         var dayCode = data.daily.weather_code[i];
-                        var dayInfo = weatherCodes[dayCode] || { icon: '\u2601' };
+                        var dayInfo = weatherCodes[dayCode] || { icon: svgCloud };
                         forecastHtml +=
                             '<div class="forecast-day">' +
                                 '<span class="forecast-label">' + dayLabel + '</span>' +
@@ -484,6 +513,7 @@
         initDropdown();
         initFireworks();
         initBackToTop();
+        initStickyBar();
         initWeather();
         initPoll();
     });
