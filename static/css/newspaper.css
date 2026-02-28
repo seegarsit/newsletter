@@ -1224,6 +1224,165 @@ a:hover {
 }
 
 /* ================================================================
+   NEWS & SPORTS WIRE
+   ================================================================ */
+.news-wire-section {
+    padding: 0 var(--gutter);
+    padding-bottom: 10px;
+}
+
+.news-wire-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.news-wire-rule {
+    height: 1px;
+    background: var(--sepia-rule);
+    margin: 8px 0;
+}
+
+.news-wire-title {
+    font-family: var(--font-headline);
+    font-size: 1.8rem;
+    font-weight: 800;
+    font-style: italic;
+    margin: 8px 0 2px;
+}
+
+.news-wire-subtitle {
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--seegars-green);
+}
+
+.news-wire-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+}
+
+.news-wire-col {
+    padding: 0 var(--gutter);
+}
+
+.news-wire-col:not(:last-child) {
+    border-right: 1px solid var(--sepia-rule);
+}
+
+.news-wire-col:first-child {
+    padding-left: 0;
+}
+
+.news-wire-col:last-child {
+    padding-right: 0;
+}
+
+.news-wire-col-title {
+    font-family: var(--font-headline);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: var(--rule-sepia);
+}
+
+.news-wire-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.news-wire-item {
+    margin-bottom: 12px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.news-wire-headline {
+    font-weight: 700;
+}
+
+.news-wire-summary {
+    color: var(--ink-faded);
+}
+
+/* Medal Table */
+.medal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-label);
+    font-size: 0.82rem;
+}
+
+.medal-table thead {
+    border-bottom: 2px solid var(--sepia-rule);
+}
+
+.medal-country-header {
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7rem;
+    padding: 4px 0;
+    color: var(--ink-faded);
+}
+
+.medal-header {
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.7rem;
+    padding: 4px 6px;
+    color: var(--ink-faded);
+}
+
+.medal-gold { color: #b8860b; }
+.medal-silver { color: #808080; }
+.medal-bronze { color: #a0522d; }
+
+.medal-country {
+    padding: 6px 0;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--sepia-rule);
+    white-space: nowrap;
+}
+
+.medal-count {
+    text-align: center;
+    padding: 6px;
+    border-bottom: 1px solid var(--sepia-rule);
+    font-size: 0.88rem;
+}
+
+.medal-total-count {
+    font-weight: 700;
+}
+
+@media (max-width: 767px) {
+    .news-wire-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .news-wire-col {
+        padding: 0;
+    }
+
+    .news-wire-col:not(:last-child) {
+        border-right: none;
+        border-bottom: 1px solid var(--sepia-rule);
+        padding-bottom: 16px;
+        margin-bottom: 16px;
+    }
+}
+
+/* ================================================================
    CELEBRATIONS — Birthdays & Anniversaries
    ================================================================ */
 .celebrations-section {

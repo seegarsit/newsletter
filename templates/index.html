@@ -313,6 +313,68 @@
     </aside>
 </section>
 
+{# ═══════════════════════ NEWS & SPORTS WIRE ═══════════════════════ #}
+<section class="news-wire-section section-fade" id="news-wire">
+    <div class="news-wire-header">
+        <div class="news-wire-rule"></div>
+        <h2 class="news-wire-title">News &amp; Sports Wire</h2>
+        <p class="news-wire-subtitle">{{ n.month }} {{ n.year }} &mdash; National Headlines &bull; Sports &bull; Olympics</p>
+        <div class="news-wire-rule"></div>
+    </div>
+
+    <div class="news-wire-grid">
+        <div class="news-wire-col">
+            <h3 class="news-wire-col-title">National News</h3>
+            <ul class="news-wire-list">
+                {% for item in n.news_wire.national %}
+                <li class="news-wire-item">
+                    <span class="news-wire-headline">{{ item.headline }}</span>
+                    <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="news-wire-col">
+            <h3 class="news-wire-col-title">Sports Highlights</h3>
+            <ul class="news-wire-list">
+                {% for item in n.news_wire.sports %}
+                <li class="news-wire-item">
+                    <span class="news-wire-headline">{{ item.headline }}</span>
+                    <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="news-wire-col">
+            <h3 class="news-wire-col-title">{{ n.news_wire.olympics.title }}</h3>
+            <table class="medal-table">
+                <thead>
+                    <tr>
+                        <th class="medal-country-header">Country</th>
+                        <th class="medal-header medal-gold">G</th>
+                        <th class="medal-header medal-silver">S</th>
+                        <th class="medal-header medal-bronze">B</th>
+                        <th class="medal-header medal-total">Tot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in n.news_wire.olympics.countries %}
+                    <tr>
+                        <td class="medal-country">{{ c.flag }} {{ c.name }}</td>
+                        <td class="medal-count">{{ c.gold }}</td>
+                        <td class="medal-count">{{ c.silver }}</td>
+                        <td class="medal-count">{{ c.bronze }}</td>
+                        <td class="medal-count medal-total-count">{{ c.gold + c.silver + c.bronze }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
 <div class="section-divider">
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>

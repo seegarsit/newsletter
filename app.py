@@ -231,6 +231,29 @@ NEWSLETTER = {
         {"name": "Jackson Wilkinson", "years": 1, "location": "Columbia"},
     ],
 
+    "news_wire": {
+        "national": [
+            {"headline": "DOE Launches \u201cGenesis Mission\u201d", "summary": "Department of Energy initiative leverages AI to accelerate scientific discovery and energy innovation."},
+            {"headline": "Renewable Energy Gains Ground", "summary": "Analysis projects renewables will be cheaper than natural gas by 2028, creating an estimated 145,000 new jobs."},
+            {"headline": "Businesses Redesign Hybrid Work", "summary": "Companies nationwide are updating remote and hybrid models to boost productivity while maintaining flexibility."},
+        ],
+        "sports": [
+            {"headline": "Team USA Sets Winter Olympics Record", "summary": "12 gold medals at Milan-Cortina 2026, the most ever for the U.S. in a Winter Games."},
+            {"headline": "March Madness Tips Off March 17", "summary": "Duke holds the No. 1 overall seed. 68 teams compete for the title in Indianapolis."},
+            {"headline": "World Baseball Classic Opens March 5", "summary": "International tournament kicks off in San Juan, Puerto Rico."},
+        ],
+        "olympics": {
+            "title": "2026 Winter Olympics \u2014 Milan-Cortina",
+            "countries": [
+                {"name": "Norway", "flag": "\U0001f1f3\U0001f1f4", "gold": 18, "silver": 12, "bronze": 11},
+                {"name": "USA", "flag": "\U0001f1fa\U0001f1f8", "gold": 12, "silver": 12, "bronze": 9},
+                {"name": "Netherlands", "flag": "\U0001f1f3\U0001f1f1", "gold": 10, "silver": 7, "bronze": 3},
+                {"name": "Italy", "flag": "\U0001f1ee\U0001f1f9", "gold": 10, "silver": 6, "bronze": 14},
+                {"name": "Germany", "flag": "\U0001f1e9\U0001f1ea", "gold": 8, "silver": 10, "bronze": 8},
+            ]
+        }
+    },
+
     "contributors": [
         {"name": "Christina Williams", "title": "Marketing Manager", "section": "SPIRIT Contest"},
         {"name": "John Seegars", "title": "Vice President", "section": "Feature Article"},
