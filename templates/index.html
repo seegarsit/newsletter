@@ -180,9 +180,70 @@
                 {% endfor %}
             </div>
         </article>
+
+        {# Divider between Tech Talk and Reader Poll #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# READER POLL — Below Tech Talk #}
+        <div class="reader-poll section-fade" id="reader-poll">
+            <h3 class="headline headline-section">Reader Poll</h3>
+            <p class="poll-question">What would you like to see more of in The Fence Line?</p>
+            <form class="poll-form" id="pollForm">
+                <div class="poll-choices" id="pollChoices">
+                    <label class="poll-choice" data-choice="Completed Job Highlights">
+                        <input type="radio" name="poll" value="Completed Job Highlights">
+                        <span class="poll-choice-label">Completed Job Highlights</span>
+                        <span class="poll-bar-track">
+                            <span class="poll-bar-fill" style="width: 0%"></span>
+                        </span>
+                        <span class="poll-choice-count">0</span>
+                    </label>
+                    <label class="poll-choice" data-choice="Employee of the Month">
+                        <input type="radio" name="poll" value="Employee of the Month">
+                        <span class="poll-choice-label">Employee of the Month</span>
+                        <span class="poll-bar-track">
+                            <span class="poll-bar-fill" style="width: 0%"></span>
+                        </span>
+                        <span class="poll-choice-count">0</span>
+                    </label>
+                    <label class="poll-choice" data-choice="New Hire Announcements">
+                        <input type="radio" name="poll" value="New Hire Announcements">
+                        <span class="poll-choice-label">New Hire Announcements</span>
+                        <span class="poll-bar-track">
+                            <span class="poll-bar-fill" style="width: 0%"></span>
+                        </span>
+                        <span class="poll-choice-count">0</span>
+                    </label>
+                    <label class="poll-choice" data-choice="Company News & Updates">
+                        <input type="radio" name="poll" value="Company News & Updates">
+                        <span class="poll-choice-label">Company News &amp; Updates</span>
+                        <span class="poll-bar-track">
+                            <span class="poll-bar-fill" style="width: 0%"></span>
+                        </span>
+                        <span class="poll-choice-count">0</span>
+                    </label>
+                    <label class="poll-choice" data-choice="Employee Spotlight">
+                        <input type="radio" name="poll" value="Employee Spotlight">
+                        <span class="poll-choice-label">Employee Spotlight</span>
+                        <span class="poll-bar-track">
+                            <span class="poll-bar-fill" style="width: 0%"></span>
+                        </span>
+                        <span class="poll-choice-count">0</span>
+                    </label>
+                </div>
+                <button type="submit" class="poll-vote-btn" id="pollVoteBtn">Vote</button>
+            </form>
+        </div>
     </div>
 
     <aside class="sidebar-area">
+        {# WEATHER WIDGET #}
+        <div class="weather-widget" id="weather-widget">
+            <div class="weather-loading">Loading weather...</div>
+        </div>
+
         {# FEATURE ARTICLE — Right column #}
         <article class="feature-article section-fade" id="feature">
             <h3 class="headline headline-sidebar">{{ n.feature_article.title }}</h3>

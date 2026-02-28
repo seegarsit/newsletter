@@ -1,6 +1,46 @@
-from flask import Flask, render_template
+import hashlib
+import os
+from datetime import datetime, timezone
+
+from flask import Flask, jsonify, render_template, request
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+# Database configuration — Render PostgreSQL via DATABASE_URL, SQLite fallback for local dev
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DATABASE_URL", "sqlite:///poll.db"
+).replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
+POLL_CHOICES = [
+    "Completed Job Highlights",
+    "Employee of the Month",
+    "New Hire Announcements",
+    "Company News & Updates",
+    "Employee Spotlight",
+]
+
+
+class PollVote(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    choice = db.Column(db.String(100), nullable=False)
+    voter_id = db.Column(db.String(64), nullable=False, unique=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+
+
+with app.app_context():
+    db.create_all()
+
+
+def _voter_id():
+    """Hash of IP + User-Agent for one-vote-per-reader enforcement."""
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr) or ""
+    ua = request.headers.get("User-Agent", "")
+    return hashlib.sha256(f"{ip}:{ua}".encode()).hexdigest()
+
 
 NEWSLETTER = {
     "month": "March",
@@ -225,6 +265,51 @@ NEWSLETTER = {
 @app.route("/")
 def index():
     return render_template("index.html", n=NEWSLETTER)
+
+
+@app.route("/api/poll/results")
+def poll_results():
+    counts = {c: 0 for c in POLL_CHOICES}
+    rows = db.session.execute(
+        db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
+    ).all()
+    for choice, count in rows:
+        if choice in counts:
+            counts[choice] = count
+
+    voter = _voter_id()
+    has_voted = db.session.query(
+        PollVote.query.filter_by(voter_id=voter).exists()
+    ).scalar()
+
+    return jsonify({"counts": counts, "has_voted": has_voted})
+
+
+@app.route("/api/poll/vote", methods=["POST"])
+def poll_vote():
+    data = request.get_json(silent=True) or {}
+    choice = data.get("choice", "")
+
+    if choice not in POLL_CHOICES:
+        return jsonify({"error": "Invalid choice"}), 400
+
+    voter = _voter_id()
+    existing = PollVote.query.filter_by(voter_id=voter).first()
+    if existing:
+        return jsonify({"error": "Already voted"}), 409
+
+    db.session.add(PollVote(choice=choice, voter_id=voter))
+    db.session.commit()
+
+    counts = {c: 0 for c in POLL_CHOICES}
+    rows = db.session.execute(
+        db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
+    ).all()
+    for c, count in rows:
+        if c in counts:
+            counts[c] = count
+
+    return jsonify({"counts": counts, "has_voted": True})
 
 
 if __name__ == "__main__":
