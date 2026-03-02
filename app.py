@@ -2,10 +2,17 @@ import hashlib
 import os
 from datetime import datetime, timezone
 
-from flask import Flask, jsonify, render_template, request
+from functools import wraps
+
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "seegars-fence-line-2026-dev-key")
+
+# Hardcoded credentials
+LOGIN_USER = "SEEGARS"
+LOGIN_PASS = "Sfc1949!"
 
 # Database configuration — Render PostgreSQL via DATABASE_URL, SQLite fallback for local dev
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
@@ -308,23 +315,54 @@ NEWSLETTER = {
 }
 
 
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("logged_in"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        if username == LOGIN_USER and password == LOGIN_PASS:
+            session["logged_in"] = True
+            return redirect(url_for("index"))
+        session["login_error"] = "Invalid credentials. Please try again."
+    return redirect(url_for("index"))
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
+
 @app.route("/")
 def index():
-    current_month = datetime.now(timezone.utc).strftime("%Y-%m")
-    visitor = _voter_id()
+    logged_in = session.get("logged_in", False)
 
-    # Record this visitor for the current month (ignore if already exists)
-    existing = PageView.query.filter_by(visitor_id=visitor, month=current_month).first()
-    if not existing:
-        db.session.add(PageView(visitor_id=visitor, month=current_month))
-        db.session.commit()
+    # Only count page views for authenticated visitors
+    reader_count = 0
+    if logged_in:
+        current_month = datetime.now(timezone.utc).strftime("%Y-%m")
+        visitor = _voter_id()
+        existing = PageView.query.filter_by(visitor_id=visitor, month=current_month).first()
+        if not existing:
+            db.session.add(PageView(visitor_id=visitor, month=current_month))
+            db.session.commit()
+        reader_count = PageView.query.filter_by(month=current_month).count()
 
-    reader_count = PageView.query.filter_by(month=current_month).count()
-
-    return render_template("index.html", n=NEWSLETTER, reader_count=reader_count)
+    login_error = session.pop("login_error", None)
+    return render_template("index.html", n=NEWSLETTER, reader_count=reader_count, logged_in=logged_in, login_error=login_error)
 
 
 @app.route("/api/poll/results")
+@login_required
 def poll_results():
     counts = {c: 0 for c in POLL_CHOICES}
     rows = db.session.execute(
@@ -343,6 +381,7 @@ def poll_results():
 
 
 @app.route("/api/poll/vote", methods=["POST"])
+@login_required
 def poll_vote():
     data = request.get_json(silent=True) or {}
     choice = data.get("choice", "")
