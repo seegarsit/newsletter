@@ -15,9 +15,10 @@ LOGIN_USER = "SEEGARS"
 LOGIN_PASS = "Sfc1949!"
 
 # Database configuration — Render PostgreSQL via DATABASE_URL, SQLite fallback for local dev
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DATABASE_URL", "sqlite:///poll.db"
-).replace("postgres://", "postgresql://", 1)
+_db_url = os.environ.get("DATABASE_URL", "sqlite:///poll.db")
+_db_url = _db_url.replace("postgres://", "postgresql://", 1)
+_db_url = _db_url.replace("postgresql+psycopg://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = _db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
