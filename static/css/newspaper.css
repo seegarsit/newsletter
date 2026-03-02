@@ -978,7 +978,6 @@ a:hover {
     letter-spacing: 0.15em;
     margin: 8px 0 4px;
     color: var(--seegars-green-light);
-    white-space: nowrap;
 }
 
 .ad-tagline {
@@ -1888,6 +1887,10 @@ a:hover {
 
     .article-body-columns {
         column-count: 1;
+    }
+
+    .ad-company {
+        font-size: 1.3rem;
     }
 
 }
