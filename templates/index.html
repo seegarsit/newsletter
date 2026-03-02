@@ -28,9 +28,16 @@
     </div>
 </div>
 
-<header class="masthead">
-    <div class="masthead-rule masthead-rule-thin"></div>
+{# ═══════════════════════ SKYBOX BANNER ═══════════════════════ #}
+<div class="skybox-banner">
+    <a href="#spirit-contest" class="skybox-link">
+        <span class="skybox-label">INSIDE</span>
+        <span class="skybox-sep">|</span>
+        <span class="skybox-text">SPIRIT Logo Redesign Contest &mdash; <strong>$500 Prize</strong> &mdash; Submissions Due April 1</span>
+    </a>
+</div>
 
+<header class="masthead">
     <div class="masthead-company">Seegars Fence Company</div>
 
     <div class="masthead-nameplate">
@@ -61,7 +68,31 @@
 {# ═══════════════════════ ABOVE THE FOLD: SPIRIT CONTEST + HR CORNER ═══════════════════════ #}
 <section class="above-fold">
     <div class="lead-story-area">
-        {# SPIRIT LOGO CONTEST — Lead Story #}
+        {# CEO LETTER — Lead Story #}
+        <article class="sidebar-article section-fade" id="ceo-letter">
+            <h3 class="headline headline-feature">{{ n.ceo_letter.title }}</h3>
+            <div class="article-meta">
+                <span class="byline">By <strong>{{ n.ceo_letter.author }}</strong>, <span class="byline-title">{{ n.ceo_letter.author_title }}</span></span>
+            </div>
+            <div class="article-body">
+                {% for paragraph in n.ceo_letter.content %}
+                    {% if loop.first %}
+                        <img src="{{ url_for('static', filename='images/' + n.ceo_letter.headshot) }}" alt="{{ n.ceo_letter.author }}" class="contributor-headshot">
+                        <p>&mdash; {{ paragraph }}</p>
+                    {% else %}
+                        <p>{{ paragraph }}</p>
+                    {% endif %}
+                {% endfor %}
+                <p class="ceo-sign-off">My Best,</p>
+            </div>
+        </article>
+
+        {# Divider between CEO Letter and SPIRIT Contest #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# SPIRIT LOGO CONTEST #}
         <article class="lead-story section-fade" id="spirit-contest">
             <div class="article-headline-group">
                 <h2 class="headline headline-lead">{{ n.lead_section.title }}</h2>
@@ -90,7 +121,7 @@
             </div>
         </article>
 
-        {# Divider between SPIRIT contest and HR Corner #}
+        {# Divider between SPIRIT Contest and HR Corner #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
@@ -307,74 +338,72 @@
                 </div>
             </div>
         </div>
+
+        {# Divider above News & Sports Wire #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# NEWS & SPORTS WIRE — Sidebar, stacked vertically #}
+        <div class="news-wire-sidebar section-fade" id="news-wire">
+            <div class="news-wire-header">
+                <h2 class="news-wire-title">News &amp; Sports Wire</h2>
+                <p class="news-wire-subtitle">{{ n.month }} {{ n.year }}</p>
+                <div class="news-wire-rule"></div>
+            </div>
+
+            <div class="news-wire-col">
+                <h3 class="news-wire-col-title">National News</h3>
+                <ul class="news-wire-list">
+                    {% for item in n.news_wire.national %}
+                    <li class="news-wire-item">
+                        <span class="news-wire-headline">{{ item.headline }}</span>
+                        <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="news-wire-col">
+                <h3 class="news-wire-col-title">Sports Highlights</h3>
+                <ul class="news-wire-list">
+                    {% for item in n.news_wire.sports %}
+                    <li class="news-wire-item">
+                        <span class="news-wire-headline">{{ item.headline }}</span>
+                        <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="news-wire-col">
+                <h3 class="news-wire-col-title">{{ n.news_wire.olympics.title }}</h3>
+                <table class="medal-table">
+                    <thead>
+                        <tr>
+                            <th class="medal-country-header">Country</th>
+                            <th class="medal-header medal-gold">G</th>
+                            <th class="medal-header medal-silver">S</th>
+                            <th class="medal-header medal-bronze">B</th>
+                            <th class="medal-header medal-total">Tot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in n.news_wire.olympics.countries %}
+                        <tr>
+                            <td class="medal-country">{{ c.flag }} {{ c.name }}</td>
+                            <td class="medal-count">{{ c.gold }}</td>
+                            <td class="medal-count">{{ c.silver }}</td>
+                            <td class="medal-count">{{ c.bronze }}</td>
+                            <td class="medal-count medal-total-count">{{ c.gold + c.silver + c.bronze }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </aside>
 </section>
-
-{# ═══════════════════════ NEWS & SPORTS WIRE ═══════════════════════ #}
-<section class="news-wire-section section-fade" id="news-wire">
-    <div class="news-wire-header">
-        <div class="news-wire-rule"></div>
-        <h2 class="news-wire-title">News &amp; Sports Wire</h2>
-        <p class="news-wire-subtitle">{{ n.month }} {{ n.year }} &mdash; National Headlines &bull; Sports &bull; Olympics</p>
-        <div class="news-wire-rule"></div>
-    </div>
-
-    <div class="news-wire-grid">
-        <div class="news-wire-col">
-            <h3 class="news-wire-col-title">National News</h3>
-            <ul class="news-wire-list">
-                {% for item in n.news_wire.national %}
-                <li class="news-wire-item">
-                    <span class="news-wire-headline">{{ item.headline }}</span>
-                    <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="news-wire-col">
-            <h3 class="news-wire-col-title">Sports Highlights</h3>
-            <ul class="news-wire-list">
-                {% for item in n.news_wire.sports %}
-                <li class="news-wire-item">
-                    <span class="news-wire-headline">{{ item.headline }}</span>
-                    <span class="news-wire-summary"> &mdash; {{ item.summary }}</span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="news-wire-col">
-            <h3 class="news-wire-col-title">{{ n.news_wire.olympics.title }}</h3>
-            <table class="medal-table">
-                <thead>
-                    <tr>
-                        <th class="medal-country-header">Country</th>
-                        <th class="medal-header medal-gold">G</th>
-                        <th class="medal-header medal-silver">S</th>
-                        <th class="medal-header medal-bronze">B</th>
-                        <th class="medal-header medal-total">Tot</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for c in n.news_wire.olympics.countries %}
-                    <tr>
-                        <td class="medal-country">{{ c.flag }} {{ c.name }}</td>
-                        <td class="medal-count">{{ c.gold }}</td>
-                        <td class="medal-count">{{ c.silver }}</td>
-                        <td class="medal-count">{{ c.bronze }}</td>
-                        <td class="medal-count medal-total-count">{{ c.gold + c.silver + c.bronze }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</section>
-
-<div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-</div>
 
 {# ═══════════════════════ BIRTHDAYS & ANNIVERSARIES ═══════════════════════ #}
 <section class="celebrations-section section-fade" id="celebrations">
@@ -475,7 +504,6 @@
 {# ═══════════════════════ THE CREW ═══════════════════════ #}
 <section class="funnies-section section-fade" id="the-crew">
     <div class="funnies-header">
-        <div class="funnies-rule"></div>
         <h2 class="funnies-title">The Crew</h2>
         <p class="funnies-subtitle">A Seegars Fence Company Production</p>
         <div class="funnies-rule"></div>

@@ -61,8 +61,22 @@ NEWSLETTER = {
     "tagline": "A family business distinguished by exceptional values and quality.",
     "established": 1949,
 
-    # Ben's Team Letter — hidden for March 2026, can be re-enabled later
-    # "team_letter": { ... },
+    "ceo_letter": {
+        "title": "A Letter From Ben",
+        "author": "Ben Seegars",
+        "author_title": "CEO",
+        "headshot": "ben.png",
+        "dateline": "GOLDSBORO, N.C.",
+        "content": [
+            "As we move through February and into March, it\u2019s hard to believe we are already in the final month of first quarter. The start of the year has come with its share of challenges. Weather disruptions and continued softness in residential demand have made the early part of 2026 more uneven than any of us would prefer. Even so, the underlying health of the business remains strong, and that\u2019s reflected clearly in our sales performance, tracking right in line with our goals.",
+            "Charges are currently behind target. With limited workable days, it has simply taken longer to convert our sales momentum into completed work. The pipeline is there, and once conditions improve, charges should follow.",
+            "I continue to be optimistic about 2026. We are positioned well, and the discipline we show now in cost control, preparation, and execution will pay off as activity levels increase. We need to stay steady and focused as we work through this slow time.",
+            "Operationally, there is a lot to be excited about. The Raleigh and Augusta branch upfit construction projects are nearing completion, and the new powder coat line in Goldsboro is coming together as planned. All three projects are expected to wrap up in March and will meaningfully strengthen our capabilities and capacity. These are important investments in the future of our company, and I appreciate everyone involved\u2019s teamwork and patience as these projects near the finish line.",
+            "From a ministry perspective, I recently reread Philippians 4:8, which encourages us to focus on what is true, noble, right, pure, lovely, and admirable. Even when circumstances are frustrating at times, there is a great deal of good happening across this company and in the world around us. Let\u2019s stay focused on that good and keep doing great things for our customers, our teammates, and our communities.",
+            "Thank you for all that you do for Team Seegars. I\u2019m looking forward to a good month ahead and continued progress together.",
+        ],
+        "pull_quote": "The discipline we show now in cost control, preparation, and execution will pay off as activity levels increase.",
+    },
 
     "lead_section": {
         "type": "spirit_contest",
@@ -263,6 +277,7 @@ NEWSLETTER = {
     },
 
     "contributors": [
+        {"name": "Ben Seegars", "title": "CEO", "section": "A Letter From Ben"},
         {"name": "Christina Williams", "title": "Marketing Manager", "section": "SPIRIT Contest"},
         {"name": "John Seegars", "title": "Vice President", "section": "Feature Article"},
         {"name": "Veronica Aycock", "title": "Exec. Vice President", "section": "HR Corner"},
