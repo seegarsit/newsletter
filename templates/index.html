@@ -23,9 +23,7 @@
         <span class="reader-count-sep">&bull;</span>
         <span class="reader-count">{{ reader_count }} Monthly {{ "Reader" if reader_count == 1 else "Readers" }}</span>
     </div>
-    <div class="masthead-nav">
-        <a href="#top" class="home-link">HOME</a>
-    </div>
+    <div class="masthead-nav"></div>
 </div>
 
 {# ═══════════════════════ SKYBOX BANNER ═══════════════════════ #}
@@ -460,6 +458,56 @@
             </div>
         </div>
     </div>
+</section>
+
+<div class="section-divider">
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+</div>
+
+{# ═══════════════════════ INSTALLATION SHOWCASE ═══════════════════════ #}
+<section class="install-showcase-section section-fade" id="install-showcase">
+    <div class="install-showcase-header">
+        <div class="install-showcase-rule"></div>
+        <h2 class="install-showcase-title">From the Field</h2>
+        <p class="install-showcase-subtitle">Recent Installation Highlights</p>
+        <div class="install-showcase-rule"></div>
+    </div>
+
+    <div class="install-carousel">
+        <button class="carousel-btn carousel-btn-prev" aria-label="Previous image">&#10094;</button>
+        <div class="carousel-track-wrapper">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide">
+                    <div class="carousel-frame">
+                        <img src="{{ url_for('static', filename='images/installation_pics/1.png') }}" alt="Installation photo 1" class="clickable-image" tabindex="0" role="button">
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-frame">
+                        <img src="{{ url_for('static', filename='images/installation_pics/2.png') }}" alt="Installation photo 2" class="clickable-image" tabindex="0" role="button">
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-frame">
+                        <img src="{{ url_for('static', filename='images/installation_pics/3.png') }}" alt="Installation photo 3" class="clickable-image" tabindex="0" role="button">
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-frame">
+                        <img src="{{ url_for('static', filename='images/installation_pics/4.png') }}" alt="Installation photo 4" class="clickable-image" tabindex="0" role="button">
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-frame">
+                        <img src="{{ url_for('static', filename='images/installation_pics/5.png') }}" alt="Installation photo 5" class="clickable-image" tabindex="0" role="button">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-btn carousel-btn-next" aria-label="Next image">&#10095;</button>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots"></div>
 </section>
 
 <div class="section-divider">
