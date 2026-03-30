@@ -278,25 +278,6 @@
     </aside>
 </section>
 
-{# ═══════════════════════ MAZE GAME ═══════════════════════ #}
-<section class="maze-section section-fade" id="maze-game">
-    <div class="maze-header">
-        <div class="maze-rule"></div>
-        <h2 class="maze-title">The Easter Journey</h2>
-        <p class="maze-subtitle">Guide Jesus from the Cross to the Empty Tomb</p>
-        <div class="maze-rule"></div>
-    </div>
-    <div class="maze-wrapper">
-        <canvas id="mazeCanvas"></canvas>
-    </div>
-    <div class="maze-controls">
-        <button class="maze-btn" id="mazeNewBtn">New Maze</button>
-        <span class="maze-status" id="mazeStatus">Find the exit!</span>
-    </div>
-</section>
-
-<div class="section-divider"><span class="divider-ornament">&#10043; &#10043; &#10043;</span></div>
-
 {# ═══════════════════════ BIRTHDAYS & ANNIVERSARIES ═══════════════════════ #}
 <section class="celebrations-section section-fade" id="celebrations">
     <canvas class="fireworks-canvas" id="fireworksCanvas"></canvas>
@@ -426,27 +407,21 @@
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
-{# ═══════════════════════ THE CREW ═══════════════════════ #}
-<section class="funnies-section section-fade" id="the-crew">
-    <div class="funnies-header">
-        <h2 class="funnies-title">The Crew</h2>
-        <p class="funnies-subtitle">A Seegars Fence Company Production</p>
-        <div class="funnies-rule"></div>
+{# ═══════════════════════ MAZE GAME ═══════════════════════ #}
+<section class="maze-section section-fade" id="maze-game">
+    <div class="maze-header">
+        <div class="maze-rule"></div>
+        <h2 class="maze-title">The Easter Journey</h2>
+        <p class="maze-subtitle">Guide Jesus from the Cross to the Empty Tomb</p>
+        <div class="maze-rule"></div>
     </div>
-
-    <div class="comic-strip">
-        <div class="comic-panel">
-            <img src="{{ url_for('static', filename='images/1.png') }}" alt="The Crew — Panel 1">
-        </div>
-        <div class="comic-panel">
-            <img src="{{ url_for('static', filename='images/2.png') }}" alt="The Crew — Panel 2">
-        </div>
-        <div class="comic-panel">
-            <img src="{{ url_for('static', filename='images/3.png') }}" alt="The Crew — Panel 3">
-        </div>
+    <div class="maze-wrapper">
+        <canvas id="mazeCanvas"></canvas>
     </div>
-
-    <p class="funnies-credit">The Crew &mdash; &copy; {{ n.year }} Seegars Fence Co.</p>
+    <div class="maze-controls">
+        <button class="maze-btn" id="mazeNewBtn">New Maze</button>
+        <span class="maze-status" id="mazeStatus">Find the exit!</span>
+    </div>
 </section>
 
 {# ═══════════════════════ FOOTER ═══════════════════════ #}
