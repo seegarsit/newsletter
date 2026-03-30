@@ -1,22 +1,24 @@
 /* ================================================================
    THE FENCE LINE — Newspaper Stylesheet
-   Seegars Fence Company, March 2026
+   Seegars Fence Company, April 2026
    ================================================================ */
 
 /* ─── CSS Custom Properties ─── */
 :root {
-    --paper-bg: #f4f0e8;
-    --paper-bg-dark: #ece6d8;
+    --paper-bg: #fcfbf7;
+    --paper-bg-dark: #f3f0e8;
     --ink: #1a1a1a;
     --ink-light: #2c2c2c;
     --ink-faded: #555;
-    --sepia: #8b7355;
-    --sepia-light: #a89478;
-    --sepia-rule: #c4b49a;
-    --seegars-green: #1a6b3a;
-    --seegars-green-light: #34955a;
-    --seegars-green-dark: #145a2f;
-    --cream: #faf7f0;
+    --sepia: #7b5ea0;
+    --sepia-light: #9a7dbb;
+    --sepia-rule: #c4b3e0;
+    --seegars-green: #3aad5b;
+    --seegars-green-light: #52c474;
+    --seegars-green-dark: #2e944a;
+    --cream: #fdfcf8;
+    --purple: #7b3fc0;
+    --purple-light: #9b6bd5;
     --rule-thin: 1px solid #2c2c2c;
     --rule-thick: 3px solid #1a1a1a;
     --rule-double: 4px double #2c2c2c;
@@ -321,7 +323,7 @@ a:hover {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    color: var(--seegars-green-light);
+    color: var(--purple);
     padding-top: 14px;
 }
 
@@ -347,7 +349,7 @@ a:hover {
 
 .nameplate-ornament {
     font-size: 1.2rem;
-    color: var(--sepia);
+    color: var(--purple);
     flex-shrink: 0;
 }
 
@@ -574,7 +576,7 @@ a:hover {
     font-style: italic;
     font-size: 1.45rem;
     line-height: 1.5;
-    color: var(--seegars-green-light);
+    color: var(--purple);
     text-align: center;
 }
 
@@ -627,9 +629,9 @@ a:hover {
    SKYBOX BANNER — Newspaper "refer" strip
    ================================================================ */
 .skybox-banner {
-    background: linear-gradient(180deg, rgba(26, 107, 58, 0.08) 0%, rgba(26, 107, 58, 0.04) 100%);
-    border-top: 2px solid var(--seegars-green);
-    border-bottom: 2px solid var(--seegars-green);
+    background: linear-gradient(180deg, rgba(123, 63, 192, 0.08) 0%, rgba(123, 63, 192, 0.04) 100%);
+    border-top: 2px solid var(--purple);
+    border-bottom: 2px solid var(--purple);
     padding: 3px var(--gutter);
     text-align: center;
     position: relative;
@@ -655,7 +657,7 @@ a:hover {
 
 .skybox-label {
     font-weight: 700;
-    color: var(--seegars-green);
+    color: var(--purple);
 }
 
 .skybox-sep {
@@ -1714,7 +1716,7 @@ a:hover {
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: var(--seegars-green);
+    color: var(--purple);
 }
 
 .celebrations-columns {
@@ -2581,11 +2583,101 @@ a:hover {
 }
 
 /* ================================================================
+   MAZE GAME
+   ================================================================ */
+.maze-section {
+    padding: 0 var(--gutter);
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.maze-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.maze-rule {
+    height: 1px;
+    background: var(--sepia-rule);
+    margin: 6px 0;
+}
+
+.maze-title {
+    font-family: var(--font-headline);
+    font-size: 1.8rem;
+    font-weight: 800;
+    font-style: italic;
+    margin: 8px 0 2px;
+}
+
+.maze-subtitle {
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--purple);
+}
+
+.maze-wrapper {
+    display: block;
+    border: 3px solid var(--ink);
+    background: var(--cream);
+    padding: 2px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.maze-wrapper canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+    touch-action: none;
+}
+
+.maze-controls {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+
+.maze-btn {
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 6px 16px;
+    border: 2px solid var(--purple);
+    background: var(--cream);
+    color: var(--purple);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.maze-btn:hover {
+    background: var(--purple);
+    color: var(--cream);
+}
+
+.maze-status {
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--sepia);
+}
+
+
+/* ================================================================
    THE FUNNIES — Comic Strip
    ================================================================ */
 .funnies-section {
     padding: 0 var(--gutter);
     padding-bottom: 30px;
+    text-align: center;
 }
 
 .funnies-header {
@@ -2616,13 +2708,15 @@ a:hover {
 }
 
 .comic-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    justify-content: center;
     gap: 0;
     border: 3px solid var(--ink);
     background: #e8e0c8;
     position: relative;
     overflow: hidden;
+    max-width: fit-content;
+    margin: 0 auto;
 }
 
 /* Newspaper aging overlay */
@@ -2647,10 +2741,9 @@ a:hover {
 }
 
 .comic-panel img {
-    width: 100%;
-    height: 100%;
     display: block;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
     filter: contrast(1.05) brightness(0.95);
 }
 
@@ -2667,7 +2760,7 @@ a:hover {
 
 @media (max-width: 767px) {
     .comic-strip {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
     .comic-panel:not(:last-child) {
@@ -2985,20 +3078,20 @@ a:hover {
     border-radius: 3px;
     background: linear-gradient(
         135deg,
-        #008852,
-        #00b36b,
-        #006b3f,
-        #00d47e,
-        #008852,
-        #004d2e,
-        #00b36b,
-        #008852
+        #2d8a4e,
+        #6b3fa0,
+        #4aab6a,
+        #8b6bb5,
+        #2d8a4e,
+        #6b3fa0,
+        #4aab6a,
+        #2d8a4e
     );
     background-size: 300% 300%;
     animation: carousel-border-shift 4s ease infinite;
     box-shadow:
-        0 0 8px rgba(0, 136, 82, 0.3),
-        inset 0 0 4px rgba(0, 136, 82, 0.15);
+        0 0 8px rgba(107, 63, 160, 0.3),
+        inset 0 0 4px rgba(45, 138, 78, 0.15);
 }
 
 .carousel-frame img {
@@ -3052,12 +3145,12 @@ a:hover {
 }
 
 .carousel-dot.active {
-    background: #008852;
-    border-color: #008852;
+    background: var(--purple);
+    border-color: var(--purple);
 }
 
 .carousel-dot:hover {
-    border-color: #008852;
+    border-color: var(--purple);
 }
 
 /* Carousel — responsive */

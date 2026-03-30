@@ -243,7 +243,6 @@ NEWSLETTER = {
             {"q": "Cake or pie, and what kind?", "a": "German Chocolate Cake"},
             {"q": "Dream vacation spot?", "a": "Fishing in Mexico"},
             {"q": "First thing you\u2019d do if you won the lottery?", "a": "New Boat"},
-            {"q": "During the week, I wake up at...? I go to bed at...?", "a": "4:30 AM \u2013 10 PM"},
             {"q": "Go-to weekend activity?", "a": "Fishing / Card Shows"},
             {"q": "Favorite way to relax after work?", "a": "Having dinner with Colleen"},
             {"q": "What\u2019s your current daily average screen time on your mobile phone?", "a": "2 hours 37 minutes"},

@@ -109,7 +109,11 @@
 
                 {% if n.hr_corner.content %}
                     {% for paragraph in n.hr_corner.content %}
-                        <p>{{ paragraph|safe }}</p>
+                        {% if loop.first %}
+                            <p>&mdash; {{ paragraph|safe }}</p>
+                        {% else %}
+                            <p>{{ paragraph|safe }}</p>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
 
@@ -273,6 +277,25 @@
         </div>
     </aside>
 </section>
+
+{# ═══════════════════════ MAZE GAME ═══════════════════════ #}
+<section class="maze-section section-fade" id="maze-game">
+    <div class="maze-header">
+        <div class="maze-rule"></div>
+        <h2 class="maze-title">The Easter Journey</h2>
+        <p class="maze-subtitle">Guide Jesus from the Cross to the Empty Tomb</p>
+        <div class="maze-rule"></div>
+    </div>
+    <div class="maze-wrapper">
+        <canvas id="mazeCanvas"></canvas>
+    </div>
+    <div class="maze-controls">
+        <button class="maze-btn" id="mazeNewBtn">New Maze</button>
+        <span class="maze-status" id="mazeStatus">Find the exit!</span>
+    </div>
+</section>
+
+<div class="section-divider"><span class="divider-ornament">&#10043; &#10043; &#10043;</span></div>
 
 {# ═══════════════════════ BIRTHDAYS & ANNIVERSARIES ═══════════════════════ #}
 <section class="celebrations-section section-fade" id="celebrations">

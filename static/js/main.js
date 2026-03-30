@@ -345,14 +345,14 @@
         if (!widget) return;
 
         /* SVG weather icons */
-        var svgSun = '<svg viewBox="0 0 48 48"><g class="wx-rays"><line x1="24" y1="3" x2="24" y2="9" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="24" y1="39" x2="24" y2="45" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="24" x2="9" y2="24" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="39" y1="24" x2="45" y2="24" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="8.8" x2="13.2" y2="13.2" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="34.8" x2="39.2" y2="39.2" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="39.2" x2="13.2" y2="34.8" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="13.2" x2="39.2" y2="8.8" stroke="#8b7355" stroke-width="2.5" stroke-linecap="round"/></g><circle cx="24" cy="24" r="10" fill="#8b7355"/></svg>';
-        var svgSunCloud = '<svg viewBox="0 0 48 48"><circle cx="18" cy="16" r="8" fill="#8b7355"/><g class="wx-rays" style="transform-origin:18px 16px"><line x1="18" y1="2" x2="18" y2="7" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="16" x2="9" y2="16" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="6.1" x2="11.6" y2="9.6" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="25.9" x2="11.6" y2="22.4" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></g><g class="wx-cloud" fill="#555"><circle cx="22" cy="28" r="7"/><circle cx="31" cy="23" r="8"/><circle cx="39" cy="28" r="5"/><rect x="15" y="28" width="29" height="7" rx="3"/></g></svg>';
+        var svgSun = '<svg viewBox="0 0 48 48"><g class="wx-rays"><line x1="24" y1="3" x2="24" y2="9" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="24" y1="39" x2="24" y2="45" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="24" x2="9" y2="24" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="39" y1="24" x2="45" y2="24" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="8.8" x2="13.2" y2="13.2" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="34.8" x2="39.2" y2="39.2" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="8.8" y1="39.2" x2="13.2" y2="34.8" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/><line x1="34.8" y1="13.2" x2="39.2" y2="8.8" stroke="#6b5e7a" stroke-width="2.5" stroke-linecap="round"/></g><circle cx="24" cy="24" r="10" fill="#6b5e7a"/></svg>';
+        var svgSunCloud = '<svg viewBox="0 0 48 48"><circle cx="18" cy="16" r="8" fill="#6b5e7a"/><g class="wx-rays" style="transform-origin:18px 16px"><line x1="18" y1="2" x2="18" y2="7" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line x1="4" y1="16" x2="9" y2="16" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="6.1" x2="11.6" y2="9.6" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line x1="8.1" y1="25.9" x2="11.6" y2="22.4" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/></g><g class="wx-cloud" fill="#555"><circle cx="22" cy="28" r="7"/><circle cx="31" cy="23" r="8"/><circle cx="39" cy="28" r="5"/><rect x="15" y="28" width="29" height="7" rx="3"/></g></svg>';
         var svgCloud = '<svg viewBox="0 0 48 48"><g class="wx-cloud" fill="#555"><circle cx="16" cy="24" r="7"/><circle cx="26" cy="19" r="9"/><circle cx="36" cy="24" r="6"/><rect x="10" y="24" width="32" height="7" rx="3"/></g></svg>';
         var svgFog = '<svg viewBox="0 0 48 48"><line class="wx-fog" x1="8" y1="16" x2="40" y2="16" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.6"/><line class="wx-fog wx-fog-2" x1="12" y1="24" x2="36" y2="24" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.5"/><line class="wx-fog wx-fog-3" x1="6" y1="32" x2="42" y2="32" stroke="#555" stroke-width="3" stroke-linecap="round" opacity="0.4"/></svg>';
-        var svgLightRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="18" y1="29" x2="16" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="28" y1="29" x2="26" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></svg>';
-        var svgRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="17" y1="29" x2="15" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="26" y1="29" x2="24" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-3" x1="35" y1="29" x2="33" y2="38" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/></svg>';
-        var svgSnow = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><circle class="wx-flake" cx="17" cy="31" r="2" fill="#a89478"/><circle class="wx-flake wx-flake-2" cx="26" cy="33" r="2" fill="#a89478"/><circle class="wx-flake wx-flake-3" cx="35" cy="31" r="2" fill="#a89478"/></svg>';
-        var svgThunder = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="16" r="7"/><circle cx="26" cy="11" r="9"/><circle cx="36" cy="16" r="6"/><rect x="10" y="16" width="32" height="7" rx="3"/></g><polygon class="wx-bolt" points="27,22 21,33 26,31 22,42 30,29 25,31 28,22" fill="#8b7355"/></svg>';
+        var svgLightRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="18" y1="29" x2="16" y2="38" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="28" y1="29" x2="26" y2="38" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/></svg>';
+        var svgRain = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><line class="wx-drop" x1="17" y1="29" x2="15" y2="38" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-2" x1="26" y1="29" x2="24" y2="38" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/><line class="wx-drop wx-drop-3" x1="35" y1="29" x2="33" y2="38" stroke="#6b5e7a" stroke-width="2" stroke-linecap="round"/></svg>';
+        var svgSnow = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="18" r="7"/><circle cx="26" cy="13" r="9"/><circle cx="36" cy="18" r="6"/><rect x="10" y="18" width="32" height="7" rx="3"/></g><circle class="wx-flake" cx="17" cy="31" r="2" fill="#8a7d99"/><circle class="wx-flake wx-flake-2" cx="26" cy="33" r="2" fill="#8a7d99"/><circle class="wx-flake wx-flake-3" cx="35" cy="31" r="2" fill="#8a7d99"/></svg>';
+        var svgThunder = '<svg viewBox="0 0 48 48"><g fill="#555"><circle cx="16" cy="16" r="7"/><circle cx="26" cy="11" r="9"/><circle cx="36" cy="16" r="6"/><rect x="10" y="16" width="32" height="7" rx="3"/></g><polygon class="wx-bolt" points="27,22 21,33 26,31 22,42 30,29 25,31 28,22" fill="#6b5e7a"/></svg>';
 
         var weatherCodes = {
             0: { desc: 'Clear Sky', icon: svgSun },
@@ -697,5 +697,366 @@
         initWeather();
         initPoll();
         initCarousel();
+        initMaze();
     });
+
+    /* ─── Maze Game ─── */
+    function initMaze() {
+        var canvas = document.getElementById('mazeCanvas');
+        var statusEl = document.getElementById('mazeStatus');
+        var newBtn = document.getElementById('mazeNewBtn');
+        if (!canvas || !statusEl) return;
+        var ctx = canvas.getContext('2d');
+
+        var cols, rows, cell;
+        var wallColor = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#1a1a1a';
+        var pathColor = getComputedStyle(document.documentElement).getPropertyValue('--cream').trim() || '#fdfcf8';
+        var playerColor = getComputedStyle(document.documentElement).getPropertyValue('--purple').trim() || '#7b3fc0';
+        var exitColor = getComputedStyle(document.documentElement).getPropertyValue('--seegars-green').trim() || '#3aad5b';
+        var trailColor = 'rgba(123, 63, 192, 0.15)';
+        var grid, playerX, playerY, won;
+
+        function sizeMaze() {
+            var wrapper = canvas.parentElement;
+            var availWidth = wrapper.parentElement.clientWidth - 40; // account for section padding
+            // On wide screens, use more columns; on narrow, fewer
+            if (availWidth > 800) { cols = 25; }
+            else if (availWidth > 500) { cols = 20; }
+            else { cols = 12; }
+            cell = Math.floor(availWidth / cols);
+            rows = Math.min(cols, Math.floor(cell > 0 ? 400 / cell : 15)); // keep height reasonable
+            if (rows < 8) rows = 8;
+            canvas.width = cols * cell;
+            canvas.height = rows * cell;
+        }
+        sizeMaze();
+
+        var resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                sizeMaze();
+                generate();
+            }, 250);
+        });
+
+        function Cell(x, y) {
+            this.x = x; this.y = y;
+            this.walls = { top: true, right: true, bottom: true, left: true };
+            this.visited = false;
+        }
+
+        function generate() {
+            grid = [];
+            for (var y = 0; y < rows; y++) {
+                grid[y] = [];
+                for (var x = 0; x < cols; x++) {
+                    grid[y][x] = new Cell(x, y);
+                }
+            }
+            // Recursive backtracker
+            var stack = [];
+            var cur = grid[0][0];
+            cur.visited = true;
+            stack.push(cur);
+            while (stack.length > 0) {
+                var neighbors = [];
+                var cx = cur.x, cy = cur.y;
+                if (cy > 0 && !grid[cy-1][cx].visited) neighbors.push(grid[cy-1][cx]);
+                if (cx < cols-1 && !grid[cy][cx+1].visited) neighbors.push(grid[cy][cx+1]);
+                if (cy < rows-1 && !grid[cy+1][cx].visited) neighbors.push(grid[cy+1][cx]);
+                if (cx > 0 && !grid[cy][cx-1].visited) neighbors.push(grid[cy][cx-1]);
+                if (neighbors.length > 0) {
+                    var next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    // Remove walls between cur and next
+                    var dx = next.x - cur.x, dy = next.y - cur.y;
+                    if (dy === -1) { cur.walls.top = false; next.walls.bottom = false; }
+                    if (dx === 1) { cur.walls.right = false; next.walls.left = false; }
+                    if (dy === 1) { cur.walls.bottom = false; next.walls.top = false; }
+                    if (dx === -1) { cur.walls.left = false; next.walls.right = false; }
+                    next.visited = true;
+                    stack.push(cur);
+                    cur = next;
+                } else {
+                    cur = stack.pop();
+                }
+            }
+            playerX = 0; playerY = 0; won = false;
+            // Reset visited for trail tracking
+            for (var y2 = 0; y2 < rows; y2++)
+                for (var x2 = 0; x2 < cols; x2++)
+                    grid[y2][x2].visited = false;
+            grid[0][0].visited = true;
+            statusEl.textContent = 'From the Cross to the Empty Tomb';
+            draw();
+        }
+
+        function draw() {
+            ctx.fillStyle = pathColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw trail
+            for (var y = 0; y < rows; y++) {
+                for (var x = 0; x < cols; x++) {
+                    if (grid[y][x].visited && !(x === playerX && y === playerY)) {
+                        ctx.fillStyle = trailColor;
+                        ctx.fillRect(x * cell, y * cell, cell, cell);
+                    }
+                }
+            }
+
+            // Draw walls
+            ctx.strokeStyle = wallColor;
+            ctx.lineWidth = 2;
+            for (var y2 = 0; y2 < rows; y2++) {
+                for (var x2 = 0; x2 < cols; x2++) {
+                    var px = x2 * cell, py = y2 * cell;
+                    var w = grid[y2][x2].walls;
+                    ctx.beginPath();
+                    if (w.top) { ctx.moveTo(px, py); ctx.lineTo(px + cell, py); }
+                    if (w.right) { ctx.moveTo(px + cell, py); ctx.lineTo(px + cell, py + cell); }
+                    if (w.bottom) { ctx.moveTo(px, py + cell); ctx.lineTo(px + cell, py + cell); }
+                    if (w.left) { ctx.moveTo(px, py); ctx.lineTo(px, py + cell); }
+                    ctx.stroke();
+                }
+            }
+
+            // Draw start marker — Cross (at 0,0)
+            var scx = cell / 2, scy = cell / 2;
+            if (!(playerX === 0 && playerY === 0)) {
+                ctx.strokeStyle = '#8b6020';
+                ctx.lineWidth = Math.max(3, cell * 0.14);
+                ctx.lineCap = 'butt';
+                ctx.beginPath();
+                ctx.moveTo(scx, scy - cell * 0.4);
+                ctx.lineTo(scx, scy + cell * 0.44);
+                ctx.moveTo(scx - cell * 0.26, scy - cell * 0.12);
+                ctx.lineTo(scx + cell * 0.26, scy - cell * 0.12);
+                ctx.stroke();
+            }
+
+            // Draw exit — Open Tomb
+            var ecx = (cols-1) * cell + cell / 2, ecy = (rows-1) * cell + cell / 2;
+            var ts = cell * 0.02;
+            // Rock face / hill
+            ctx.fillStyle = '#a0967e';
+            ctx.beginPath();
+            ctx.ellipse(ecx, ecy + ts * 8, ts * 22, ts * 18, 0, Math.PI, 0);
+            ctx.fill();
+            // Dark tomb opening
+            ctx.fillStyle = '#2a2218';
+            ctx.beginPath();
+            ctx.ellipse(ecx - ts * 2, ecy + ts * 2, ts * 9, ts * 12, 0, Math.PI, 0);
+            ctx.fill();
+            // Rolled-away stone (to the right)
+            ctx.fillStyle = '#8a8070';
+            ctx.beginPath();
+            ctx.ellipse(ecx + ts * 12, ecy + ts * 2, ts * 7, ts * 9, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#6e6558';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            // Light rays from tomb
+            ctx.strokeStyle = 'rgba(255, 220, 100, 0.6)';
+            ctx.lineWidth = Math.max(1, ts * 1.2);
+            ctx.lineCap = 'round';
+            var rays = [[-0.3, -0.7], [0.15, -0.75], [-0.15, -0.6]];
+            for (var ri = 0; ri < rays.length; ri++) {
+                ctx.beginPath();
+                ctx.moveTo(ecx - ts * 2, ecy - ts * 4);
+                ctx.lineTo(ecx + rays[ri][0] * cell, ecy + rays[ri][1] * cell);
+                ctx.stroke();
+            }
+
+            // Draw player — Jesus figure
+            var bx = playerX * cell + cell / 2, by = playerY * cell + cell / 2;
+            var s = cell * 0.018;
+            // Robe (body) - deeper red/brown
+            ctx.fillStyle = '#8b2c2c';
+            ctx.beginPath();
+            ctx.moveTo(bx - s * 10, by + s * 18);
+            ctx.lineTo(bx - s * 6, by - s * 2);
+            ctx.lineTo(bx + s * 6, by - s * 2);
+            ctx.lineTo(bx + s * 10, by + s * 18);
+            ctx.closePath();
+            ctx.fill();
+            // Outer cloak draped over one shoulder
+            ctx.fillStyle = '#d2c4a0';
+            ctx.beginPath();
+            ctx.moveTo(bx - s * 5, by - s * 2);
+            ctx.lineTo(bx - s * 10, by + s * 18);
+            ctx.lineTo(bx - s * 2, by + s * 18);
+            ctx.lineTo(bx + s * 2, by + s * 6);
+            ctx.closePath();
+            ctx.fill();
+            // Sash/belt
+            ctx.fillStyle = '#6b4c30';
+            ctx.fillRect(bx - s * 8, by + s * 3, s * 16, s * 2.5);
+            // Hair behind head (drawn first, behind face)
+            ctx.fillStyle = '#4a2d18';
+            ctx.beginPath();
+            ctx.ellipse(bx - s * 6, by - s * 2, s * 2, s * 6, 0.1, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(bx + s * 6, by - s * 2, s * 2, s * 6, -0.1, 0, Math.PI * 2);
+            ctx.fill();
+            // Head (larger)
+            ctx.fillStyle = '#c49565';
+            ctx.beginPath();
+            ctx.arc(bx, by - s * 8, s * 9, 0, Math.PI * 2);
+            ctx.fill();
+            // Hair on top only
+            ctx.fillStyle = '#4a2d18';
+            ctx.beginPath();
+            ctx.arc(bx, by - s * 9, s * 9.5, Math.PI * 0.85, Math.PI * 2.15);
+            ctx.fill();
+            // Small neat beard
+            ctx.fillStyle = '#4a2d18';
+            ctx.beginPath();
+            ctx.ellipse(bx, by - s * 1, s * 3.5, s * 3, 0, 0, Math.PI);
+            ctx.fill();
+            // Eyes
+            ctx.fillStyle = '#2a1a0a';
+            ctx.beginPath();
+            ctx.arc(bx - s * 3.5, by - s * 9, s * 1.3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(bx + s * 3.5, by - s * 9, s * 1.3, 0, Math.PI * 2);
+            ctx.fill();
+            // Mouth
+            ctx.strokeStyle = '#8b5e3c';
+            ctx.lineWidth = Math.max(1, s * 0.8);
+            ctx.beginPath();
+            ctx.arc(bx, by - s * 4.5, s * 2, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+            // Arms
+            ctx.strokeStyle = '#c49565';
+            ctx.lineWidth = Math.max(1.5, s * 2);
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(bx - s * 6, by + s * 2);
+            ctx.lineTo(bx - s * 12, by + s * 8);
+            ctx.moveTo(bx + s * 6, by + s * 2);
+            ctx.lineTo(bx + s * 12, by + s * 8);
+            ctx.stroke();
+            // Sandals hint
+            ctx.fillStyle = '#6b4c30';
+            ctx.fillRect(bx - s * 8, by + s * 16, s * 5, s * 2.5);
+            ctx.fillRect(bx + s * 3, by + s * 16, s * 5, s * 2.5);
+
+            if (won) {
+                ctx.fillStyle = 'rgba(123, 63, 192, 0.12)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function tryMove(dx, dy) {
+            if (won) return;
+            var c = grid[playerY][playerX];
+            if (dx === 0 && dy === -1 && !c.walls.top) playerY--;
+            else if (dx === 1 && dy === 0 && !c.walls.right) playerX++;
+            else if (dx === 0 && dy === 1 && !c.walls.bottom) playerY++;
+            else if (dx === -1 && dy === 0 && !c.walls.left) playerX--;
+            else return;
+            grid[playerY][playerX].visited = true;
+            if (playerX === cols - 1 && playerY === rows - 1) {
+                won = true;
+                statusEl.textContent = 'He is Risen!';
+            }
+            draw();
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('mazeCanvas')) return;
+            var rect = canvas.getBoundingClientRect();
+            // Only respond if maze is somewhat visible
+            if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+            switch (e.key) {
+                case 'ArrowUp': case 'w': case 'W': tryMove(0, -1); e.preventDefault(); break;
+                case 'ArrowRight': case 'd': case 'D': tryMove(1, 0); e.preventDefault(); break;
+                case 'ArrowDown': case 's': case 'S': tryMove(0, 1); e.preventDefault(); break;
+                case 'ArrowLeft': case 'a': case 'A': tryMove(-1, 0); e.preventDefault(); break;
+            }
+        });
+
+        // Drag to move: ball follows mouse/finger in real time
+        var dragging = false;
+
+        function pointerToCell(e) {
+            var rect = canvas.getBoundingClientRect();
+            var scaleX = canvas.width / rect.width;
+            var scaleY = canvas.height / rect.height;
+            var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            var clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            var tx = Math.floor((clientX - rect.left) * scaleX / cell);
+            var ty = Math.floor((clientY - rect.top) * scaleY / cell);
+            return { x: Math.max(0, Math.min(cols - 1, tx)), y: Math.max(0, Math.min(rows - 1, ty)) };
+        }
+
+        function moveToward(tx, ty) {
+            if (won) return;
+            // Step one cell at a time toward target if wall allows
+            var dx = tx - playerX, dy = ty - playerY;
+            if (dx === 0 && dy === 0) return;
+            // Prefer the axis with greater distance
+            var moves = [];
+            if (Math.abs(dx) >= Math.abs(dy)) {
+                if (dx > 0) moves.push([ 1, 0, 'right']);
+                if (dx < 0) moves.push([-1, 0, 'left']);
+                if (dy > 0) moves.push([ 0, 1, 'bottom']);
+                if (dy < 0) moves.push([ 0,-1, 'top']);
+            } else {
+                if (dy > 0) moves.push([ 0, 1, 'bottom']);
+                if (dy < 0) moves.push([ 0,-1, 'top']);
+                if (dx > 0) moves.push([ 1, 0, 'right']);
+                if (dx < 0) moves.push([-1, 0, 'left']);
+            }
+            for (var i = 0; i < moves.length; i++) {
+                var c = grid[playerY][playerX];
+                if (!c.walls[moves[i][2]]) {
+                    playerX += moves[i][0];
+                    playerY += moves[i][1];
+                    grid[playerY][playerX].visited = true;
+                    if (playerX === cols - 1 && playerY === rows - 1) {
+                        won = true;
+                        statusEl.textContent = 'He is Risen!';
+                    }
+                    draw();
+                    return;
+                }
+            }
+        }
+
+        function onPointerDown(e) {
+            if (won) return;
+            e.preventDefault();
+            dragging = true;
+            var t = pointerToCell(e);
+            moveToward(t.x, t.y);
+        }
+
+        function onPointerMove(e) {
+            if (!dragging || won) return;
+            e.preventDefault();
+            var t = pointerToCell(e);
+            moveToward(t.x, t.y);
+        }
+
+        function onPointerUp() {
+            dragging = false;
+        }
+
+        canvas.addEventListener('mousedown', onPointerDown);
+        canvas.addEventListener('mousemove', onPointerMove);
+        document.addEventListener('mouseup', onPointerUp);
+        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+        canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+        document.addEventListener('touchend', onPointerUp);
+
+        if (newBtn) newBtn.addEventListener('click', generate);
+
+        generate();
+    }
+
 })();
