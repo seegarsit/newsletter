@@ -19,7 +19,7 @@ Run these steps at the beginning of every session before doing any work:
 
 2. **Start the local dev server:**
    ```bash
-   /c/Users/BradWells/AppData/Local/Programs/Python/Python313/python.exe app.py
+   "/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe" app.py
    ```
    - Run in background on port 5000.
    - Confirm it's running before beginning work.
@@ -66,7 +66,7 @@ Run these steps at the beginning of every session before doing any work:
 4. Render auto-deploys from `main`
 
 ## Environment Notes
-- Python path: `/c/Users/BradWells/AppData/Local/Programs/Python/Python313/python.exe`
+- Python path: `"/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe"` (note the space — must be quoted)
 - `python` and `pip` are NOT on the shell PATH — always use the full path
 - `gh` CLI is not installed — use GitHub REST API with `curl` and git credentials instead
 - Git credentials are stored and accessible via `git credential fill`
