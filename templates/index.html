@@ -30,7 +30,7 @@
     <a href="#employee-spotlight" class="skybox-link">
         <span class="skybox-label">Spotlight</span>
         <span class="skybox-sep">|</span>
-        <span class="skybox-text">This month&rsquo;s featured employee is <strong>coming soon</strong> &mdash; stay tuned!</span>
+        <span class="skybox-text">This month&rsquo;s featured employee is <strong>Caleb Blood</strong> &mdash; Rocky Mount</span>
     </a>
     <span class="skybox-divider">&#10087;</span>
     <a href="#arcade" class="skybox-link">
@@ -218,27 +218,24 @@
         </div>
 
         {# EMPLOYEE SPOTLIGHT — Left column #}
-        <article class="spotlight-article spotlight-coming-soon section-fade" id="employee-spotlight">
+        <article class="spotlight-article section-fade" id="employee-spotlight">
             <h3 class="headline headline-feature">{{ n.employee_spotlight.title }}</h3>
-            <div class="spotlight-blur-wrap">
-                <div class="spotlight-blur-content" aria-hidden="true">
-                    <h4 class="spotlight-name">{{ n.employee_spotlight.name }}</h4>
-                    <p class="spotlight-location">{{ n.employee_spotlight.location }}</p>
-                    {% for photo in n.employee_spotlight.photos %}
-                    <div class="spotlight-photo-wrapper">
-                        <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo">
+            <div class="spotlight-content">
+                <h4 class="spotlight-name">{{ n.employee_spotlight.name }}</h4>
+                <p class="spotlight-location">{{ n.employee_spotlight.location }}</p>
+                {% for photo in n.employee_spotlight.photos %}
+                <div class="spotlight-photo-wrapper">
+                    <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo">
+                </div>
+                {% endfor %}
+                <div class="spotlight-qa">
+                    {% for item in n.employee_spotlight.qa %}
+                    <div class="spotlight-qa-item">
+                        <span class="spotlight-question">{{ item.q }}</span>
+                        <span class="spotlight-answer">{{ item.a }}</span>
                     </div>
                     {% endfor %}
-                    <div class="spotlight-qa">
-                        {% for item in n.employee_spotlight.qa %}
-                        <div class="spotlight-qa-item">
-                            <span class="spotlight-question">{{ item.q }}</span>
-                            <span class="spotlight-answer">{{ item.a }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
-                <div class="spotlight-coming-stamp" role="img" aria-label="Coming Soon">Coming Soon!</div>
             </div>
         </article>
 
