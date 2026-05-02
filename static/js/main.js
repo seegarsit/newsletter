@@ -102,16 +102,15 @@
             var img = e.target.closest('.clickable-image');
             if (!img) return;
 
-            /* Check if this image is inside the carousel */
-            var carousel = img.closest('.install-carousel');
-            if (carousel) {
-                /* Build gallery from real slides only (not clones) */
-                var slides = carousel.querySelectorAll('.carousel-slide:not(.carousel-clone) .clickable-image');
+            /* If the image lives inside a [data-gallery] scope, build a navigable gallery */
+            var galleryGroup = img.closest('[data-gallery]');
+            if (galleryGroup) {
+                var groupImgs = galleryGroup.querySelectorAll('.clickable-image');
                 var images = [];
                 var startIdx = 0;
-                slides.forEach(function (s, i) {
+                groupImgs.forEach(function (s, i) {
                     images.push({ src: s.src, alt: s.alt });
-                    if (s.src === img.src) startIdx = i;
+                    if (s === img) startIdx = i;
                 });
                 openGallery(images, startIdx);
             } else {
@@ -552,137 +551,183 @@
         });
     }
 
-    /* ─── Installation Showcase Carousel ─── */
-    function initCarousel() {
-        var track = document.getElementById('carouselTrack');
-        var dotsContainer = document.getElementById('carouselDots');
-        if (!track || !dotsContainer) return;
 
-        /* Shuffle slides into random order */
-        var slidesArr = Array.from(track.querySelectorAll('.carousel-slide'));
-        for (var si = slidesArr.length - 1; si > 0; si--) {
-            var sj = Math.floor(Math.random() * (si + 1));
-            track.appendChild(slidesArr[sj]);
-            slidesArr.splice(sj, 1, slidesArr[si]);
+    /* ─── Word Search puzzle ─── */
+    function initWordSearch() {
+        var grid = document.querySelector('.word-search-grid');
+        var btn = document.querySelector('.word-search-toggle');
+        if (!grid || !btn) return;
+
+        var cols = parseInt(grid.getAttribute('data-cols'), 10) || 14;
+        var solution = {};
+        try { solution = JSON.parse(grid.getAttribute('data-solution') || '{}'); } catch (e) {}
+        var cells = Array.prototype.slice.call(grid.querySelectorAll('.word-search-cell'));
+        var wordEls = Array.prototype.slice.call(document.querySelectorAll('.word-search-word'));
+        var foundWords = {};
+
+        function cellAt(r, c) { return cells[r * cols + c]; }
+        function rcOf(cell) {
+            var i = cells.indexOf(cell);
+            return [Math.floor(i / cols), i % cols];
+        }
+        function serialize(coords) {
+            return coords.map(function (rc) { return rc[0] + ',' + rc[1]; }).join('|');
         }
 
-        var origSlides = track.querySelectorAll('.carousel-slide');
-        var total = origSlides.length;
-        if (total === 0) return;
+        /* Build lookup: serialized cell sequence -> word (forward and reverse) */
+        var sequenceToWord = {};
+        Object.keys(solution).forEach(function (word) {
+            var coords = solution[word];
+            sequenceToWord[serialize(coords)] = word;
+            sequenceToWord[serialize(coords.slice().reverse())] = word;
+        });
 
-        /* Clone first and last slides for infinite loop effect */
-        var firstClone = origSlides[0].cloneNode(true);
-        var lastClone = origSlides[total - 1].cloneNode(true);
-        firstClone.classList.add('carousel-clone');
-        lastClone.classList.add('carousel-clone');
-        track.appendChild(firstClone);
-        track.insertBefore(lastClone, origSlides[0]);
-
-        /* Now index 0 = last clone, 1..total = real slides, total+1 = first clone */
-        var current = 1; /* start on first real slide */
-        var transitioning = false;
-        var autoTimer = null;
-
-        /* Position to first real slide without animation */
-        track.style.transition = 'none';
-        track.style.transform = 'translateX(-' + (current * 100) + '%)';
-        /* Force reflow */
-        track.offsetHeight;
-        track.style.transition = '';
-
-        /* Build dots */
-        for (var i = 0; i < total; i++) {
-            var dot = document.createElement('button');
-            dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
-            dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-            dot.setAttribute('data-index', i);
-            dotsContainer.appendChild(dot);
+        function clearSelecting() {
+            cells.forEach(function (c) { c.classList.remove('selecting'); });
         }
 
-        var dots = dotsContainer.querySelectorAll('.carousel-dot');
+        function lineCells(r0, c0, r1, c1) {
+            var dr = r1 - r0, dc = c1 - c0;
+            var adr = Math.abs(dr), adc = Math.abs(dc);
+            if (!(dr === 0 || dc === 0 || adr === adc)) return null;
+            var n = Math.max(adr, adc) + 1;
+            var sr = dr === 0 ? 0 : dr / adr;
+            var sc = dc === 0 ? 0 : dc / adc;
+            var arr = [];
+            for (var i = 0; i < n; i++) arr.push([r0 + sr * i, c0 + sc * i]);
+            return arr;
+        }
 
-        function updateDots() {
-            var realIndex = current - 1; /* convert to 0-based real index */
-            dots.forEach(function (d, j) {
-                d.classList.toggle('active', j === realIndex);
+        function paintSelection(coords) {
+            clearSelecting();
+            if (!coords) return;
+            coords.forEach(function (rc) {
+                var el = cellAt(rc[0], rc[1]);
+                if (el) el.classList.add('selecting');
             });
         }
 
-        function goTo(index) {
-            if (transitioning) return;
-            transitioning = true;
-            current = index;
-            track.style.transition = 'transform 0.75s ease';
-            track.style.transform = 'translateX(-' + (current * 100) + '%)';
-            updateDots();
+        function markWordFound(word) {
+            if (foundWords[word]) return;
+            foundWords[word] = true;
+            solution[word].forEach(function (rc) {
+                var el = cellAt(rc[0], rc[1]);
+                if (el) el.classList.add('user-found');
+            });
+            wordEls.forEach(function (el) {
+                if (el.getAttribute('data-word') === word) el.classList.add('found');
+            });
         }
 
-        /* Snap to real slide after reaching a clone */
-        track.addEventListener('transitionend', function () {
-            transitioning = false;
-            if (current === 0) {
-                /* Jumped to last-clone, snap to real last */
-                track.style.transition = 'none';
-                current = total;
-                track.style.transform = 'translateX(-' + (current * 100) + '%)';
-                track.offsetHeight;
-                updateDots();
-            } else if (current === total + 1) {
-                /* Jumped to first-clone, snap to real first */
-                track.style.transition = 'none';
-                current = 1;
-                track.style.transform = 'translateX(-' + (current * 100) + '%)';
-                track.offsetHeight;
-                updateDots();
-            }
-        });
-
-        /* Button controls */
-        var section = track.closest('.install-carousel');
-        var prevBtn = section.querySelector('.carousel-btn-prev');
-        var nextBtn = section.querySelector('.carousel-btn-next');
-
-        if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); resetAuto(); });
-        if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); resetAuto(); });
-
-        /* Dot controls */
-        dotsContainer.addEventListener('click', function (e) {
-            var dot = e.target.closest('.carousel-dot');
-            if (!dot) return;
-            var realIndex = parseInt(dot.getAttribute('data-index'), 10);
-            goTo(realIndex + 1); /* +1 because of prepended clone */
-            resetAuto();
-        });
-
-        /* Auto-advance every 5 seconds */
-        function startAuto() {
-            autoTimer = setInterval(function () { goTo(current + 1); }, 5000);
-        }
-        function resetAuto() {
-            if (autoTimer) clearInterval(autoTimer);
-            startAuto();
-        }
-
-        /* Touch/swipe support */
-        var startX = 0;
         var dragging = false;
+        var startRC = null;
+        var lastSelection = [];
 
-        track.addEventListener('touchstart', function (e) {
-            startX = e.touches[0].clientX;
+        function onPointerDown(e) {
+            var cell = e.target.closest('.word-search-cell');
+            if (!cell) return;
+            e.preventDefault();
+            /* Release any implicit pointer capture so pointermove can hit other cells */
+            if (e.pointerId !== undefined && e.target.releasePointerCapture) {
+                try { e.target.releasePointerCapture(e.pointerId); } catch (_) {}
+            }
             dragging = true;
-        }, { passive: true });
+            startRC = rcOf(cell);
+            lastSelection = [startRC.slice()];
+            paintSelection(lastSelection);
+        }
 
-        track.addEventListener('touchend', function (e) {
+        function onPointerMove(e) {
+            if (!dragging) return;
+            var el = document.elementFromPoint(e.clientX, e.clientY);
+            var cell = el && el.closest && el.closest('.word-search-cell');
+            if (!cell || !grid.contains(cell)) return;
+            var rc = rcOf(cell);
+            var line = lineCells(startRC[0], startRC[1], rc[0], rc[1]);
+            if (line) {
+                lastSelection = line;
+                paintSelection(line);
+            }
+        }
+
+        function onPointerUp() {
             if (!dragging) return;
             dragging = false;
-            var diff = startX - e.changedTouches[0].clientX;
-            if (Math.abs(diff) > 40) {
-                goTo(diff > 0 ? current + 1 : current - 1);
-                resetAuto();
+            var key = serialize(lastSelection);
+            var matched = sequenceToWord[key];
+            clearSelecting();
+            if (matched) markWordFound(matched);
+            lastSelection = [];
+            startRC = null;
+        }
+
+        grid.addEventListener('pointerdown', onPointerDown);
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', onPointerUp);
+        document.addEventListener('pointercancel', onPointerUp);
+
+        /* Show Solution toggle — adds .found to all cells/words; doesn't disturb user-found state */
+        var shown = false;
+        btn.addEventListener('click', function () {
+            shown = !shown;
+            btn.setAttribute('aria-pressed', shown ? 'true' : 'false');
+            grid.classList.toggle('solution-shown', shown);
+            cells.forEach(function (c) { c.classList.remove('solution-hint'); });
+            wordEls.forEach(function (el) {
+                var w = el.getAttribute('data-word');
+                if (shown && !foundWords[w]) el.classList.add('found');
+                else if (!shown && !foundWords[w]) el.classList.remove('found');
+            });
+            if (shown) {
+                Object.keys(solution).forEach(function (word) {
+                    if (foundWords[word]) return;
+                    solution[word].forEach(function (rc) {
+                        cellAt(rc[0], rc[1]).classList.add('solution-hint');
+                    });
+                });
             }
         });
 
-        startAuto();
+        /* Click a word in the list to manually cross it off */
+        wordEls.forEach(function (el) {
+            el.addEventListener('click', function () {
+                el.classList.toggle('crossed');
+            });
+        });
+
+        /* Clear / start-over button */
+        var clearBtn = document.querySelector('.word-search-clear');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function () {
+                foundWords = {};
+                cells.forEach(function (c) {
+                    c.classList.remove('user-found', 'selecting', 'solution-hint');
+                });
+                wordEls.forEach(function (el) {
+                    el.classList.remove('found', 'crossed');
+                });
+                if (shown) {
+                    shown = false;
+                    grid.classList.remove('solution-shown');
+                    btn.setAttribute('aria-pressed', 'false');
+                }
+                dragging = false;
+                lastSelection = [];
+                startRC = null;
+            });
+        }
+    }
+
+    /* ─── Party gallery show/hide toggle ─── */
+    function initPartyGallery() {
+        var wrap = document.querySelector('.party-gallery-wrap');
+        if (!wrap) return;
+        var btn = wrap.querySelector('.party-gallery-toggle');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+            var expanded = wrap.classList.toggle('expanded');
+            btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        });
     }
 
     /* ─── Initialize ─── */
@@ -696,560 +741,9 @@
         initStickyBar();
         initWeather();
         initPoll();
-        initCarousel();
-        initMaze();
+        initPartyGallery();
+        initWordSearch();
     });
 
-    /* ─── Maze Game — Premium Edition ─── */
-    function initMaze() {
-        var canvas = document.getElementById('mazeCanvas');
-        var statusEl = document.getElementById('mazeStatus');
-        var newBtn = document.getElementById('mazeNewBtn');
-        if (!canvas || !statusEl) return;
-        var ctx = canvas.getContext('2d');
-
-        var cols, rows, cell, wallThick;
-        var grid, playerX, playerY, won, wonTime;
-        // Smooth animation state
-        var drawX, drawY, targetX, targetY;
-        var animFrame;
-        var time = 0;
-        // Particles
-        var particles = [];
-        var winParticles = [];
-        // Trail glow
-        var trailCells = [];
-        // Fog of war — visibility radius in cells
-        var fogRadius = 3.5;
-
-        function sizeMaze() {
-            var wrapper = canvas.parentElement;
-            var availWidth = wrapper.parentElement.clientWidth - 40;
-            if (availWidth > 800) { cols = 25; }
-            else if (availWidth > 500) { cols = 20; }
-            else { cols = 12; }
-            cell = Math.floor(availWidth / cols);
-            rows = Math.min(cols, Math.floor(cell > 0 ? 400 / cell : 15));
-            if (rows < 8) rows = 8;
-            wallThick = Math.max(3, Math.floor(cell * 0.14));
-            canvas.width = cols * cell;
-            canvas.height = rows * cell;
-        }
-        sizeMaze();
-
-        var resizeTimer;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() { sizeMaze(); generate(); }, 250);
-        });
-
-        function Cell(x, y) {
-            this.x = x; this.y = y;
-            this.walls = { top: true, right: true, bottom: true, left: true };
-            this.visited = false;
-        }
-
-        function generate() {
-            grid = [];
-            for (var y = 0; y < rows; y++) {
-                grid[y] = [];
-                for (var x = 0; x < cols; x++) grid[y][x] = new Cell(x, y);
-            }
-            var stack = [], cur = grid[0][0];
-            cur.visited = true; stack.push(cur);
-            while (stack.length > 0) {
-                var nb = [], cx = cur.x, cy = cur.y;
-                if (cy > 0 && !grid[cy-1][cx].visited) nb.push(grid[cy-1][cx]);
-                if (cx < cols-1 && !grid[cy][cx+1].visited) nb.push(grid[cy][cx+1]);
-                if (cy < rows-1 && !grid[cy+1][cx].visited) nb.push(grid[cy+1][cx]);
-                if (cx > 0 && !grid[cy][cx-1].visited) nb.push(grid[cy][cx-1]);
-                if (nb.length > 0) {
-                    var next = nb[Math.floor(Math.random() * nb.length)];
-                    var dx = next.x - cur.x, dy = next.y - cur.y;
-                    if (dy === -1) { cur.walls.top = false; next.walls.bottom = false; }
-                    if (dx === 1) { cur.walls.right = false; next.walls.left = false; }
-                    if (dy === 1) { cur.walls.bottom = false; next.walls.top = false; }
-                    if (dx === -1) { cur.walls.left = false; next.walls.right = false; }
-                    next.visited = true; stack.push(cur); cur = next;
-                } else { cur = stack.pop(); }
-            }
-            playerX = 0; playerY = 0; won = false; wonTime = 0;
-            drawX = 0; drawY = 0; targetX = 0; targetY = 0;
-            trailCells = [{x:0,y:0,t:time}];
-            particles = []; winParticles = [];
-            for (var y2 = 0; y2 < rows; y2++)
-                for (var x2 = 0; x2 < cols; x2++) grid[y2][x2].visited = false;
-            grid[0][0].visited = true;
-            statusEl.textContent = 'From the Cross to the Empty Tomb';
-            if (!animFrame) gameLoop();
-        }
-
-        // ── Stone texture pattern (cached) ──
-        var stonePattern = null;
-        function createStonePattern() {
-            var pc = document.createElement('canvas');
-            pc.width = 8; pc.height = 8;
-            var px = pc.getContext('2d');
-            px.fillStyle = '#5a5247';
-            px.fillRect(0,0,8,8);
-            for (var i = 0; i < 12; i++) {
-                px.fillStyle = 'rgba(0,0,0,' + (Math.random() * 0.15) + ')';
-                px.fillRect(Math.random()*8|0, Math.random()*8|0, 1, 1);
-            }
-            for (var j = 0; j < 6; j++) {
-                px.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.08) + ')';
-                px.fillRect(Math.random()*8|0, Math.random()*8|0, 1, 1);
-            }
-            stonePattern = ctx.createPattern(pc, 'repeat');
-        }
-
-        // ── Floor texture (cached) ──
-        var floorPattern = null;
-        function createFloorPattern() {
-            var pc = document.createElement('canvas');
-            pc.width = 12; pc.height = 12;
-            var px = pc.getContext('2d');
-            px.fillStyle = '#e8dcc8';
-            px.fillRect(0,0,12,12);
-            for (var i = 0; i < 8; i++) {
-                px.fillStyle = 'rgba(139,115,85,' + (Math.random()*0.06) + ')';
-                px.fillRect(Math.random()*12|0, Math.random()*12|0, 2, 1);
-            }
-            floorPattern = ctx.createPattern(pc, 'repeat');
-        }
-
-        // ── Ambient dust particles ──
-        function spawnDust() {
-            if (particles.length < 30) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: -Math.random() * 0.4 - 0.1,
-                    life: 1,
-                    decay: 0.003 + Math.random() * 0.004,
-                    size: 1 + Math.random() * 2
-                });
-            }
-        }
-
-        function updateParticles() {
-            for (var i = particles.length - 1; i >= 0; i--) {
-                var p = particles[i];
-                p.x += p.vx; p.y += p.vy; p.life -= p.decay;
-                if (p.life <= 0) particles.splice(i, 1);
-            }
-        }
-
-        // ── Win celebration particles ──
-        function spawnWinBurst() {
-            var cx = (cols-1) * cell + cell/2, cy = (rows-1) * cell + cell/2;
-            for (var i = 0; i < 60; i++) {
-                var angle = Math.random() * Math.PI * 2;
-                var speed = 1 + Math.random() * 4;
-                winParticles.push({
-                    x: cx, y: cy,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    life: 1,
-                    decay: 0.008 + Math.random() * 0.008,
-                    size: 2 + Math.random() * 4,
-                    color: ['#ffd700','#fff5b0','#ffaa00','#ffffff'][Math.floor(Math.random()*4)]
-                });
-            }
-        }
-
-        // ── Fog of war alpha for a cell (disabled) ──
-        function fogAlpha(cx, cy) {
-            return 1;
-        }
-
-        // ── Draw 3D stone wall segment ──
-        function drawWallSegment(x1, y1, x2, y2) {
-            var wt = wallThick;
-            // Shadow
-            ctx.save();
-            ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-            ctx.lineWidth = wt + 2;
-            ctx.lineCap = 'square';
-            ctx.beginPath();
-            ctx.moveTo(x1 + 1.5, y1 + 1.5);
-            ctx.lineTo(x2 + 1.5, y2 + 1.5);
-            ctx.stroke();
-            // Main wall
-            ctx.strokeStyle = stonePattern || '#5a5247';
-            ctx.lineWidth = wt;
-            ctx.beginPath();
-            ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
-            ctx.stroke();
-            // Highlight edge
-            ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x1, y1 - 1); ctx.lineTo(x2, y2 - 1);
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        // ── Draw the Cross at start ──
-        function drawCross(t) {
-            var scx = cell / 2, scy = cell / 2;
-            var glow = 0.3 + Math.sin(t * 2) * 0.15;
-            // Glow
-            var grad = ctx.createRadialGradient(scx, scy, 0, scx, scy, cell * 0.6);
-            grad.addColorStop(0, 'rgba(180,120,50,' + glow + ')');
-            grad.addColorStop(1, 'rgba(180,120,50,0)');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, cell, cell);
-            // Wooden cross with grain
-            ctx.fillStyle = '#6b4a28';
-            // Vertical
-            var vw = cell * 0.13, vh = cell * 0.75;
-            ctx.fillRect(scx - vw/2, scy - vh * 0.48, vw, vh);
-            // Horizontal
-            var hw = cell * 0.52, hh = cell * 0.11;
-            ctx.fillRect(scx - hw/2, scy - vh * 0.18, hw, hh);
-            // Wood grain lines
-            ctx.strokeStyle = 'rgba(90,55,20,0.4)';
-            ctx.lineWidth = 0.5;
-            for (var gi = 0; gi < 3; gi++) {
-                var gy = scy - vh * 0.4 + gi * vh * 0.25;
-                ctx.beginPath(); ctx.moveTo(scx - vw/2 + 1, gy); ctx.lineTo(scx + vw/2 - 1, gy); ctx.stroke();
-            }
-            // Highlight
-            ctx.fillStyle = 'rgba(255,220,150,0.15)';
-            ctx.fillRect(scx - vw/2, scy - vh * 0.48, vw * 0.3, vh);
-        }
-
-        // ── Draw the Empty Tomb at exit ──
-        function drawTomb(t) {
-            var ecx = (cols-1) * cell + cell / 2, ecy = (rows-1) * cell + cell / 2;
-            var s = cell * 0.02;
-            // Pulsing golden glow from tomb
-            var glowPulse = 0.25 + Math.sin(t * 1.5) * 0.1;
-            var tombGrad = ctx.createRadialGradient(ecx - s*2, ecy - s*2, 0, ecx - s*2, ecy - s*2, cell * 0.8);
-            tombGrad.addColorStop(0, 'rgba(255, 215, 80,' + glowPulse + ')');
-            tombGrad.addColorStop(0.5, 'rgba(255, 200, 60,' + (glowPulse * 0.4) + ')');
-            tombGrad.addColorStop(1, 'rgba(255, 200, 60, 0)');
-            ctx.fillStyle = tombGrad;
-            ctx.fillRect((cols-1)*cell, (rows-1)*cell, cell, cell);
-            // Rock face
-            ctx.fillStyle = '#8a7e6a';
-            ctx.beginPath();
-            ctx.ellipse(ecx, ecy + s * 10, s * 24, s * 20, 0, Math.PI, 0);
-            ctx.fill();
-            // Rock texture
-            ctx.fillStyle = 'rgba(0,0,0,0.08)';
-            ctx.beginPath(); ctx.arc(ecx - s*8, ecy - s*3, s*3, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(ecx + s*6, ecy + s*2, s*2, 0, Math.PI*2); ctx.fill();
-            // Dark tomb opening
-            var tombGrad2 = ctx.createRadialGradient(ecx - s*2, ecy, s*2, ecx - s*2, ecy + s*2, s*12);
-            tombGrad2.addColorStop(0, '#1a1408');
-            tombGrad2.addColorStop(1, '#2a2218');
-            ctx.fillStyle = tombGrad2;
-            ctx.beginPath();
-            ctx.ellipse(ecx - s * 2, ecy + s * 3, s * 10, s * 13, 0, Math.PI, 0);
-            ctx.fill();
-            // Rolled-away stone with shading
-            var stoneGrad = ctx.createRadialGradient(ecx + s*11, ecy, s*2, ecx + s*13, ecy + s*2, s*10);
-            stoneGrad.addColorStop(0, '#a09888');
-            stoneGrad.addColorStop(1, '#706858');
-            ctx.fillStyle = stoneGrad;
-            ctx.beginPath();
-            ctx.ellipse(ecx + s * 13, ecy + s * 3, s * 8, s * 10, 0.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1; ctx.stroke();
-            // Animated light rays from tomb
-            ctx.save();
-            ctx.globalCompositeOperation = 'screen';
-            var rayAngles = [-0.8, -1.1, -1.4, -0.5, -1.7];
-            for (var ri = 0; ri < rayAngles.length; ri++) {
-                var ra = rayAngles[ri] + Math.sin(t * 0.8 + ri) * 0.05;
-                var rLen = cell * (0.5 + Math.sin(t * 1.2 + ri * 0.7) * 0.1);
-                var rayGrad = ctx.createLinearGradient(ecx - s*2, ecy - s*2, ecx - s*2 + Math.cos(ra) * rLen, ecy - s*2 + Math.sin(ra) * rLen);
-                rayGrad.addColorStop(0, 'rgba(255, 220, 100, 0.5)');
-                rayGrad.addColorStop(1, 'rgba(255, 220, 100, 0)');
-                ctx.strokeStyle = rayGrad;
-                ctx.lineWidth = Math.max(1.5, s * 2);
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(ecx - s*2, ecy - s*4);
-                ctx.lineTo(ecx - s*2 + Math.cos(ra) * rLen, ecy - s*2 + Math.sin(ra) * rLen);
-                ctx.stroke();
-            }
-            ctx.restore();
-        }
-
-        // ── Draw Jesus figure ──
-        function drawJesus(bx, by) {
-            var s = cell * 0.018;
-            // Soft glow around Jesus
-            var jGrad = ctx.createRadialGradient(bx, by, 0, bx, by, cell * 0.45);
-            jGrad.addColorStop(0, 'rgba(255,230,160,0.2)');
-            jGrad.addColorStop(1, 'rgba(255,230,160,0)');
-            ctx.fillStyle = jGrad;
-            ctx.beginPath(); ctx.arc(bx, by, cell*0.45, 0, Math.PI*2); ctx.fill();
-            // Robe
-            ctx.fillStyle = '#8b2c2c';
-            ctx.beginPath();
-            ctx.moveTo(bx - s*10, by + s*18);
-            ctx.quadraticCurveTo(bx - s*7, by + s*10, bx - s*6, by - s*2);
-            ctx.lineTo(bx + s*6, by - s*2);
-            ctx.quadraticCurveTo(bx + s*7, by + s*10, bx + s*10, by + s*18);
-            ctx.closePath(); ctx.fill();
-            // Robe shading
-            ctx.fillStyle = 'rgba(0,0,0,0.15)';
-            ctx.beginPath();
-            ctx.moveTo(bx + s*2, by); ctx.lineTo(bx + s*10, by + s*18);
-            ctx.lineTo(bx + s*4, by + s*18); ctx.closePath(); ctx.fill();
-            // Cloak
-            ctx.fillStyle = '#d2c4a0';
-            ctx.beginPath();
-            ctx.moveTo(bx - s*5, by - s*2);
-            ctx.quadraticCurveTo(bx - s*8, by + s*8, bx - s*10, by + s*18);
-            ctx.lineTo(bx - s*2, by + s*18);
-            ctx.quadraticCurveTo(bx, by + s*8, bx + s*2, by + s*6);
-            ctx.closePath(); ctx.fill();
-            // Cloak highlight
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            ctx.beginPath();
-            ctx.moveTo(bx - s*5, by - s*2);
-            ctx.quadraticCurveTo(bx - s*6, by + s*4, bx - s*7, by + s*10);
-            ctx.lineTo(bx - s*5, by + s*10);
-            ctx.quadraticCurveTo(bx - s*4, by + s*4, bx - s*3, by);
-            ctx.closePath(); ctx.fill();
-            // Belt
-            ctx.fillStyle = '#6b4c30';
-            ctx.fillRect(bx - s*8, by + s*3, s*16, s*2.5);
-            ctx.fillStyle = 'rgba(255,255,255,0.1)';
-            ctx.fillRect(bx - s*8, by + s*3, s*16, s*1);
-            // Hair behind
-            ctx.fillStyle = '#4a2d18';
-            ctx.beginPath(); ctx.ellipse(bx - s*6, by - s*2, s*2, s*6, 0.1, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.ellipse(bx + s*6, by - s*2, s*2, s*6, -0.1, 0, Math.PI*2); ctx.fill();
-            // Head
-            ctx.fillStyle = '#c49565';
-            ctx.beginPath(); ctx.arc(bx, by - s*8, s*9, 0, Math.PI*2); ctx.fill();
-            // Head shading
-            ctx.fillStyle = 'rgba(0,0,0,0.08)';
-            ctx.beginPath(); ctx.arc(bx + s*2, by - s*7, s*8, 0, Math.PI*2); ctx.fill();
-            // Hair
-            ctx.fillStyle = '#4a2d18';
-            ctx.beginPath(); ctx.arc(bx, by - s*9, s*9.5, Math.PI*0.85, Math.PI*2.15); ctx.fill();
-            // Beard
-            ctx.beginPath(); ctx.ellipse(bx, by - s*1, s*3.5, s*3, 0, 0, Math.PI); ctx.fill();
-            // Eyes
-            ctx.fillStyle = '#2a1a0a';
-            ctx.beginPath(); ctx.arc(bx - s*3.5, by - s*9, s*1.3, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(bx + s*3.5, by - s*9, s*1.3, 0, Math.PI*2); ctx.fill();
-            // Eye highlights
-            ctx.fillStyle = 'rgba(255,255,255,0.4)';
-            ctx.beginPath(); ctx.arc(bx - s*3, by - s*9.5, s*0.5, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(bx + s*4, by - s*9.5, s*0.5, 0, Math.PI*2); ctx.fill();
-            // Mouth
-            ctx.strokeStyle = '#8b5e3c'; ctx.lineWidth = Math.max(1, s*0.8);
-            ctx.beginPath(); ctx.arc(bx, by - s*4.5, s*2, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
-            // Arms
-            ctx.strokeStyle = '#c49565'; ctx.lineWidth = Math.max(1.5, s*2.2); ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(bx - s*6, by + s*2); ctx.lineTo(bx - s*12, by + s*8);
-            ctx.moveTo(bx + s*6, by + s*2); ctx.lineTo(bx + s*12, by + s*8);
-            ctx.stroke();
-            // Hands
-            ctx.fillStyle = '#c49565';
-            ctx.beginPath(); ctx.arc(bx - s*12, by + s*8, s*2, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(bx + s*12, by + s*8, s*2, 0, Math.PI*2); ctx.fill();
-            // Sandals
-            ctx.fillStyle = '#6b4c30';
-            ctx.beginPath(); ctx.ellipse(bx - s*5, by + s*18, s*4, s*1.8, 0, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.ellipse(bx + s*5, by + s*18, s*4, s*1.8, 0, 0, Math.PI*2); ctx.fill();
-        }
-
-        // ── Main draw ──
-        function draw() {
-            if (!stonePattern) createStonePattern();
-            if (!floorPattern) createFloorPattern();
-
-            // Floor
-            ctx.fillStyle = floorPattern || '#e8dcc8';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Glowing trail
-            for (var ti = 0; ti < trailCells.length; ti++) {
-                var tc = trailCells[ti];
-                var age = Math.min(1, (time - tc.t) * 0.02);
-                var alpha = 0.12 + age * 0.08;
-                var fa = fogAlpha(tc.x, tc.y);
-                if (fa < 0.1) continue;
-                var tGrad = ctx.createRadialGradient(
-                    tc.x * cell + cell/2, tc.y * cell + cell/2, 0,
-                    tc.x * cell + cell/2, tc.y * cell + cell/2, cell * 0.7
-                );
-                tGrad.addColorStop(0, 'rgba(123, 63, 192,' + (alpha * fa) + ')');
-                tGrad.addColorStop(1, 'rgba(123, 63, 192, 0)');
-                ctx.fillStyle = tGrad;
-                ctx.fillRect(tc.x * cell, tc.y * cell, cell, cell);
-            }
-
-            // Walls with 3D stone effect
-            ctx.lineCap = 'square';
-            for (var y2 = 0; y2 < rows; y2++) {
-                for (var x2 = 0; x2 < cols; x2++) {
-                    var fa2 = fogAlpha(x2, y2);
-                    if (fa2 < 0.1) continue;
-                    ctx.globalAlpha = fa2;
-                    var px = x2 * cell, py = y2 * cell;
-                    var w = grid[y2][x2].walls;
-                    if (w.top) drawWallSegment(px, py, px + cell, py);
-                    if (w.right) drawWallSegment(px + cell, py, px + cell, py + cell);
-                    if (w.bottom) drawWallSegment(px, py + cell, px + cell, py + cell);
-                    if (w.left) drawWallSegment(px, py, px, py + cell);
-                    ctx.globalAlpha = 1;
-                }
-            }
-
-
-            // Cross at start
-            ctx.save();
-            var crossAlpha = fogAlpha(0, 0);
-            ctx.globalAlpha = crossAlpha;
-            if (!(playerX === 0 && playerY === 0)) drawCross(time * 0.02);
-            ctx.restore();
-
-            // Tomb at exit
-            ctx.save();
-            var tombAlpha = fogAlpha(cols-1, rows-1);
-            ctx.globalAlpha = tombAlpha;
-            drawTomb(time * 0.02);
-            ctx.restore();
-
-            // Dust particles
-            ctx.save();
-            for (var pi = 0; pi < particles.length; pi++) {
-                var pp = particles[pi];
-                var pfa = fogAlpha(pp.x / cell, pp.y / cell);
-                ctx.globalAlpha = pp.life * 0.3 * pfa;
-                ctx.fillStyle = '#d4c4a0';
-                ctx.beginPath(); ctx.arc(pp.x, pp.y, pp.size, 0, Math.PI*2); ctx.fill();
-            }
-            ctx.restore();
-
-            // Jesus (smooth position)
-            var jx = drawX * cell + cell / 2, jy = drawY * cell + cell / 2;
-            drawJesus(jx, jy);
-
-            // Win celebration overlay + particles
-            if (won) {
-                var winAge = (time - wonTime) * 0.015;
-                var overlayAlpha = Math.min(0.15, winAge * 0.05);
-                ctx.fillStyle = 'rgba(255, 215, 80,' + overlayAlpha + ')';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                // Win particles
-                ctx.save();
-                for (var wi = winParticles.length - 1; wi >= 0; wi--) {
-                    var wp = winParticles[wi];
-                    wp.x += wp.vx; wp.y += wp.vy; wp.vy += 0.03; wp.life -= wp.decay;
-                    if (wp.life <= 0) { winParticles.splice(wi, 1); continue; }
-                    ctx.globalAlpha = wp.life;
-                    ctx.fillStyle = wp.color;
-                    ctx.beginPath(); ctx.arc(wp.x, wp.y, wp.size * wp.life, 0, Math.PI*2); ctx.fill();
-                }
-                ctx.restore();
-            }
-        }
-
-        // ── Game loop (60fps) ──
-        function gameLoop() {
-            time++;
-            // Smooth lerp player position
-            drawX += (targetX - drawX) * 0.25;
-            drawY += (targetY - drawY) * 0.25;
-            // Snap when close
-            if (Math.abs(drawX - targetX) < 0.01) drawX = targetX;
-            if (Math.abs(drawY - targetY) < 0.01) drawY = targetY;
-
-            spawnDust();
-            updateParticles();
-            draw();
-            animFrame = requestAnimationFrame(gameLoop);
-        }
-
-        function tryMove(dx, dy) {
-            if (won) return;
-            var c = grid[playerY][playerX];
-            var moved = false;
-            if (dx === 0 && dy === -1 && !c.walls.top) { playerY--; moved = true; }
-            else if (dx === 1 && dy === 0 && !c.walls.right) { playerX++; moved = true; }
-            else if (dx === 0 && dy === 1 && !c.walls.bottom) { playerY++; moved = true; }
-            else if (dx === -1 && dy === 0 && !c.walls.left) { playerX--; moved = true; }
-            if (!moved) return;
-            targetX = playerX; targetY = playerY;
-            grid[playerY][playerX].visited = true;
-            trailCells.push({x: playerX, y: playerY, t: time});
-            if (playerX === cols - 1 && playerY === rows - 1) {
-                won = true; wonTime = time;
-                statusEl.textContent = 'He is Risen!';
-                spawnWinBurst();
-            }
-        }
-
-        // Keyboard
-        document.addEventListener('keydown', function(e) {
-            if (!document.getElementById('mazeCanvas')) return;
-            var rect = canvas.getBoundingClientRect();
-            if (rect.bottom < 0 || rect.top > window.innerHeight) return;
-            switch (e.key) {
-                case 'ArrowUp': case 'w': case 'W': tryMove(0, -1); e.preventDefault(); break;
-                case 'ArrowRight': case 'd': case 'D': tryMove(1, 0); e.preventDefault(); break;
-                case 'ArrowDown': case 's': case 'S': tryMove(0, 1); e.preventDefault(); break;
-                case 'ArrowLeft': case 'a': case 'A': tryMove(-1, 0); e.preventDefault(); break;
-            }
-        });
-
-        // Drag controls
-        var dragging = false;
-        function pointerToCell(e) {
-            var rect = canvas.getBoundingClientRect();
-            var scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
-            var cX = e.touches ? e.touches[0].clientX : e.clientX;
-            var cY = e.touches ? e.touches[0].clientY : e.clientY;
-            return {
-                x: Math.max(0, Math.min(cols-1, Math.floor((cX - rect.left) * scaleX / cell))),
-                y: Math.max(0, Math.min(rows-1, Math.floor((cY - rect.top) * scaleY / cell)))
-            };
-        }
-        function moveToward(tx, ty) {
-            if (won) return;
-            var dx = tx - playerX, dy = ty - playerY;
-            if (dx === 0 && dy === 0) return;
-            var moves = [];
-            if (Math.abs(dx) >= Math.abs(dy)) {
-                if (dx > 0) moves.push([1,0,'right']); if (dx < 0) moves.push([-1,0,'left']);
-                if (dy > 0) moves.push([0,1,'bottom']); if (dy < 0) moves.push([0,-1,'top']);
-            } else {
-                if (dy > 0) moves.push([0,1,'bottom']); if (dy < 0) moves.push([0,-1,'top']);
-                if (dx > 0) moves.push([1,0,'right']); if (dx < 0) moves.push([-1,0,'left']);
-            }
-            for (var i = 0; i < moves.length; i++) {
-                if (!grid[playerY][playerX].walls[moves[i][2]]) {
-                    tryMove(moves[i][0], moves[i][1]);
-                    return;
-                }
-            }
-        }
-        function onPointerDown(e) { if (won) return; e.preventDefault(); dragging = true; moveToward(pointerToCell(e).x, pointerToCell(e).y); }
-        function onPointerMove(e) { if (!dragging || won) return; e.preventDefault(); moveToward(pointerToCell(e).x, pointerToCell(e).y); }
-        function onPointerUp() { dragging = false; }
-
-        canvas.addEventListener('mousedown', onPointerDown);
-        canvas.addEventListener('mousemove', onPointerMove);
-        document.addEventListener('mouseup', onPointerUp);
-        canvas.addEventListener('touchstart', onPointerDown, { passive: false });
-        canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-        document.addEventListener('touchend', onPointerUp);
-
-        if (newBtn) newBtn.addEventListener('click', generate);
-        generate();
-    }
 
 })();

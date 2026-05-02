@@ -118,10 +118,24 @@ def get_live_news():
     return _news_cache["national"], _news_cache["sports"]
 
 
+_PARTY_PHOTOS_DIR = os.path.join(os.path.dirname(__file__), "static", "images", "party_photos")
+_PARTY_HERO = "IMG_7482_20260423_200454-wm.jpg"
+
+
+def _list_party_photos():
+    """Return all party photo paths (relative to /static/images/), excluding the hero."""
+    if not os.path.isdir(_PARTY_PHOTOS_DIR):
+        return []
+    files = sorted(
+        f for f in os.listdir(_PARTY_PHOTOS_DIR)
+        if f.lower().endswith((".jpg", ".jpeg", ".png")) and f != _PARTY_HERO
+    )
+    return [f"party_photos/{f}" for f in files]
+
+
 NEWSLETTER = {
-    "month": "April",
+    "month": "May",
     "year": 2026,
-    "carousel_count": 25,
     "volume": "LXXVII",
     "issue": 4,
     "location": "North Carolina \u2022 South Carolina \u2022 Georgia",
@@ -137,152 +151,212 @@ NEWSLETTER = {
         "headshot": "ben.png",
         "dateline": "GOLDSBORO, N.C.",
         "content": [
-            "As we come to the close of March and wrap up the first quarter in just a few days, I want to take a moment to say thank you for the hard work, perseverance, and determination each of you has shown.",
-            "What a difference a month can make. The weather has improved, business has picked up, and we\u2019ve seen strong momentum begin to build across the company. Sales have increased, and it looks like we are going to come collectively very close to hitting our charge goals for the quarter. That is a tremendous accomplishment, especially considering that not long ago it seemed nearly impossible. Great work, team.",
-            "This is a great reminder that progress often comes after persistence. When conditions are tough, it can be easy to get discouraged or to focus on everything working against us. But this month has shown what can happen when a team keeps pushing, stays focused, and refuses to let temporary challenges define the outcome.",
-            "For the devotional thought this month, I want to share a lesson from Caleb in Numbers. This fits perfectly with the challenges we\u2019ve faced this quarter. When others saw obstacles and reasons why something could not be done, Caleb responded with faith, confidence, and a different spirit. He said, \u201cLet us go up at once and take possession... for we are well able to overcome it.\u201d That mindset stands out. The difference was not in the challenge itself, but in the attitude toward it.",
-            "That is a powerful message and reminds us of a fundamental truth: Attitude matters. A positive, faith-filled attitude does not ignore challenges, but it does help us face them with courage, confidence, and determination. It helps us lead better, work better, and encourage those around us. As we head into April and the beginning of the second quarter, let\u2019s be intentional about bringing a positive attitude to our jobs, our teams, and our customers each day. Positivity is contagious, and when each of us shows up ready to encourage others and focus on solutions, it makes anything possible!",
-            "I\u2019m proud of the way this team has responded this month. Let\u2019s finish the quarter strong and carry this momentum forward into a great spring season. As Easter approaches, I hope you and your family have a wonderful Easter and take time to remember the hope we have and the gift we have been given through Jesus\u2019 sacrifice for us.",
-            "Thank you for all you do.",
+            "We closed out Q1 in a strong position, especially considering how tough January and February were. That did not happen by accident. It came from grit, discipline, and a team that knows how to execute when conditions are not ideal.",
+            "We carried that momentum straight into April. Our backlog has been strong, and it is showing up in the numbers. We have sold roughly 2.00 for every 1.00 of charges. That is how you build a pipeline that fuels the future. Charges came in a little below goal, but still ahead of last April, so we are moving in the right direction with real traction.",
+            "Take a step back for a moment. This is how winning organizations operate. They stack wins. They build backlog. They stay disciplined on execution. Q2 is shaping up well because of what you are doing right now. Keep pushing. Great work, team!",
+            "For this month\u2019s SPIRIT focus, I want to share something that stuck with me from a sermon I heard over Easter from the Gospel of Luke 24:13 to 35, the road to Emmaus. Two disciples were walking away from Jerusalem on resurrection day. They were discouraged, confused, and trying to process everything that had just happened. Then Jesus comes alongside them, but they do not recognize Him at first. He walks with them, talks with them, and reminds them of what had been said all along. He meets them right where they are and also challenges their lack of faith.",
+            "Here is what stands out to me. He met them while they were moving. They were not sitting still. They were walking, talking, trying to figure things out, and that is when He showed up.",
+            "After they realized who He was, they immediately turned around and went seven miles back to Jerusalem to share the news. That is renewed purpose. That is clarity. That is action.",
+            "There are two takeaways here that apply directly to us. First, the Lord meets us where we are, but we have to be open to Him. If we are looking, listening, and willing to let Him in, He will guide us and renew us. Second, action matters. When we move forward, especially with prayerful direction, we put ourselves in position to be led. Clarity often comes after we step out, not before.",
+            "That is a powerful way to think about both life and work. We do not wait for perfect conditions. We move with purpose, stay grounded in our values, and trust the direction will become clear as we go. Let\u2019s carry that mindset into May. Stay focused. Stay safe. Take care of each other. Keep building something we are proud of, one linear foot at a time.",
         ],
-        "pull_quote": "Progress often comes after persistence. This month has shown what can happen when a team keeps pushing, stays focused, and refuses to let temporary challenges define the outcome.",
+        "pull_quote": "He met them while they were moving. They were not sitting still. They were walking, talking, trying to figure things out, and that is when He showed up.",
+    },
+
+    "company_party": {
+        "eyebrow": "Company Party — April 23, 2026",
+        "title": "An Evening Together",
+        "main_photo": "party_photos/" + _PARTY_HERO,
+        "main_photo_alt": "Six teammates from SFC Goldsboro at the company party photo booth",
+        "intro": [
+            "On Thursday, April 23, the Seegars family came together for an evening of food, fellowship, and celebration. Once an annual tradition, our company party now comes around every other year — and the wait makes it that much sweeter."
+        ],
+        "gallery": _list_party_photos(),
     },
 
     "hr_corner": {
-        "title": "The Value of Your Company-Paid Life Insurance Benefit",
-        "author": "Veronica Aycock",
-        "author_title": "Exec. Vice President",
-        "headshot": "veronica.png",
-        "phone": "919-739-7510",
-        "email": "veronica@seegarsfence.com",
+        "title": "Q1 2026 Awards",
+        "author": "Bobby Batchelor",
+        "author_title": "COO",
+        "headshot": "bobby.png",
         "dateline": "GOLDSBORO, N.C.",
         "content": [
-            "At our company, we are committed to supporting not only you, but also the people who matter most in your life. One of the ways we do this is by providing a company-paid life insurance policy of $25,000 for every employee at no cost to you.",
-            "While it may not be something you think about every day, this benefit plays an important role in protecting your loved ones financially in the event of the unexpected. Life insurance can help ease the burden of expenses such as funeral costs, outstanding debts, or everyday living needs during a difficult time."
+            "The first quarter of 2026 was quite surprising \u2014 enthusiasm was low in the beginning, but the quarter shaped up to deliver. Both sales percentage KPIs exceeded goal, allowing us to generate a substantial backlog. Our charges came in close to goal and outpaced Q1 2025.",
+            "In the end, several of our branches exceeded their goal (note that we now have 13 branches since Cary and Durham have rolled up into Raleigh), and a healthy share of our estimators exceeded their goal as well. Our net promoter score remained strong. We have so much to be thankful for and are blessed to roll into 2026 with this kind of momentum.",
+            "Now let\u2019s recognize our high achievers for Q1. Please take a moment to congratulate them for their great work."
         ],
         "sections": [
             {
-                "heading": "Why Keeping Your Beneficiary Updated Matters",
+                "heading": "Quad Club",
+                "subheading": "Obtaining a 4.0+ Profit Ratio for the quarter",
                 "content": [
-                    "Having life insurance is only part of the equation\u2014keeping your beneficiary information current is just as important.",
-                    "Your beneficiary is the person (or people) who will receive the benefit from your policy. If this information is outdated, it could result in delays, complications, or even the benefit being paid to someone you no longer intend."
+                    "This group will receive a bonus on top of P4P, provided they meet all the criteria for the bonus. Their names will also go into a hat for a nice surprise at the annual company party."
+                ],
+                "value_label": "Ratio",
+                "show_rank": True,
+                "awards": [
+                    {"rank": 1,  "name": "Thomas Lashford", "location": "Spartanburg",  "value": "35.19"},
+                    {"rank": 2,  "name": "Tony Smith",      "location": "Raleigh",      "value": "12.98"},
+                    {"rank": 3,  "name": "Evan Corson",     "location": "Columbia",     "value": "11.01"},
+                    {"rank": 4,  "name": "Alec Pittman",    "location": "Greensboro",   "value": "9.27"},
+                    {"rank": 5,  "name": "Blue Francis",    "location": "Jacksonville", "value": "5.59"},
+                    {"rank": 6,  "name": "Michael Winford", "location": "Columbia",     "value": "4.65"},
+                    {"rank": 7,  "name": "Dusty Tant",      "location": "Rocky Mount",  "value": "4.56"},
+                    {"rank": 8,  "name": "Ken Manning",     "location": "Raleigh",      "value": "4.22"},
+                    {"rank": 9,  "name": "Scottie Sumner",  "location": "Greensboro",   "value": "4.22"},
+                    {"rank": 10, "name": "Gary Norwood",    "location": "Fayetteville", "value": "4.02"},
                 ]
             },
             {
-                "heading": "When Should You Review Your Beneficiary?",
-                "content": ["It\u2019s a good idea to review and update your beneficiary anytime you experience a major life change, such as:"],
-                "bullets": [
-                    "Marriage or divorce",
-                    "Birth or adoption of a child",
-                    "Death of a previously named beneficiary",
-                    "Significant changes in your personal relationships"
+                "heading": "35X Club",
+                "subheading": "Obtaining a 3.5+ Profit Ratio for the quarter",
+                "content": [
+                    "This group will receive a bonus on top of P4P, provided they meet all the criteria for the bonus. Each recipient\u2019s name will also be entered into a drawing."
                 ],
-                "after": "Even if you haven\u2019t had a major life event recently, reviewing your information once a year is a smart habit."
+                "value_label": "Ratio",
+                "awards": [
+                    {"name": "Joe Marks",    "location": "Rocky Mount", "value": "3.98"},
+                    {"name": "Josh Doughty", "location": "Greenville",  "value": "3.80"},
+                    {"name": "Jeremy Moore", "location": "Raleigh",     "value": "3.70"},
+                ]
             },
             {
-                "heading": "Take a Few Minutes Today",
+                "heading": "Neal Seegars \u2018MVP\u2019 Award",
+                "subheading": "Highest Percent-to-Goal for the quarter",
                 "content": [
-                    "Updating your beneficiary is typically a quick and simple process, but it makes a lasting impact. Taking a few minutes now ensures that your benefit will go exactly where you intend, providing peace of mind for you and security for your loved ones. To review your beneficiary choice, log into <a href='https://employeenavigator.com'>employeenavigator.com</a>.",
-                    "If you have questions about your life insurance benefit or need help updating your beneficiary, please reach out to me."
+                    "Congratulations to <strong>Emily Atella</strong> in New Hanover! Emily is invited to attend Fence Tech in Phoenix, enjoying a weekend on Seegars Fence of New Hanover while attending classes and brushing up on new products in the industry. This award also places Emily\u2019s name in the drawing held at our annual company party."
+                ],
+                "value_label": "% to Goal",
+                "awards": [
+                    {"name": "Emily Atella", "location": "New Hanover", "value": "243%"},
+                ]
+            },
+            {
+                "heading": "125 Club Award",
+                "subheading": "Crews with production rates at or above 125%",
+                "content": [
+                    "Each eligible crew has its name entered into a drawing at the company party for the annual prize. The winning crew receives a bonus and an SFC gift pack. The crew must still be with the company, and the helpers associated with the crew must have worked with the foreman for the majority of the quarter in which they became eligible to receive the bonus."
+                ],
+                "value_label": "Production",
+                "awards": [
+                    {"name": "Johnny Worthington", "location": "Wayne",        "value": "146%"},
+                    {"name": "Sam Vines",          "location": "Fayetteville", "value": "134%"},
+                    {"name": "Caleb Blood",        "location": "Rocky Mount",  "value": "132%", "crew": ["Weeks Worley"]},
+                    {"name": "Devin Wagner",       "location": "Wayne",        "value": "129%"},
+                    {"name": "Larry Johnston",     "location": "Rocky Mount",  "value": "129%", "crew": ["Zack Richardson", "Matthew Denton"]},
+                    {"name": "Jordan Bailey",      "location": "Wayne",        "value": "126%"},
                 ]
             }
         ]
     },
 
     "safety": {
-        "title": "Basic First Aid Guidelines",
+        "eyebrow": "Toolbox Topics \u2014 General Safety",
+        "title": "Cuts and Burns",
         "author": "Chanda Best",
         "author_title": "Safety Manager",
         "headshot": "chanda.png",
         "image": "first_aid.svg",
+        "intro": [
+            "Nicks, cuts, scratches, and burns \u2014 minor injuries that can happen to any one of us, no matter how careful we are. They are easy to ignore, but it is worth remembering that skin is a vital organ. Not only is it the largest organ in the body, it also keeps the good stuff in and the bad stuff out.",
+            "So what do you do when you get a minor injury? If you are like many of us, you realize a doctor\u2019s visit is not necessary and try to treat the injury yourself. How do you know when to seek professional treatment? And how do you treat injuries that do not require a doctor\u2019s visit?"
+        ],
         "sections": [
             {
-                "heading": "Before First Aid Is Required",
+                "heading": "Cuts",
+                "intro_paragraphs": ["Cuts require immediate professional attention if:"],
                 "entries": [
-                    "Ensure you know where the first-aid kit is kept on site, or in your vehicle.",
-                    "Know who the first aiders, emergency first aiders and appointed persons are.",
-                    "If you use potentially dangerous tools or machinery, or are working in a small group away from the main site, keep a first-aid kit with you.",
-                    "Know how to contact the emergency services\u2014 Call 911, Call Manager! Do not wait until an emergency to go looking for this information."
+                    "There is severe bleeding, especially arterial wounds, which literally pump blood from the body.",
+                    "It is a puncture wound, such as one caused by a rusty nail or animal bite \u2014 these will require a tetanus booster shot.",
+                    "The cut is more than one half inch long and one quarter inch deep, which will require stitches."
                 ],
-                "numbered": True
+                "numbered": False,
+                "outro_paragraphs": [
+                    "To treat any cut, first stop the bleeding and then treat to prevent infection. Place a sterile gauze (or, if you do not have any gauze, a clean cloth) over the wound and hold it until the bleeding stops. Apply pressure continuously. If the gauze or cloth soaks through, simply place another cloth over the first and resume the pressure. When the bleeding has stopped, wash the cut with soap and water and apply a clean dressing. If the bleeding does not stop, get professional treatment.",
+                    "After the cut is clean, look for any foreign objects in the wound and remove them. If you do not, a serious infection may set in. To keep the wound clean while it heals, you can cover it with a bandage \u2014 but remember the bandage will need attention too. Change it twice daily and use an antibiotic cream to prevent further infection. Keep in mind that wounds exposed to air heal faster, but it is also important to keep a wound clean and dry to prevent infection.",
+                    "Treatment for a scrape is the same, except you do not have to worry about stopping blood flow, as there is very little."
+                ]
             },
             {
-                "heading": "Discovering an Emergency",
-                "entries": [
-                    "Call or send someone for medical help.",
-                    "Ensure your own safety before you approach the casualty, then, if it is safe to do so remove any hazards from around the injured person.",
-                    "Do not move the injured person, unless they are in immediate danger.",
-                    "Stay with the injured person and give reassurance until help arrives.",
-                    "Do not give drinks or food to the injured person."
+                "heading": "Burns",
+                "intro_paragraphs": [
+                    "Burns are classified as first, second, or third degree. A first degree burn causes redness. Blistering is caused by a second degree burn. Charred, blackened, or blanched skin are signs of a third degree burn. Burns can be caused by heat (thermal burns) or by contact with chemicals.",
+                    "Seek professional medical treatment for:"
                 ],
-                "numbered": False
-            },
-            {
-                "heading": "Basic First Aid May Save a Life",
                 "entries": [
-                    "Do you know how to resuscitate and start the heart? Who is CPR Certified near you?",
-                    "Do you know how to stop major bleeding? Where are the supplies?",
-                    "Do you know how to treat scalds, burns and shock? Where are the supplies?"
+                    "All third degree burns.",
+                    "Second degree burns involving more than one fifth of the body, or any burn affecting the face, hands, feet, or genitalia."
                 ],
-                "numbered": True
+                "numbered": False,
+                "outro_paragraphs": [
+                    "First aid treatment for a burn focuses on relief of pain, prevention of infection, and treatment or prevention of shock. If a burn begins to blister, cool it by placing your hand or foot in cold, still (not running) water. For other parts of the body, use an ice pack. Gently clean the burn and cover the area with a sterile, non-stick gauze. Change the dressing twice a day. Never puncture a blister \u2014 this just opens the door for infection. Never use butter, oils, or petroleum jelly on burns.",
+                    "If the burn is due to chemical exposure, flush the burned area with running water for at least 15 minutes. While you flush, remove any contaminated clothing, especially clothing in the area of the burn. Check the first aid instructions for the chemical, which can be found on the container and/or the Material Safety Data Sheet (MSDS), and treat as specified. Cover the burn with a clean dressing and call a doctor.",
+                    "If a third degree burn is involved, get professional medical treatment quickly. Call an ambulance first. While awaiting professional help, make sure any fire is out and/or remove the victim from the burn source. <strong>Do not remove any clothing or apply any dressings.</strong> Treat for shock and make sure the victim is still breathing."
+                ]
             }
         ],
-        "closing": "Know where the first aid kits, CPR masks, and who is trained! This could save a life!"
+        "closing": "Use common sense in all situations. Maintain a well-stocked first aid kit and be familiar with first aid procedures. Being knowledgeable and prepared may be the smartest first step of all."
     },
 
     "employee_spotlight": {
         "title": "Employee Spotlight",
-        "name": "Avery Bailey",
-        "location": "Seegars Fence Company \u2014 Goldsboro, NC",
-        "photos": ["Employee_spotlight/avery_baliey1.png"],
+        "name": "Caleb Blood",
+        "location": "Seegars Fence Company \u2014 Rocky Mount, NC",
+        "photos": ["Employee_spotlight/caleb.jpg"],
         "qa": [
-            {"q": "How long have you been working at Seegars?", "a": "June will be 13 years"},
-            {"q": "What\u2019s your job position?", "a": "Sales & Product Support for North State Products"},
-            {"q": "Favorite movie or show?", "a": "Any Equalizer Movie"},
-            {"q": "Favorite food?", "a": "Shepherds Pie"},
-            {"q": "Cake or pie, and what kind?", "a": "German Chocolate Cake"},
-            {"q": "Dream vacation spot?", "a": "Fishing in Mexico"},
-            {"q": "First thing you\u2019d do if you won the lottery?", "a": "New Boat"},
-            {"q": "Go-to weekend activity?", "a": "Fishing / Card Shows"},
-            {"q": "Favorite way to relax after work?", "a": "Having dinner with Colleen"},
-            {"q": "What\u2019s your current daily average screen time on your mobile phone?", "a": "2 hours 37 minutes"},
-            {"q": "One thing most people at work don\u2019t know about you?", "a": "I enjoy playing the drums (I\u2019m not very good)"},
+            {"q": "How long have you been working at Seegars?", "a": "20 years"},
+            {"q": "What\u2019s your job position?", "a": ""},
+            {"q": "Favorite movie or show?", "a": ""},
+            {"q": "Favorite food?", "a": ""},
+            {"q": "Cake or pie, and what kind?", "a": ""},
+            {"q": "Dream vacation spot?", "a": ""},
+            {"q": "First thing you\u2019d do if you won the lottery?", "a": ""},
+            {"q": "Go-to weekend activity?", "a": ""},
+            {"q": "Favorite way to relax after work?", "a": ""},
+            {"q": "One thing most people at work don\u2019t know about you?", "a": ""},
         ]
     },
 
     "birthdays": [
-        {"name": "Tyler Crawford", "date": "April 10", "location": "Wayne Co."},
-        {"name": "Gary Mull Jr", "date": "April 11", "location": "Allison Fence Co."},
-        {"name": "Valerie Parker", "date": "April 11", "location": "Augusta"},
-        {"name": "Terry Sexton", "date": "April 15", "location": "Spartanburg"},
-        {"name": "Mario Valente Garcia", "date": "April 15", "location": "Raleigh"},
-        {"name": "Bryan Morris", "date": "April 17", "location": "Columbia"},
-        {"name": "Ricky Lee", "date": "April 18", "location": "Goldsboro"},
-        {"name": "Brandon Parker", "date": "April 18", "location": "Augusta"},
-        {"name": "Dustin Smith", "date": "April 18", "location": "Columbia"},
-        {"name": "Chanda Best", "date": "April 25", "location": "Goldsboro"},
-        {"name": "Jeremy Moore", "date": "April 26", "location": "Raleigh"},
-        {"name": "Jennifer Rouse", "date": "April 26", "location": "Raleigh"},
-        {"name": "Jossie Santiago Collazo", "date": "April 27", "location": "Fayetteville"},
-        {"name": "Bo Daughtry", "date": "April 29", "location": "Goldsboro"},
-        {"name": "Devin Wagner", "date": "April 30", "location": "Wayne Co."},
+        {"name": "James Stiller", "date": "May 1", "location": "Rocky Mount"},
+        {"name": "Omari Sweat", "date": "May 2", "location": "New Hanover"},
+        {"name": "Alexander Holland", "date": "May 6", "location": "Jacksonville"},
+        {"name": "Derek Schaffer", "date": "May 6", "location": "Raleigh"},
+        {"name": "Emily Atella", "date": "May 7", "location": "New Hanover"},
+        {"name": "Derrick Hansley", "date": "May 7", "location": "New Hanover"},
+        {"name": "Anthony Smith", "date": "May 7", "location": "Raleigh"},
+        {"name": "Martin Greathouse", "date": "May 8", "location": "Columbia"},
+        {"name": "Ryan Rouse", "date": "May 14", "location": "Newport"},
+        {"name": "Stephanie Wiggins", "date": "May 16", "location": "Goldsboro"},
+        {"name": "Caleb Bowen", "date": "May 17", "location": "Spartanburg"},
+        {"name": "Felipe Brito Cruz", "date": "May 18", "location": "Raleigh"},
+        {"name": "Lorenzo Quetzecua", "date": "May 18", "location": "Wayne Co."},
+        {"name": "Samuel Vines Jr", "date": "May 22", "location": "Fayetteville"},
+        {"name": "Cambria Richardson", "date": "May 24", "location": "Goldsboro"},
+        {"name": "Jarvis Grady", "date": "May 28", "location": "Goldsboro"},
     ],
 
     "anniversaries": [
-        {"name": "Keith Hefner", "years": 32, "location": "Jacksonville"},
-        {"name": "Terri Piercy", "years": 20, "location": "Allison Fence Co."},
-        {"name": "Charles Patterson", "years": 16, "location": "Spartanburg"},
-        {"name": "Christy Havens", "years": 11, "location": "Greensboro"},
-        {"name": "Michael Hicks", "years": 10, "location": "Columbia"},
-        {"name": "Joel Lopez Rosado", "years": 8, "location": "Fayetteville"},
-        {"name": "Noe Davalos Carrillo", "years": 6, "location": "Goldsboro"},
-        {"name": "Mark Humphreys", "years": 5, "location": "Goldsboro"},
-        {"name": "Kawaski Cobb", "years": 2, "location": "Jacksonville"},
-        {"name": "Mitchell Hankins", "years": 2, "location": "Columbia"},
-        {"name": "Edmond Zuravel", "years": 2, "location": "Goldsboro"},
-        {"name": "Maddox Miller", "years": 1, "location": "Jacksonville"},
-        {"name": "Christopher Parsons", "years": 1, "location": "Raleigh"},
-        {"name": "Nicholas Shupe", "years": 1, "location": "Jacksonville"},
+        {"name": "Jairo Romero", "years": 22, "location": "Greensboro"},
+        {"name": "Ashley Alford", "years": 21, "location": "Fayetteville"},
+        {"name": "Caleb Blood", "years": 20, "location": "Rocky Mount"},
+        {"name": "Jose Garcia", "years": 19, "location": "Goldsboro"},
+        {"name": "Dustin Smith", "years": 15, "location": "Columbia"},
+        {"name": "Terry Sexton", "years": 13, "location": "Spartanburg"},
+        {"name": "Larry Johnston", "years": 11, "location": "Rocky Mount"},
+        {"name": "Chanda Best", "years": 10, "location": "Goldsboro"},
+        {"name": "Cameron Freeman", "years": 8, "location": "Fayetteville"},
+        {"name": "Joshua Doughty", "years": 6, "location": "Greenville"},
+        {"name": "Bryan Holland", "years": 6, "location": "Jacksonville"},
+        {"name": "Ricky Lee", "years": 6, "location": "Goldsboro"},
+        {"name": "Emily Atella", "years": 4, "location": "New Hanover"},
+        {"name": "Alexis Wood", "years": 4, "location": "Allison Fence Co."},
+        {"name": "Jonn Blasingame", "years": 3, "location": "New Hanover"},
+        {"name": "Peter Zelaski", "years": 3, "location": "Greenville"},
+        {"name": "Anthony Hidalgo", "years": 2, "location": "Allison Fence Co."},
+        {"name": "Nicholas Filomio", "years": 1, "location": "Allison Fence Co."},
+        {"name": "Joe Marks", "years": 1, "location": "Rocky Mount"},
+        {"name": "Qwan Starks", "years": 1, "location": "Columbia"},
     ],
 
     "news_wire": {
@@ -298,11 +372,52 @@ NEWSLETTER = {
         ],
     },
 
+    "word_search": {
+        "title": "Word Search",
+        "subtitle": "Terms from this issue",
+        "grid": [
+            list("SZNRIROROAMKFI"),
+            list("RPAZUNSXOBLOOT"),
+            list("AATHGILTOPSBTC"),
+            list("GWLPARTYSESEEU"),
+            list("EAWARDSEIIMSAT"),
+            list("EIMFTBELACCHMS"),
+            list("SVPARCADEAFQKQ"),
+            list("UIOCELEBRATEVU"),
+            list("XRHANNIVERSARY"),
+            list("HTKPVPHWNKRTXU"),
+            list("BURNSYAMIUHBCY"),
+            list("QULFQYZGJJWJRL"),
+            list("FWWBIRTHDAYXOT"),
+            list("CTIRIPSDECNEFT"),
+        ],
+        "words": ["ANNIVERSARY", "ARCADE", "AWARDS", "BIRTHDAY", "BURNS", "CALEB", "CELEBRATE", "CUTS", "FENCE", "MAY", "PARTY", "SEEGARS", "SPIRIT", "SPOTLIGHT", "TEAM", "TOOLBOX", "TRIVIA"],
+        "solution": {
+            "ANNIVERSARY": [[8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10], [8, 11], [8, 12], [8, 13]],
+            "SPOTLIGHT": [[2, 10], [2, 9], [2, 8], [2, 7], [2, 6], [2, 5], [2, 4], [2, 3], [2, 2]],
+            "CELEBRATE": [[7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10], [7, 11]],
+            "BIRTHDAY": [[12, 3], [12, 4], [12, 5], [12, 6], [12, 7], [12, 8], [12, 9], [12, 10]],
+            "SEEGARS": [[6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0], [0, 0]],
+            "TOOLBOX": [[1, 13], [1, 12], [1, 11], [1, 10], [1, 9], [1, 8], [1, 7]],
+            "AWARDS": [[4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6]],
+            "ARCADE": [[6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8]],
+            "SPIRIT": [[13, 6], [13, 5], [13, 4], [13, 3], [13, 2], [13, 1]],
+            "TRIVIA": [[9, 1], [8, 1], [7, 1], [6, 1], [5, 1], [4, 1]],
+            "FENCE": [[13, 12], [13, 11], [13, 10], [13, 9], [13, 8]],
+            "PARTY": [[3, 3], [3, 4], [3, 5], [3, 6], [3, 7]],
+            "CALEB": [[5, 9], [5, 8], [5, 7], [5, 6], [5, 5]],
+            "BURNS": [[10, 0], [10, 1], [10, 2], [10, 3], [10, 4]],
+            "TEAM": [[2, 12], [3, 12], [4, 12], [5, 12]],
+            "CUTS": [[2, 13], [3, 13], [4, 13], [5, 13]],
+            "MAY": [[10, 7], [10, 6], [10, 5]],
+        },
+    },
+
     "contributors": [
         {"name": "Ben Seegars", "title": "CEO", "section": "A Letter From Ben"},
-        {"name": "Veronica Aycock", "title": "Exec. Vice President", "section": "HR Corner"},
+        {"name": "Bobby Batchelor", "title": "COO", "section": "Q1 2026 Awards"},
         {"name": "Chanda Best", "title": "Safety Manager", "section": "Safety First"},
-        {"name": "Avery Bailey", "title": "Employee Spotlight", "section": "Employee Spotlight"},
+        {"name": "Caleb Blood", "title": "Employee Spotlight", "section": "Employee Spotlight"},
     ],
 
     "resources": [

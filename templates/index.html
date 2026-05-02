@@ -20,8 +20,6 @@
         <a href="{{ n.rightnow_media.url }}" aria-label="RightNow Media" class="social-link" target="_blank" rel="noopener">
             <img src="{{ url_for('static', filename='images/rightnowicon.png') }}" alt="RightNow Media" class="social-icon-img">
         </a>
-        <span class="reader-count-sep">&bull;</span>
-        <span class="reader-count">{{ reader_count }} Monthly {{ "Reader" if reader_count == 1 else "Readers" }}</span>
     </div>
     <div class="masthead-nav"></div>
 </div>
@@ -30,9 +28,15 @@
 
 <div class="skybox-banner">
     <a href="#employee-spotlight" class="skybox-link">
-        <span class="skybox-label">NEW</span>
+        <span class="skybox-label">Spotlight</span>
         <span class="skybox-sep">|</span>
-        <span class="skybox-text">Employee Spotlight &mdash; You voted, we listened! Meet <strong>Avery Bailey</strong> in this month&rsquo;s featured section</span>
+        <span class="skybox-text">This month&rsquo;s featured employee is <strong>coming soon</strong> &mdash; stay tuned!</span>
+    </a>
+    <span class="skybox-divider">&#10087;</span>
+    <a href="#arcade" class="skybox-link">
+        <span class="skybox-label">New</span>
+        <span class="skybox-sep">|</span>
+        <span class="skybox-text">Play the <strong>Seegars Party Arcade</strong> &mdash; right inside the newsletter</span>
     </a>
 </div>
 
@@ -86,7 +90,47 @@
             </div>
         </article>
 
-        {# Divider between CEO Letter and HR Corner #}
+        {# Divider between CEO Letter and Company Party #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# COMPANY PARTY — Left column #}
+        <article class="sidebar-article party-article section-fade" id="company-party" data-gallery="company-party">
+            {% if n.company_party.eyebrow %}
+                <p class="party-eyebrow">{{ n.company_party.eyebrow }}</p>
+            {% endif %}
+            <h3 class="headline headline-feature">{{ n.company_party.title }}</h3>
+            <div class="article-body">
+                <div class="party-hero">
+                    <img src="{{ url_for('static', filename='images/' + n.company_party.main_photo) }}"
+                         alt="{{ n.company_party.main_photo_alt or n.company_party.title }}"
+                         class="clickable-image" tabindex="0" role="button">
+                    <p class="party-hero-caption">SFC Goldsboro &mdash; Melissa Wells, Dana Mull, Amy Lancaster, Stephanie Wiggins, Laurie Hill, Veronica Aycock</p>
+                </div>
+                {% for paragraph in n.company_party.intro %}
+                    <p>{{ paragraph|safe }}</p>
+                {% endfor %}
+                {% if n.company_party.gallery %}
+                    <div class="party-gallery-wrap">
+                        <div class="party-gallery">
+                            {% for photo in n.company_party.gallery %}
+                                <img src="{{ url_for('static', filename='images/' + photo) }}"
+                                     alt="Seegars company party photo"
+                                     class="clickable-image" tabindex="0" role="button"
+                                     loading="lazy">
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="party-gallery-toggle" aria-expanded="false">
+                            <span class="party-gallery-toggle-more">Show all {{ n.company_party.gallery|length + 1 }} photos</span>
+                            <span class="party-gallery-toggle-less">Show fewer</span>
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </article>
+
+        {# Divider between Company Party and HR Corner #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
@@ -119,6 +163,9 @@
 
                 {% for section in n.hr_corner.sections %}
                     <h4 class="hr-section-heading">{{ section.heading }}</h4>
+                    {% if section.subheading %}
+                        <p class="hr-section-subheading">{{ section.subheading }}</p>
+                    {% endif %}
                     {% if section.content %}
                         {% for paragraph in section.content %}
                             <p>{{ paragraph|safe }}</p>
@@ -130,6 +177,33 @@
                                 <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
+                    {% endif %}
+                    {% if section.awards %}
+                        <table class="awards-table">
+                            <thead>
+                                <tr>
+                                    {% if section.show_rank %}<th class="awards-rank">#</th>{% endif %}
+                                    <th class="awards-name">Recipient</th>
+                                    <th class="awards-location">Location</th>
+                                    <th class="awards-value">{{ section.value_label or '' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in section.awards %}
+                                    <tr>
+                                        {% if section.show_rank %}<td class="awards-rank">{{ a.rank }}</td>{% endif %}
+                                        <td class="awards-name">
+                                            <strong>{{ a.name }}</strong>
+                                            {% if a.crew %}
+                                                <div class="awards-crew">with {{ a.crew|join(', ') }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="awards-location">{{ a.location }}</td>
+                                        <td class="awards-value">{{ a.value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endif %}
                     {% if section.after %}
                         <p>{{ section.after }}</p>
@@ -144,22 +218,27 @@
         </div>
 
         {# EMPLOYEE SPOTLIGHT — Left column #}
-        <article class="spotlight-article section-fade" id="employee-spotlight">
+        <article class="spotlight-article spotlight-coming-soon section-fade" id="employee-spotlight">
             <h3 class="headline headline-feature">{{ n.employee_spotlight.title }}</h3>
-            <h4 class="spotlight-name">{{ n.employee_spotlight.name }}</h4>
-            <p class="spotlight-location">{{ n.employee_spotlight.location }}</p>
-            {% for photo in n.employee_spotlight.photos %}
-            <div class="spotlight-photo-wrapper">
-                <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo clickable-image" tabindex="0" role="button">
-            </div>
-            {% endfor %}
-            <div class="spotlight-qa">
-                {% for item in n.employee_spotlight.qa %}
-                <div class="spotlight-qa-item">
-                    <span class="spotlight-question">{{ item.q }}</span>
-                    <span class="spotlight-answer">{{ item.a }}</span>
+            <div class="spotlight-blur-wrap">
+                <div class="spotlight-blur-content" aria-hidden="true">
+                    <h4 class="spotlight-name">{{ n.employee_spotlight.name }}</h4>
+                    <p class="spotlight-location">{{ n.employee_spotlight.location }}</p>
+                    {% for photo in n.employee_spotlight.photos %}
+                    <div class="spotlight-photo-wrapper">
+                        <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo">
+                    </div>
+                    {% endfor %}
+                    <div class="spotlight-qa">
+                        {% for item in n.employee_spotlight.qa %}
+                        <div class="spotlight-qa-item">
+                            <span class="spotlight-question">{{ item.q }}</span>
+                            <span class="spotlight-answer">{{ item.a }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
-                {% endfor %}
+                <div class="spotlight-coming-stamp" role="img" aria-label="Coming Soon">Coming Soon!</div>
             </div>
         </article>
 
@@ -181,6 +260,9 @@
             <div class="safety-image safety-image-inline safety-image-top">
                 <img src="{{ url_for('static', filename='images/' + n.safety.image) }}" alt="{{ n.safety.title }}">
             </div>
+            {% if n.safety.eyebrow %}
+                <p class="safety-eyebrow">{{ n.safety.eyebrow }}</p>
+            {% endif %}
             <h3 class="headline headline-sidebar">{{ n.safety.title }}</h3>
             <div class="article-meta">
                 <span class="byline">By <strong>{{ n.safety.author }}</strong>, <span class="byline-title">{{ n.safety.author_title }}</span></span>
@@ -188,21 +270,43 @@
             <div class="article-body">
                 <img src="{{ url_for('static', filename='images/' + n.safety.headshot) }}" alt="{{ n.safety.author }}" class="contributor-headshot">
 
+                {% if n.safety.intro %}
+                    {% for paragraph in n.safety.intro %}
+                        {% if loop.first %}
+                            <p>&mdash; {{ paragraph|safe }}</p>
+                        {% else %}
+                            <p>{{ paragraph|safe }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
                 {% if n.safety.sections is defined %}
                     {% for section in n.safety.sections %}
                         <h4 class="safety-subheading">{{ section.heading }}</h4>
-                        {% if section.numbered %}
-                        <ol class="safety-requirements">
-                        {% else %}
-                        <ul class="safety-requirements">
-                        {% endif %}
-                            {% for item in section.entries %}
-                                <li>{{ item }}</li>
+                        {% if section.intro_paragraphs %}
+                            {% for paragraph in section.intro_paragraphs %}
+                                <p>{{ paragraph|safe }}</p>
                             {% endfor %}
-                        {% if section.numbered %}
-                        </ol>
-                        {% else %}
-                        </ul>
+                        {% endif %}
+                        {% if section.entries %}
+                            {% if section.numbered %}
+                            <ol class="safety-requirements">
+                            {% else %}
+                            <ul class="safety-requirements">
+                            {% endif %}
+                                {% for item in section.entries %}
+                                    <li>{{ item|safe }}</li>
+                                {% endfor %}
+                            {% if section.numbered %}
+                            </ol>
+                            {% else %}
+                            </ul>
+                            {% endif %}
+                        {% endif %}
+                        {% if section.outro_paragraphs %}
+                            {% for paragraph in section.outro_paragraphs %}
+                                <p>{{ paragraph|safe }}</p>
+                            {% endfor %}
                         {% endif %}
                     {% endfor %}
                 {% else %}
@@ -275,6 +379,35 @@
             </div>
 
         </div>
+
+        {# WORD SEARCH PUZZLE #}
+        <div class="word-search-block section-fade" id="word-search">
+            <div class="word-search-header">
+                <h3 class="word-search-title">{{ n.word_search.title }}</h3>
+                <p class="word-search-subtitle">{{ n.word_search.subtitle }}</p>
+            </div>
+            <div class="word-search-grid"
+                 data-solution='{{ n.word_search.solution|tojson }}'
+                 data-cols="{{ n.word_search.grid[0]|length }}">
+                {% for row in n.word_search.grid %}
+                    {% for ch in row %}
+                        <span class="word-search-cell">{{ ch }}</span>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            <ul class="word-search-list">
+                {% for w in n.word_search.words %}
+                    <li class="word-search-word" data-word="{{ w }}">{{ w }}</li>
+                {% endfor %}
+            </ul>
+            <div class="word-search-actions">
+                <button type="button" class="word-search-toggle" aria-pressed="false">
+                    <span class="word-search-toggle-show">Show Solution</span>
+                    <span class="word-search-toggle-hide">Hide Solution</span>
+                </button>
+                <button type="button" class="word-search-clear">Clear</button>
+            </div>
+        </div>
     </aside>
 </section>
 
@@ -340,38 +473,6 @@
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
-{# ═══════════════════════ INSTALLATION SHOWCASE ═══════════════════════ #}
-<section class="install-showcase-section section-fade" id="install-showcase">
-    <div class="install-showcase-header">
-        <div class="install-showcase-rule"></div>
-        <h2 class="install-showcase-title">From the Field</h2>
-        <p class="install-showcase-subtitle">Recent Installation Highlights</p>
-        <div class="install-showcase-rule"></div>
-    </div>
-
-    <div class="install-carousel">
-        <button class="carousel-btn carousel-btn-prev" aria-label="Previous image">&#10094;</button>
-        <div class="carousel-track-wrapper">
-            <div class="carousel-track" id="carouselTrack">
-                {% for i in range(1, n.carousel_count + 1) %}
-                <div class="carousel-slide">
-                    <div class="carousel-frame">
-                        <img src="{{ url_for('static', filename='images/installation_pics/' ~ i ~ '.png') }}" alt="Installation photo {{ i }}" class="clickable-image" tabindex="0" role="button">
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        <button class="carousel-btn carousel-btn-next" aria-label="Next image">&#10095;</button>
-    </div>
-
-    <div class="carousel-dots" id="carouselDots"></div>
-</section>
-
-<div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-</div>
-
 {# ═══════════════════════ RESOURCES / CLASSIFIEDS ═══════════════════════ #}
 <section class="classifieds-section section-fade" id="resources">
     <div class="classifieds-header">
@@ -407,29 +508,38 @@
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
-{# ═══════════════════════ MAZE GAME ═══════════════════════ #}
-<section class="maze-section section-fade" id="maze-game">
-    <div class="maze-header">
-        <div class="maze-rule"></div>
-        <h2 class="maze-title">The Easter Journey</h2>
-        <p class="maze-subtitle">Guide Jesus from the Cross to the Empty Tomb</p>
-        <div class="maze-rule"></div>
+{# ═══════════════════════ PARTY ARCADE GAME ═══════════════════════ #}
+<section class="arcade-section section-fade" id="arcade">
+    <div class="arcade-header">
+        <div class="arcade-rule"></div>
+        <h2 class="arcade-title">Seegars Fence Company Party Arcade</h2>
+        <p class="arcade-subtitle">Step Right Up &bull; Play Now</p>
+        <div class="arcade-rule"></div>
     </div>
-    <div class="maze-wrapper">
-        <canvas id="mazeCanvas"></canvas>
+    <p class="arcade-callout">Play right here on the page &mdash; or open in a new tab if you'd rather have it on its own.</p>
+    <div class="arcade-frame">
+        <iframe
+            src="https://fence-party-arcade-visual-prototype.onrender.com/"
+            title="Seegars Fence Company Party Arcade"
+            loading="lazy"
+            allow="autoplay; fullscreen; gamepad"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
-    <div class="maze-controls">
-        <button class="maze-btn" id="mazeNewBtn">New Maze</button>
-        <span class="maze-status" id="mazeStatus">Find the exit!</span>
+    <div class="arcade-controls">
+        <a class="arcade-btn" href="https://fence-party-arcade-visual-prototype.onrender.com/" target="_blank" rel="noopener">Open in New Tab &rarr;</a>
+        <span class="arcade-hint">Optional &mdash; the game runs right above. The first load may take a moment to wake up.</span>
     </div>
 </section>
+
+<div class="section-divider">
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+</div>
 
 {# ═══════════════════════ FOOTER ═══════════════════════ #}
 <footer class="newspaper-footer">
     <div class="footer-rule footer-rule-thick"></div>
     <div class="footer-content">
         <div class="footer-copy">&copy; {{ n.year }} Seegars Fence Company. All rights reserved.</div>
-        <a href="#top" class="footer-top-link">&uarr; Return to Top</a>
     </div>
     <div class="footer-rule footer-rule-thin"></div>
 </footer>
