@@ -310,7 +310,7 @@ NEWSLETTER = {
             {"q": "Favorite food?", "a": "Ribeye steak with asparagus and red skin mashed potatoes"},
             {"q": "Cake or pie, and what kind?", "a": "Homemade cheesecake with graham cracker crust"},
             {"q": "Dream vacation spot?", "a": "Somewhere in the mountains, maybe the Swiss Alps"},
-            {"q": "First thing you\u2019d do if you won the lottery?", "a": "If gifted a large sum of money, the first thing I would do is tithe. The fun thing would be finding time to ski a lot more."},
+            {"q": "First thing you\u2019d do if you won the lottery?", "a": "If gifted a large sum of money, the first thing I would do is tithe. The fun thing I would do for myself would be finding time to ski a lot more."},
             {"q": "Go-to weekend activity?", "a": "Cut grass"},
             {"q": "Favorite way to relax after work?", "a": "Jog, read a book, watch a ballgame"},
             {"q": "One thing most people at work don\u2019t know about you?", "a": "I\u2019m actually a pretty nice guy."},
