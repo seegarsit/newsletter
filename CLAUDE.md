@@ -13,8 +13,8 @@ Run these steps at the beginning of every session before doing any work:
    ```bash
    git fetch origin
    ```
-   - Compare local `dev` against `origin/dev` using `git diff origin/dev -- .` (content-level, not just filenames).
-   - If there are incoming changes, pull them: `git pull origin dev`.
+   - Compare local `dev` against `origin/main` using `git diff origin/main -- .` (content-level, not just filenames).
+   - If there are incoming changes on `origin/main`, fast-forward `dev`: `git pull origin main`.
    - Report sync status to the user.
 
 2. **Start the local dev server:**
@@ -54,16 +54,16 @@ Run these steps at the beginning of every session before doing any work:
 - **Login overlay** — session-based auth gate (shown when not logged in)
 
 ## Branch Workflow
-- Work on `dev` branch.
-- PRs merge `dev` → `main` via GitHub API (gh CLI not installed).
-- `main` deploys to Render automatically.
-- Local `main` branch is diverged — do NOT merge locally. Always use the API.
+- Work on `dev` branch locally.
+- Push directly to `origin/main` to deploy: `git push origin dev:main`.
+- No PRs, no merges via API — `dev` is normally a fast-forward of `origin/main`, so a direct push works.
+- `origin/main` deploys to Render automatically.
+- Local `main` branch is diverged from `origin/main` — never use the local `main` branch. Always push from `dev` using the `dev:main` refspec.
 
 ## Deploying Changes
-1. Commit on `dev` and push: `git push origin dev`
-2. Create PR via GitHub API using stored git credentials
-3. Merge PR via GitHub API (`PUT /repos/seegarsit/newsletter/pulls/{number}/merge`)
-4. Render auto-deploys from `main`
+1. Commit on `dev`.
+2. Push straight to main: `git push origin dev:main`
+3. Render auto-deploys from `origin/main`.
 
 ## Environment Notes
 - Python path: `"/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe"` (note the space — must be quoted)
