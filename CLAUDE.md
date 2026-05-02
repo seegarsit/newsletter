@@ -68,5 +68,6 @@ Run these steps at the beginning of every session before doing any work:
 ## Environment Notes
 - Python path: `"/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe"` (note the space — must be quoted)
 - `python` and `pip` are NOT on the shell PATH — always use the full path
-- `gh` CLI is not installed — use GitHub REST API with `curl` and git credentials instead
-- Git credentials are stored and accessible via `git credential fill`
+- `gh` CLI is installed at `/c/Program Files/GitHub CLI/gh.exe` (not on shell PATH — use the full path)
+- `gh` is also wired in as the git credential helper for github.com, so `git push` uses whichever account is active in `gh auth status`
+- Two accounts are logged into `gh`: `seegarsit` (owns the repo, must be the active account for pushes) and `dbwells1216` (read-only, do not use for pushes). Switch with `gh auth switch -u seegarsit` if pushes get a 403.
