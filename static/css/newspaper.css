@@ -3777,6 +3777,194 @@ a:hover {
     -webkit-backdrop-filter: blur(12px);
 }
 
+/* Split light/dark INSIDE the login card — pure site colors, no red/blue tint */
+.login-card-split {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    background: transparent;
+}
+
+.login-card-bg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.login-card-bg-light { left: 0;  background: #F5F6F4; }
+.login-card-bg-dark  { right: 0; background: #161A16; }
+
+.login-card-saber {
+    position: absolute;
+    top: 6%;
+    bottom: 6%;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.7) 10%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 0.7) 90%,
+        transparent 100%);
+    box-shadow:
+        0 0 5px rgba(255, 255, 255, 0.9),
+        0 0 12px rgba(255, 255, 255, 0.55),
+        -6px 0 20px rgba(120, 195, 255, 0.6),
+         6px 0 20px rgba(255, 70, 70, 0.6),
+        -14px 0 44px rgba(120, 195, 255, 0.25),
+         14px 0 44px rgba(255, 70, 70, 0.25);
+}
+
+.login-card-inner {
+    position: relative;
+    z-index: 2;
+    padding: 26px 28px 22px;
+    text-align: center;
+}
+
+/* ─── Split text across the centerline (dark on light half, light on dark half) ─── */
+.login-card-split .login-title,
+.login-card-split .login-company,
+.login-card-split .login-subtitle,
+.login-card-split .login-footer,
+.login-card-split .login-side-pick legend,
+.login-card-split .login-field label {
+    background: linear-gradient(to right, #231F20 50%, #E5E8E2 50%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+            color: transparent;
+    text-shadow: none;
+}
+
+.login-card-split .login-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid;
+    border-image: linear-gradient(to right, rgba(35, 31, 32, 0.35) 50%, rgba(229, 232, 226, 0.35) 50%) 1;
+}
+
+.login-card-split .login-footer {
+    margin-top: 16px;
+    padding-top: 10px;
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, rgba(35, 31, 32, 0.35) 50%, rgba(229, 232, 226, 0.35) 50%) 1;
+    font-size: 0.6rem;
+}
+
+.login-card-split .login-title { font-size: 2rem; margin-bottom: 4px; }
+.login-card-split .login-company { margin-bottom: 2px; }
+.login-card-split .login-subtitle { font-size: 0.65rem; }
+
+/* ─── Input fields: split background with side-themed text ─── */
+.login-card-split .login-field { margin-bottom: 12px; }
+
+.login-card-split .login-field input {
+    background: linear-gradient(to right, #FCFCFB 50%, #161A16 50%);
+    border: 1px solid;
+    border-image: linear-gradient(to right, #DEE0D9 50%, #2F352F 50%) 1;
+    color: #008752;
+    font-weight: 600;
+    caret-color: #008752;
+    padding: 8px 12px;
+}
+
+.login-card-split .login-field input:focus {
+    border-image: linear-gradient(to right, #008752 50%, #00B86E 50%) 1;
+    box-shadow: none;
+}
+
+.login-card-split .login-field input::placeholder { color: rgba(150, 150, 150, 0.6); }
+
+/* ─── Side picker — naked LEGO with a glowing saber halo behind ─── */
+.login-card-split .login-side-pick {
+    margin: 16px 0 14px;
+}
+
+.login-card-split .login-side-pick legend {
+    margin-bottom: 8px;
+    font-size: 0.62rem;
+}
+
+.login-card-split .login-side-option-card {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    padding: 6px 4px 4px;
+    position: relative;
+    transition: transform 0.15s ease;
+}
+
+.login-card-split .login-side-option-card::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    z-index: 0;
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+
+.login-card-split .login-side-option-light .login-side-option-card::before {
+    background: radial-gradient(circle,
+        rgba(120, 195, 255, 0.55) 0%,
+        rgba(120, 195, 255, 0.28) 40%,
+        transparent 75%);
+}
+
+.login-card-split .login-side-option-dark .login-side-option-card::before {
+    background: radial-gradient(circle,
+        rgba(255, 70, 70, 0.55) 0%,
+        rgba(255, 70, 70, 0.28) 40%,
+        transparent 75%);
+}
+
+.login-card-split .login-side-option-card img {
+    position: relative;
+    z-index: 1;
+    height: 64px;
+    width: auto;
+}
+
+.login-card-split .login-side-option-light .login-side-option-label { color: #231F20; }
+.login-card-split .login-side-option-dark  .login-side-option-label { color: #E5E8E2; }
+
+/* Hover / selected — bigger, brighter halo, no card chrome */
+.login-card-split .login-side-option:hover .login-side-option-card { transform: translateY(-2px); }
+
+.login-card-split .login-side-option-light input:checked + .login-side-option-card::before {
+    width: 96px; height: 96px;
+    background: radial-gradient(circle,
+        rgba(120, 195, 255, 0.85) 0%,
+        rgba(120, 195, 255, 0.45) 40%,
+        transparent 78%);
+}
+
+.login-card-split .login-side-option-dark input:checked + .login-side-option-card::before {
+    width: 96px; height: 96px;
+    background: radial-gradient(circle,
+        rgba(255, 70, 70, 0.85) 0%,
+        rgba(255, 70, 70, 0.45) 40%,
+        transparent 78%);
+}
+
+.login-card-split .login-side-option input:focus-visible + .login-side-option-card {
+    outline: 2px solid var(--seegars-green);
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+.login-card-split .login-btn { padding: 9px; margin-top: 6px; }
+
 .login-card {
     width: 100%;
     max-width: 420px;
@@ -3787,6 +3975,118 @@ a:hover {
         0 2px 12px rgba(0, 0, 0, 0.15);
     padding: 48px 40px 36px;
     text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Side picker — two big radio-card options */
+.login-side-pick {
+    margin: 22px 0 18px;
+    padding: 0;
+    border: none;
+}
+
+.login-side-pick legend {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--ink-faded);
+    margin-bottom: 12px;
+    padding: 0;
+}
+
+.login-side-pick {
+    display: block;
+}
+
+.login-side-pick-row {
+    display: flex;
+    gap: 12px;
+}
+
+.login-side-option {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    display: block;
+}
+
+.login-side-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.login-side-option-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 10px 10px;
+    border: 2px solid var(--sepia-rule);
+    border-radius: 6px;
+    background: var(--paper-bg);
+    transition: border-color 0.2s ease, box-shadow 0.25s ease, transform 0.15s ease, background 0.2s ease;
+}
+
+.login-side-option-card img {
+    height: 56px;
+    width: auto;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+}
+
+.login-side-option-label {
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+}
+
+.login-side-option:hover .login-side-option-card {
+    transform: translateY(-2px);
+}
+
+.login-side-option-light:hover .login-side-option-card {
+    border-color: rgba(120, 195, 255, 0.7);
+}
+
+.login-side-option-dark:hover .login-side-option-card {
+    border-color: rgba(255, 70, 70, 0.7);
+}
+
+.login-side-option input:checked + .login-side-option-card {
+    transform: translateY(-2px);
+}
+
+.login-side-option-light input:checked + .login-side-option-card {
+    border-color: #66c5ff;
+    background: rgba(120, 195, 255, 0.10);
+    box-shadow:
+        0 0 0 1px #66c5ff,
+        0 0 14px rgba(120, 195, 255, 0.5),
+        0 0 32px rgba(120, 195, 255, 0.28);
+}
+
+.login-side-option-dark input:checked + .login-side-option-card {
+    border-color: #ff4444;
+    background: rgba(255, 70, 70, 0.10);
+    box-shadow:
+        0 0 0 1px #ff4444,
+        0 0 14px rgba(255, 70, 70, 0.5),
+        0 0 32px rgba(255, 70, 70, 0.28);
+}
+
+.login-side-option input:focus-visible + .login-side-option-card {
+    outline: 2px solid var(--seegars-green);
+    outline-offset: 3px;
 }
 
 .login-header {

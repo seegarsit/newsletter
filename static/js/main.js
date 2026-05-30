@@ -1058,6 +1058,21 @@
         });
     }
 
+    /* ─── Login side-picker → persist theme choice ─── */
+    function initLoginSidePick() {
+        var radios = document.querySelectorAll('.login-side-pick input[name="side"]');
+        if (!radios.length) return;
+        radios.forEach(function (r) {
+            r.addEventListener('change', function () {
+                if (r.checked && (r.value === 'light' || r.value === 'dark')) {
+                    try { localStorage.setItem('fenceLineTheme', r.value); } catch (e) {}
+                    /* Reflect choice immediately on the login page itself */
+                    document.documentElement.setAttribute('data-theme', r.value);
+                }
+            });
+        });
+    }
+
     /* ─── Theme toggle (light / dark) ─── */
     function initThemeToggle() {
         var btn = document.getElementById('themeToggle');
@@ -1081,6 +1096,7 @@
 
     /* ─── Initialize ─── */
     document.addEventListener('DOMContentLoaded', function () {
+        initLoginSidePick();
         initThemeToggle();
         initScrollFade();
         initSmoothScroll();

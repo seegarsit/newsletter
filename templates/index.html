@@ -658,30 +658,57 @@
 {% if not logged_in %}
 {# ═══════════════════════ LOGIN OVERLAY ═══════════════════════ #}
 <div class="login-overlay">
-    <div class="login-card">
-        <div class="login-header">
-            <p class="login-company">Seegars Fence Company</p>
-            <h1 class="login-title">The Fence Line</h1>
-            <p class="login-subtitle">{{ n.month }} {{ n.year }} &mdash; Team Newsletter</p>
+    <div class="login-card login-card-split">
+        <div class="login-card-bg login-card-bg-light" aria-hidden="true"></div>
+        <div class="login-card-bg login-card-bg-dark" aria-hidden="true"></div>
+        <div class="login-card-saber" aria-hidden="true"></div>
+
+        <div class="login-card-inner">
+            <div class="login-header">
+                <p class="login-company">Seegars Fence Company</p>
+                <h1 class="login-title">The Fence Line</h1>
+                <p class="login-subtitle">{{ n.month }} {{ n.year }} &mdash; Team Newsletter</p>
+            </div>
+
+            {% if login_error %}
+            <div class="login-error">{{ login_error }}</div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="login-form">
+                <div class="login-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+                </div>
+                <div class="login-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required>
+                </div>
+
+                <fieldset class="login-side-pick">
+                    <legend>Choose a side</legend>
+                    <div class="login-side-pick-row">
+                        <label class="login-side-option login-side-option-light">
+                            <input type="radio" name="side" value="light" required>
+                            <span class="login-side-option-card">
+                                <img src="{{ url_for('static', filename='images/light.png') }}" alt="">
+                                <span class="login-side-option-label">Light Side</span>
+                            </span>
+                        </label>
+                        <label class="login-side-option login-side-option-dark">
+                            <input type="radio" name="side" value="dark" required>
+                            <span class="login-side-option-card">
+                                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="">
+                                <span class="login-side-option-label">Dark Side</span>
+                            </span>
+                        </label>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="login-btn">Enter</button>
+            </form>
+
+            <p class="login-footer">Internal use only &mdash; Seegars Fence Co. Est. {{ n.established }}</p>
         </div>
-
-        {% if login_error %}
-        <div class="login-error">{{ login_error }}</div>
-        {% endif %}
-
-        <form method="POST" action="{{ url_for('login') }}" class="login-form">
-            <div class="login-field">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" autocomplete="username" required autofocus>
-            </div>
-            <div class="login-field">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" autocomplete="current-password" required>
-            </div>
-            <button type="submit" class="login-btn">Sign In</button>
-        </form>
-
-        <p class="login-footer">Internal use only &mdash; Seegars Fence Co. Est. {{ n.established }}</p>
     </div>
 </div>
 {% endif %}
