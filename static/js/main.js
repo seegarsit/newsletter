@@ -558,17 +558,26 @@
         var btn = document.querySelector('.word-search-toggle');
         if (!grid || !btn) return;
 
+        var block = grid.closest('.word-search-block');
         var cols = parseInt(grid.getAttribute('data-cols'), 10) || 14;
         var solution = {};
         try { solution = JSON.parse(grid.getAttribute('data-solution') || '{}'); } catch (e) {}
         var cells = Array.prototype.slice.call(grid.querySelectorAll('.word-search-cell'));
         var wordEls = Array.prototype.slice.call(document.querySelectorAll('.word-search-word'));
+        var totalWords = Object.keys(solution).length;
         var foundWords = {};
+        var foundCount = 0;
+        var celebrated = false;
 
         function cellAt(r, c) { return cells[r * cols + c]; }
         function rcOf(cell) {
             var i = cells.indexOf(cell);
             return [Math.floor(i / cols), i % cols];
+        }
+        function cellFromPoint(x, y) {
+            var el = document.elementFromPoint(x, y);
+            var cell = el && el.closest && el.closest('.word-search-cell');
+            return (cell && grid.contains(cell)) ? cell : null;
         }
         function serialize(coords) {
             return coords.map(function (rc) { return rc[0] + ',' + rc[1]; }).join('|');
@@ -607,9 +616,16 @@
             });
         }
 
+        function vibrate(pattern) {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(pattern); } catch (_) {}
+            }
+        }
+
         function markWordFound(word) {
             if (foundWords[word]) return;
             foundWords[word] = true;
+            foundCount++;
             solution[word].forEach(function (rc) {
                 var el = cellAt(rc[0], rc[1]);
                 if (el) el.classList.add('user-found');
@@ -617,20 +633,30 @@
             wordEls.forEach(function (el) {
                 if (el.getAttribute('data-word') === word) el.classList.add('found');
             });
+            vibrate(40);
+            if (foundCount === totalWords && !celebrated) {
+                celebrated = true;
+                celebrate();
+            }
         }
 
         var dragging = false;
+        var activePointerId = null;
         var startRC = null;
         var lastSelection = [];
 
         function onPointerDown(e) {
-            var cell = e.target.closest('.word-search-cell');
+            /* Ignore secondary pointers (e.g. second finger during a drag) */
+            if (dragging) return;
+            var cell = cellFromPoint(e.clientX, e.clientY);
             if (!cell) return;
             e.preventDefault();
-            /* Release any implicit pointer capture so pointermove can hit other cells */
-            if (e.pointerId !== undefined && e.target.releasePointerCapture) {
-                try { e.target.releasePointerCapture(e.pointerId); } catch (_) {}
+            /* Capture on the grid so pointermove/up keep firing even if the
+               finger leaves a cell or drifts off the grid edge. */
+            if (e.pointerId !== undefined && grid.setPointerCapture) {
+                try { grid.setPointerCapture(e.pointerId); } catch (_) {}
             }
+            activePointerId = e.pointerId;
             dragging = true;
             startRC = rcOf(cell);
             lastSelection = [startRC.slice()];
@@ -639,9 +665,9 @@
 
         function onPointerMove(e) {
             if (!dragging) return;
-            var el = document.elementFromPoint(e.clientX, e.clientY);
-            var cell = el && el.closest && el.closest('.word-search-cell');
-            if (!cell || !grid.contains(cell)) return;
+            if (activePointerId !== null && e.pointerId !== activePointerId) return;
+            var cell = cellFromPoint(e.clientX, e.clientY);
+            if (!cell) return;
             var rc = rcOf(cell);
             var line = lineCells(startRC[0], startRC[1], rc[0], rc[1]);
             if (line) {
@@ -650,9 +676,14 @@
             }
         }
 
-        function onPointerUp() {
+        function onPointerUp(e) {
             if (!dragging) return;
+            if (activePointerId !== null && e && e.pointerId !== undefined && e.pointerId !== activePointerId) return;
             dragging = false;
+            if (e && e.pointerId !== undefined && grid.releasePointerCapture) {
+                try { grid.releasePointerCapture(e.pointerId); } catch (_) {}
+            }
+            activePointerId = null;
             var key = serialize(lastSelection);
             var matched = sequenceToWord[key];
             clearSelecting();
@@ -662,9 +693,130 @@
         }
 
         grid.addEventListener('pointerdown', onPointerDown);
-        document.addEventListener('pointermove', onPointerMove);
+        grid.addEventListener('pointermove', onPointerMove);
+        grid.addEventListener('pointerup', onPointerUp);
+        grid.addEventListener('pointercancel', onPointerUp);
+        /* Safety net for pointer-capture quirks: still release on document up */
         document.addEventListener('pointerup', onPointerUp);
         document.addEventListener('pointercancel', onPointerUp);
+
+        /* ─── Completion celebration ─── */
+        function celebrate() {
+            vibrate([60, 40, 60, 40, 120]);
+            if (!block) return;
+            var overlay = document.createElement('div');
+            overlay.className = 'word-search-celebration';
+            overlay.setAttribute('role', 'status');
+            overlay.setAttribute('aria-live', 'polite');
+            overlay.innerHTML =
+                '<canvas class="word-search-celebration-canvas"></canvas>' +
+                '<div class="word-search-celebration-banner">' +
+                    '<div class="word-search-celebration-emoji" aria-hidden="true">🎉</div>' +
+                    '<div class="word-search-celebration-title">Congratulations!</div>' +
+                    '<div class="word-search-celebration-subtitle">You found every word.</div>' +
+                    '<button type="button" class="word-search-celebration-close" aria-label="Close">Nice!</button>' +
+                '</div>';
+            block.appendChild(overlay);
+            requestAnimationFrame(function () { overlay.classList.add('is-visible'); });
+
+            var canvas = overlay.querySelector('.word-search-celebration-canvas');
+            var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var stopFireworks = reduced ? function () {} : runCelebrationFireworks(canvas);
+
+            function close() {
+                overlay.classList.remove('is-visible');
+                stopFireworks();
+                setTimeout(function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 400);
+            }
+            overlay.querySelector('.word-search-celebration-close').addEventListener('click', close);
+            /* Auto-dismiss after a generous viewing window */
+            setTimeout(close, 6500);
+        }
+
+        function runCelebrationFireworks(canvas) {
+            var ctx = canvas.getContext('2d');
+            var particles = [];
+            var running = true;
+            var raf = null;
+            var colors = [
+                '#e74c3c', '#f39c12', '#2ecc71', '#3498db',
+                '#9b59b6', '#1abc9c', '#ffd93d', '#ff6b9d', '#008852'
+            ];
+
+            function size() {
+                var rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+            }
+            size();
+            window.addEventListener('resize', size);
+
+            function Particle(x, y, color) {
+                var angle = Math.random() * Math.PI * 2;
+                var speed = Math.random() * 4 + 1.5;
+                this.x = x; this.y = y;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.alpha = 1;
+                this.color = color;
+                this.r = Math.random() * 2.5 + 0.8;
+                this.decay = Math.random() * 0.012 + 0.008;
+            }
+            Particle.prototype.update = function () {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.04;
+                this.vx *= 0.99;
+                this.alpha -= this.decay;
+            };
+            Particle.prototype.draw = function () {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            };
+
+            function burst(x, y) {
+                var color = colors[Math.floor(Math.random() * colors.length)];
+                var n = 26 + Math.floor(Math.random() * 18);
+                for (var i = 0; i < n; i++) particles.push(new Particle(x, y, color));
+            }
+
+            function launch() {
+                var x = Math.random() * canvas.width * 0.8 + canvas.width * 0.1;
+                var y = Math.random() * canvas.height * 0.5 + canvas.height * 0.15;
+                burst(x, y);
+            }
+
+            function frame() {
+                if (!running) return;
+                raf = requestAnimationFrame(frame);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (var i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    if (particles[i].alpha <= 0) particles.splice(i, 1);
+                }
+            }
+
+            launch(); launch();
+            var iv = setInterval(function () {
+                if (!running) return;
+                launch();
+                if (Math.random() > 0.4) launch();
+            }, 700);
+            frame();
+
+            return function stop() {
+                running = false;
+                if (raf) cancelAnimationFrame(raf);
+                clearInterval(iv);
+                window.removeEventListener('resize', size);
+            };
+        }
 
         /* Show Solution toggle — adds .found to all cells/words; doesn't disturb user-found state */
         var shown = false;
@@ -700,6 +852,8 @@
         if (clearBtn) {
             clearBtn.addEventListener('click', function () {
                 foundWords = {};
+                foundCount = 0;
+                celebrated = false;
                 cells.forEach(function (c) {
                     c.classList.remove('user-found', 'selecting', 'solution-hint');
                 });
@@ -712,8 +866,13 @@
                     btn.setAttribute('aria-pressed', 'false');
                 }
                 dragging = false;
+                activePointerId = null;
                 lastSelection = [];
                 startRC = null;
+                if (block) {
+                    var existing = block.querySelector('.word-search-celebration');
+                    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+                }
             });
         }
     }
@@ -730,8 +889,199 @@
         });
     }
 
+    /* ─── Tech Talk: simulated Claude chat ─── */
+    function initTechChat() {
+        var chat = document.querySelector('.tech-talk-chat');
+        if (!chat) return;
+
+        var userMsg = chat.querySelector('.chat-message-user');
+        var claudeMsg = chat.querySelector('.chat-message-claude');
+        var typingEl = claudeMsg && claudeMsg.querySelector('.typing-indicator');
+        var responseEl = claudeMsg && claudeMsg.querySelector('.chat-response');
+        if (!userMsg || !claudeMsg || !typingEl || !responseEl) return;
+
+        var paragraphs = [];
+        try { paragraphs = JSON.parse(chat.getAttribute('data-response') || '[]'); } catch (e) {}
+        if (!paragraphs.length) return;
+
+        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var started = false;
+
+        function runChat() {
+            userMsg.classList.add('visible');
+            setTimeout(function () {
+                claudeMsg.classList.add('visible');
+                setTimeout(function () {
+                    typingEl.parentNode.removeChild(typingEl);
+                    if (reduced) {
+                        renderInstant(responseEl, paragraphs);
+                    } else {
+                        typeParagraphs(responseEl, paragraphs, 0);
+                    }
+                }, 1400);
+            }, 700);
+        }
+
+        function renderInstant(container, paras) {
+            for (var i = 0; i < paras.length; i++) {
+                var p = document.createElement('p');
+                p.textContent = paras[i];
+                container.appendChild(p);
+            }
+        }
+
+        function typeParagraphs(container, paras, idx) {
+            if (idx >= paras.length) {
+                var cursor = container.querySelector('.chat-cursor');
+                if (cursor) cursor.parentNode.removeChild(cursor);
+                return;
+            }
+            var p = document.createElement('p');
+            container.appendChild(p);
+
+            /* Attach a blinking cursor at the end of the current paragraph */
+            var cursor = container.querySelector('.chat-cursor');
+            if (!cursor) {
+                cursor = document.createElement('span');
+                cursor.className = 'chat-cursor';
+            }
+            p.appendChild(cursor);
+
+            var text = paras[idx];
+            var i = 0;
+            function step() {
+                if (i < text.length) {
+                    /* Insert each character before the cursor */
+                    cursor.insertAdjacentText('beforebegin', text.charAt(i));
+                    i++;
+                    setTimeout(step, 22 + Math.random() * 22);
+                } else {
+                    setTimeout(function () {
+                        typeParagraphs(container, paras, idx + 1);
+                    }, 260);
+                }
+            }
+            step();
+        }
+
+        if (!('IntersectionObserver' in window)) {
+            runChat();
+            return;
+        }
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting && !started) {
+                    started = true;
+                    runChat();
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.35 });
+        observer.observe(chat);
+    }
+
+    /* ─── Employee Spotlight: video + photo toggle ─── */
+    function initSpotlightMedia() {
+        var media = document.querySelector('.spotlight-media');
+        if (!media) return;
+
+        var tabs = Array.prototype.slice.call(media.querySelectorAll('.spotlight-media-tab'));
+        var panes = Array.prototype.slice.call(media.querySelectorAll('.spotlight-media-pane'));
+        var video = media.querySelector('.spotlight-video');
+        var videoWrap = media.querySelector('.spotlight-video-wrap');
+        var playOverlay = media.querySelector('.spotlight-play-overlay');
+        var posterTime = parseFloat(media.getAttribute('data-poster-time')) || 0;
+
+        if (video) {
+            function seekToPoster() {
+                try {
+                    var t = posterTime;
+                    if (video.duration && t > video.duration - 0.1) {
+                        t = Math.max(0, video.duration * 0.3);
+                    }
+                    video.currentTime = t;
+                } catch (e) {}
+            }
+            if (video.readyState >= 1) {
+                seekToPoster();
+            } else {
+                video.addEventListener('loadedmetadata', seekToPoster, { once: true });
+            }
+
+            function togglePlay() {
+                if (video.paused || video.ended) {
+                    var p = video.play();
+                    if (p && p.catch) p.catch(function () {});
+                } else {
+                    video.pause();
+                }
+            }
+
+            if (playOverlay) {
+                playOverlay.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    togglePlay();
+                });
+            }
+            /* Clicking the video itself also toggles play/pause */
+            video.addEventListener('click', togglePlay);
+
+            video.addEventListener('play', function () {
+                if (videoWrap) videoWrap.classList.add('is-playing');
+            });
+            video.addEventListener('pause', function () {
+                if (videoWrap) videoWrap.classList.remove('is-playing');
+            });
+            video.addEventListener('ended', function () {
+                if (videoWrap) videoWrap.classList.remove('is-playing');
+            });
+        }
+
+        function activate(target) {
+            tabs.forEach(function (t) {
+                var on = t.getAttribute('data-target') === target;
+                t.classList.toggle('is-active', on);
+                t.setAttribute('aria-selected', on ? 'true' : 'false');
+            });
+            panes.forEach(function (p) {
+                p.classList.toggle('is-active', p.getAttribute('data-pane') === target);
+            });
+            if (target !== 'video' && video) {
+                try { video.pause(); } catch (e) {}
+            }
+        }
+
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                activate(tab.getAttribute('data-target'));
+            });
+        });
+    }
+
+    /* ─── Theme toggle (light / dark) ─── */
+    function initThemeToggle() {
+        var btn = document.getElementById('themeToggle');
+        if (!btn) return;
+
+        function syncState() {
+            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+            btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+            btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+        }
+        syncState();
+
+        btn.addEventListener('click', function () {
+            var cur = document.documentElement.getAttribute('data-theme');
+            var next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            try { localStorage.setItem('fenceLineTheme', next); } catch (e) {}
+            syncState();
+        });
+    }
+
     /* ─── Initialize ─── */
     document.addEventListener('DOMContentLoaded', function () {
+        initThemeToggle();
         initScrollFade();
         initSmoothScroll();
         initLightbox();
@@ -743,6 +1093,8 @@
         initPoll();
         initPartyGallery();
         initWordSearch();
+        initTechChat();
+        initSpotlightMedia();
     });
 
 

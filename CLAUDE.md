@@ -19,9 +19,9 @@ Run these steps at the beginning of every session before doing any work:
 
 2. **Start the local dev server:**
    ```bash
-   "/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe" app.py
+   "/c/Users/BradWells/AppData/Local/Programs/Python/Python313/python.exe" app.py
    ```
-   - Run in background on port 5000.
+   - Run in background on port 5001 (set by `app.run(port=5001)` in `app.py`).
    - Confirm it's running before beginning work.
    - All changes should be reviewed locally before pushing.
 
@@ -66,7 +66,7 @@ Run these steps at the beginning of every session before doing any work:
 3. Render auto-deploys from `origin/main`.
 
 ## Environment Notes
-- Python path: `"/c/Users/Brad Wells/AppData/Local/Programs/Python/Python313/python.exe"` (note the space — must be quoted)
+- Python path: `"/c/Users/BradWells/AppData/Local/Programs/Python/Python313/python.exe"` (no space in folder name)
 - `python` and `pip` are NOT on the shell PATH — always use the full path
 - `gh` CLI is installed at `/c/Program Files/GitHub CLI/gh.exe` (not on shell PATH — use the full path)
 - `gh` is also wired in as the git credential helper for github.com, so `git push` uses whichever account is active in `gh auth status`

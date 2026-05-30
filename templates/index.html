@@ -21,7 +21,12 @@
             <img src="{{ url_for('static', filename='images/rightnowicon.png') }}" alt="RightNow Media" class="social-icon-img">
         </a>
     </div>
-    <div class="masthead-nav"></div>
+    <div class="masthead-nav">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+            <img src="{{ url_for('static', filename='images/dark.png') }}"  alt="" class="theme-toggle-img theme-toggle-img-todark"  aria-hidden="true">
+            <img src="{{ url_for('static', filename='images/light.png') }}" alt="" class="theme-toggle-img theme-toggle-img-tolight" aria-hidden="true">
+        </button>
+    </div>
 </div>
 
 {# ═══════════════════════ SKYBOX BANNER ═══════════════════════ #}
@@ -30,13 +35,7 @@
     <a href="#employee-spotlight" class="skybox-link">
         <span class="skybox-label">Spotlight</span>
         <span class="skybox-sep">|</span>
-        <span class="skybox-text">This month&rsquo;s featured employee is <strong>Caleb Blood</strong> &mdash; Rocky Mount</span>
-    </a>
-    <span class="skybox-divider">&#10087;</span>
-    <a href="#arcade" class="skybox-link">
-        <span class="skybox-label">New</span>
-        <span class="skybox-sep">|</span>
-        <span class="skybox-text">Play the <strong>Seegars Party Arcade</strong> &mdash; right inside the newsletter</span>
+        <span class="skybox-text">This month&rsquo;s featured employee is <strong>Chris Cook</strong> &mdash; Allison Fence Co.</span>
     </a>
 </div>
 
@@ -90,6 +89,7 @@
             </div>
         </article>
 
+        {% if n.company_party %}
         {# Divider between CEO Letter and Company Party #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
@@ -129,8 +129,9 @@
                 {% endif %}
             </div>
         </article>
+        {% endif %}
 
-        {# Divider between Company Party and HR Corner #}
+        {# Divider between CEO Letter (or Company Party) and HR Corner #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
@@ -223,11 +224,43 @@
             <div class="spotlight-content">
                 <h4 class="spotlight-name">{{ n.employee_spotlight.name }}</h4>
                 <p class="spotlight-location">{{ n.employee_spotlight.location }}</p>
+                {% if n.employee_spotlight.video %}
+                <div class="spotlight-media" data-poster-time="{{ n.employee_spotlight.video_poster_time or 0 }}">
+                    <div class="spotlight-media-tabs" role="tablist" aria-label="Spotlight media">
+                        <button type="button" class="spotlight-media-tab is-active" role="tab" data-target="video" aria-selected="true">
+                            <span aria-hidden="true">&#9658;</span> Video
+                        </button>
+                        <button type="button" class="spotlight-media-tab" role="tab" data-target="photo" aria-selected="false">
+                            <span aria-hidden="true">&#128247;</span> Photo
+                        </button>
+                    </div>
+                    <div class="spotlight-media-stage">
+                        <div class="spotlight-media-pane is-active" data-pane="video" role="tabpanel">
+                            <div class="spotlight-video-wrap">
+                                <video class="spotlight-video" preload="metadata" playsinline disablepictureinpicture>
+                                    <source src="{{ url_for('static', filename='images/' + n.employee_spotlight.video) }}" type="video/mp4">
+                                    Your browser doesn&rsquo;t support embedded video.
+                                </video>
+                                <button type="button" class="spotlight-play-overlay" aria-label="Play video"></button>
+                            </div>
+                        </div>
+                        <div class="spotlight-media-pane" data-pane="photo" role="tabpanel">
+                            {% for photo in n.employee_spotlight.photos %}
+                            <div class="spotlight-photo-wrapper">
+                                <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo">
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p class="spotlight-video-caption">Chris dreaming&hellip; video created with Gemini. &#128514;</p>
+                </div>
+                {% else %}
                 {% for photo in n.employee_spotlight.photos %}
                 <div class="spotlight-photo-wrapper">
                     <img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ n.employee_spotlight.name }}" class="spotlight-photo">
                 </div>
                 {% endfor %}
+                {% endif %}
                 <div class="spotlight-qa">
                     {% for item in n.employee_spotlight.qa %}
                     <div class="spotlight-qa-item">
@@ -238,6 +271,55 @@
                 </div>
             </div>
         </article>
+
+        {% if n.benefits_update %}
+        {# Divider between Employee Spotlight and Benefits Update #}
+        <div class="inner-article-divider">
+            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+        </div>
+
+        {# BENEFITS UPDATE — Left column #}
+        <article class="sidebar-article section-fade" id="benefits-update">
+            {% if n.benefits_update.eyebrow %}
+                <p class="benefits-eyebrow">{{ n.benefits_update.eyebrow }}</p>
+            {% endif %}
+            <h3 class="headline headline-feature">{{ n.benefits_update.title }}</h3>
+            <div class="article-meta">
+                <span class="byline">By <strong>{{ n.benefits_update.author }}</strong>, <span class="byline-title">{{ n.benefits_update.author_title }}</span></span>
+            </div>
+            <div class="article-body">
+                <img src="{{ url_for('static', filename='images/' + n.benefits_update.headshot) }}" alt="{{ n.benefits_update.author }}" class="contributor-headshot">
+                {% for paragraph in n.benefits_update.content %}
+                    {% if loop.first %}
+                        <p>&mdash; {{ paragraph|safe }}</p>
+                        {% if n.benefits_update.heads_up %}
+                            <div class="benefits-heads-up">
+                                <span class="benefits-heads-up-label">Heads Up</span>
+                                <span class="benefits-heads-up-text">{{ n.benefits_update.heads_up|safe }}</span>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p>{{ paragraph|safe }}</p>
+                    {% endif %}
+                {% endfor %}
+                {% for section in n.benefits_update.sections %}
+                    <h4 class="hr-section-heading">{{ section.heading }}</h4>
+                    {% if section.intro %}<p>{{ section.intro|safe }}</p>{% endif %}
+                    {% if section.bullets %}
+                        <ul class="hr-bullet-list">
+                            {% for item in section.bullets %}
+                                <li>{{ item|safe }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% if section.outro %}<p>{{ section.outro|safe }}</p>{% endif %}
+                {% endfor %}
+                {% if n.benefits_update.closing %}
+                    <p class="benefits-closing">{{ n.benefits_update.closing }}</p>
+                {% endif %}
+            </div>
+        </article>
+        {% endif %}
 
     </div>
 
@@ -254,8 +336,12 @@
 
         {# SAFETY FIRST — Right column #}
         <article class="safety-article section-fade" id="safety">
-            <div class="safety-image safety-image-inline safety-image-top">
-                <img src="{{ url_for('static', filename='images/' + n.safety.image) }}" alt="{{ n.safety.title }}">
+            <div class="safety-image safety-image-inline safety-image-top safety-image-mask"
+                 style="--safety-mask: url('{{ url_for('static', filename='images/' + n.safety.image) }}')"
+                 role="img" aria-label="{{ n.safety.title }}">
+                <img src="{{ url_for('static', filename='images/' + n.safety.image) }}" alt="" class="safety-image-sizer" aria-hidden="true">
+                <div class="safety-image-fill"></div>
+                <div class="safety-image-laser" aria-hidden="true"></div>
             </div>
             {% if n.safety.eyebrow %}
                 <p class="safety-eyebrow">{{ n.safety.eyebrow }}</p>
@@ -470,6 +556,58 @@
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
 
+{# ═══════════════════════ TECH TALK ═══════════════════════ #}
+{% if n.tech_talk %}
+<section class="tech-talk-section section-fade" id="tech-talk">
+    <div class="tech-talk-header">
+        <div class="tech-talk-rule"></div>
+        {% if n.tech_talk.eyebrow %}
+            <p class="tech-talk-eyebrow">{{ n.tech_talk.eyebrow }}</p>
+        {% endif %}
+        <h2 class="headline headline-feature">{{ n.tech_talk.title }}</h2>
+        <p class="tech-talk-byline">By <strong>{{ n.tech_talk.author }}</strong>, <span class="byline-title">{{ n.tech_talk.author_title }}</span></p>
+        <div class="tech-talk-rule"></div>
+    </div>
+
+    <div class="tech-talk-body">
+        <img src="{{ url_for('static', filename='images/' + n.tech_talk.headshot) }}" alt="{{ n.tech_talk.author }}" class="contributor-headshot">
+        {% for paragraph in n.tech_talk.intro %}
+            <p>{{ paragraph|safe }}</p>
+        {% endfor %}
+
+        <div class="tech-talk-chat" data-response='{{ n.tech_talk.chat.response_paragraphs|tojson }}'>
+            <div class="chat-message chat-message-user">
+                <img src="{{ url_for('static', filename='images/' + n.tech_talk.chat.user_avatar) }}"
+                     alt="{{ n.tech_talk.chat.user_label }}"
+                     class="chat-avatar chat-avatar-user">
+                <div class="chat-bubble">
+                    <p>{{ n.tech_talk.chat.prompt }}</p>
+                </div>
+            </div>
+            <div class="chat-message chat-message-claude">
+                <div class="chat-avatar chat-avatar-claude" aria-hidden="true"><span class="chat-avatar-mark">&#10033;</span></div>
+                <div class="chat-bubble">
+                    <div class="typing-indicator">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                    <div class="chat-response"></div>
+                </div>
+            </div>
+        </div>
+
+        {% for paragraph in n.tech_talk.outro %}
+            <p>{{ paragraph|safe }}</p>
+        {% endfor %}
+    </div>
+</section>
+
+<div class="section-divider">
+    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
+</div>
+{% endif %}
+
 {# ═══════════════════════ RESOURCES / CLASSIFIEDS ═══════════════════════ #}
 <section class="classifieds-section section-fade" id="resources">
     <div class="classifieds-header">
@@ -498,33 +636,6 @@
             <p><em>There is also a free and easy app available for download on your phone or tablet.</em></p>
             <a href="{{ n.rightnow_media.url }}" class="rightnow-btn" target="_blank" rel="noopener">Access RightNow Media &rarr;</a>
         </div>
-    </div>
-</section>
-
-<div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-</div>
-
-{# ═══════════════════════ PARTY ARCADE GAME ═══════════════════════ #}
-<section class="arcade-section section-fade" id="arcade">
-    <div class="arcade-header">
-        <div class="arcade-rule"></div>
-        <h2 class="arcade-title">Seegars Fence Company Party Arcade</h2>
-        <p class="arcade-subtitle">Step Right Up &bull; Play Now</p>
-        <div class="arcade-rule"></div>
-    </div>
-    <p class="arcade-callout">Play right here on the page &mdash; or open in a new tab if you'd rather have it on its own.</p>
-    <div class="arcade-frame">
-        <iframe
-            src="https://fence-party-arcade-visual-prototype.onrender.com/"
-            title="Seegars Fence Company Party Arcade"
-            loading="lazy"
-            allow="autoplay; fullscreen; gamepad"
-            referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-    <div class="arcade-controls">
-        <a class="arcade-btn" href="https://fence-party-arcade-visual-prototype.onrender.com/" target="_blank" rel="noopener">Open in New Tab &rarr;</a>
-        <span class="arcade-hint">Optional &mdash; the game runs right above. The first load may take a moment to wake up.</span>
     </div>
 </section>
 

@@ -3,25 +3,36 @@
    Seegars Fence Company, April 2026
    ================================================================ */
 
-/* ─── CSS Custom Properties ─── */
+/* ─── CSS Custom Properties — SeegarsONE palette ─── */
 :root {
-    --paper-bg: #fcfbf7;
-    --paper-bg-dark: #f3f0e8;
-    --ink: #1a1a1a;
-    --ink-light: #2c2c2c;
-    --ink-faded: #555;
-    --sepia: #1e3a8a;
-    --sepia-light: #3b5aa6;
-    --sepia-rule: #b3c4e0;
-    --seegars-green: #c8102e;
-    --seegars-green-light: #e63946;
-    --seegars-green-dark: #9b0b22;
-    --cream: #fdfcf8;
-    --purple: #1d4ed8;
-    --purple-light: #3b6cd9;
-    --rule-thin: 1px solid #2c2c2c;
-    --rule-thick: 3px solid #1a1a1a;
-    --rule-double: 4px double #2c2c2c;
+    /* Brand colors */
+    --seegars-green: #008752;        /* SEEGARS GREEN — primary brand */
+    --seegars-green-light: #BCD531;  /* SEEGARS LIME — accent */
+    --seegars-green-dark: #006a40;   /* deeper green for hover/active */
+
+    /* Surfaces & paper */
+    --paper-bg: #FCFCFB;             /* near-white body bg */
+    --paper-bg-dark: #DEE0D9;        /* Seegars Gray — outer surround */
+    --cream: #F5F6F4;                /* Seegars BG — primary panel surface */
+    --surface-elevated: #ffffff;     /* nested boxes (chat bubble, etc.) */
+    --surface-warm: #f5f1e6;         /* tinted panels (Tech Talk wrap) */
+
+    /* Ink (text) */
+    --ink: #231F20;                  /* SEEGARS BLACK */
+    --ink-light: #3A3635;
+    --ink-faded: #6B6764;
+
+    /* Accent aliases (variable names kept for backward compatibility) */
+    --sepia: #008752;                /* aliases brand green */
+    --sepia-light: #00A164;
+    --sepia-rule: #DEE0D9;           /* Seegars Gray rule */
+    --purple: #008752;               /* eyebrow color */
+    --purple-light: #00A164;
+
+    /* Rules */
+    --rule-thin: 1px solid #3A3635;
+    --rule-thick: 3px solid #231F20;
+    --rule-double: 4px double #3A3635;
     --rule-sepia: 1px solid var(--sepia-rule);
 
     --font-masthead: 'UnifrakturMaguntia', cursive;
@@ -32,6 +43,37 @@
     --max-width: 1200px;
     --gutter: 24px;
 }
+
+/* ─── Dark mode (SeegarsONE palette inverted) ─── */
+:root[data-theme="dark"] {
+    --paper-bg: #161A16;
+    --paper-bg-dark: #0E110E;
+    --cream: #1F2520;
+    --surface-elevated: #2A302B;
+    --surface-warm: #232924;
+
+    --ink: #E5E8E2;
+    --ink-light: #C8CCC4;
+    --ink-faded: #9CA098;
+
+    --seegars-green: #00B86E;
+    --seegars-green-light: #CFE450;
+    --seegars-green-dark: #008752;
+
+    --sepia: #00B86E;
+    --sepia-light: #13C97D;
+    --sepia-rule: #2F352F;
+    --purple: #00B86E;
+    --purple-light: #13C97D;
+
+    --rule-thin: 1px solid #3A4136;
+    --rule-thick: 3px solid #4A5046;
+    --rule-double: 4px double #3A4136;
+}
+
+/* Smooth crossfade when toggling */
+html { transition: background-color 0.25s ease; }
+body { transition: background-color 0.25s ease, color 0.25s ease; }
 
 /* ─── Reset & Base ─── */
 *,
@@ -54,7 +96,7 @@ html {
 body {
     font-family: var(--font-body);
     color: var(--ink);
-    background-color: #d4cfc5;
+    background-color: var(--paper-bg-dark);
     line-height: 1.7;
 }
 
@@ -286,7 +328,7 @@ a:hover {
 
 .nav-dropdown-menu a:hover {
     background: var(--sepia-bg);
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
 }
 
 .nav-dropdown.open .nav-dropdown-menu {
@@ -455,7 +497,7 @@ a:hover {
     font-family: var(--font-headline);
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
     margin: 1.2em 0 0.4em;
     line-height: 1.3;
 }
@@ -468,7 +510,30 @@ a:hover {
 
 .headline-feature {
     font-size: clamp(1.5rem, 3vw, 2.2rem);
-    margin-bottom: 6px;
+    margin-bottom: 14px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+/* Lime accent underline beneath every featured headline */
+.headline-feature::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 56px;
+    height: 3px;
+    background: linear-gradient(90deg,
+        var(--seegars-green) 0%,
+        var(--seegars-green-light) 100%);
+    border-radius: 2px;
+}
+
+/* Center the accent under titles that are themselves centered (full-width sections) */
+.tech-talk-header .headline-feature::after,
+.celebrations-header .headline-feature::after {
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .headline-section {
@@ -498,7 +563,7 @@ a:hover {
 }
 
 .byline-title {
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
 }
 
 /* Dateline */
@@ -569,15 +634,20 @@ a:hover {
 /* Pull quotes */
 .pull-quote {
     margin: 1.5em 1em;
-    padding: 0.8em 1.2em;
+    padding: 0.8em 1.2em 0.8em 1.4em;
     border-top: 1px solid var(--sepia-rule);
     border-bottom: 1px solid var(--sepia-rule);
+    border-left: 4px solid var(--seegars-green-light);
     font-family: var(--font-headline);
     font-style: italic;
     font-size: 1.45rem;
     line-height: 1.5;
     color: var(--purple);
     text-align: center;
+    background: linear-gradient(90deg,
+        rgba(188, 213, 49, 0.10) 0%,
+        rgba(188, 213, 49, 0.02) 30%,
+        transparent 70%);
 }
 
 /* Contributor headshots */
@@ -592,6 +662,11 @@ a:hover {
     border-radius: 50%;
     filter: grayscale(100%) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.35));
     shape-outside: margin-box;
+    transition: filter 0.25s ease;
+}
+
+[data-theme="dark"] .contributor-headshot {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.55));
 }
 
 /* Section dividers */
@@ -599,14 +674,37 @@ a:hover {
     text-align: center;
     padding: 16px 0;
     margin: 0 var(--gutter);
+    position: relative;
+}
+
+/* Lime-into-green gradient line that runs behind the ornament */
+.section-divider::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--sepia-rule) 18%,
+        var(--seegars-green-light) 48%,
+        var(--seegars-green) 52%,
+        var(--sepia-rule) 82%,
+        transparent 100%);
+    z-index: 0;
 }
 
 .divider-ornament {
     font-size: 0.9rem;
-    color: var(--sepia);
+    color: var(--seegars-green);
     letter-spacing: 0.3em;
     font-family: 'Segoe UI Symbol', 'Apple Symbols', sans-serif;
     text-decoration: none;
+    position: relative;
+    z-index: 1;
+    background: var(--paper-bg);
+    padding: 0 14px;
 }
 
 .divider-ornament * {
@@ -629,9 +727,11 @@ a:hover {
    SKYBOX BANNER — Newspaper "refer" strip
    ================================================================ */
 .skybox-banner {
-    background: linear-gradient(180deg, rgba(29, 78, 216, 0.08) 0%, rgba(29, 78, 216, 0.04) 100%);
-    border-top: 2px solid var(--purple);
-    border-bottom: 2px solid var(--purple);
+    background: linear-gradient(180deg,
+        rgba(0, 135, 82, 0.10) 0%,
+        rgba(0, 135, 82, 0.04) 100%);
+    border-top: 3px solid var(--seegars-green);
+    border-bottom: 3px solid var(--seegars-green-light);
     padding: 5px var(--gutter);
     text-align: center;
     position: relative;
@@ -641,6 +741,12 @@ a:hover {
     align-items: center;
     justify-content: center;
     gap: 6px 18px;
+}
+
+[data-theme="dark"] .skybox-banner {
+    background: linear-gradient(180deg,
+        rgba(0, 184, 110, 0.18) 0%,
+        rgba(0, 184, 110, 0.06) 100%);
 }
 
 .skybox-divider {
@@ -755,7 +861,7 @@ a:hover {
     text-transform: uppercase;
     letter-spacing: 0.15em;
     margin-bottom: 6px;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
 }
 
 .subsection-box p {
@@ -939,7 +1045,7 @@ a:hover {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
     margin-top: 1em;
     margin-bottom: 6px;
     padding-bottom: 4px;
@@ -1200,7 +1306,7 @@ a:hover {
     white-space: nowrap;
     letter-spacing: 0.15em;
     margin: 8px 0 4px;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
 }
 
 .ad-tagline {
@@ -1414,22 +1520,82 @@ a:hover {
 }
 
 .safety-image {
-    border: var(--rule-sepia);
-    padding: 6px;
     background: var(--cream);
 }
 
-.safety-image img {
+.safety-image > img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+/* Mask-based animated safety image — letterform fill + lime laser sweep */
+.safety-image-mask {
+    position: relative;
+    background: transparent;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.safety-image-mask .safety-image-sizer {
+    width: 100%;
+    height: auto;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.safety-image-fill,
+.safety-image-laser {
+    position: absolute;
+    inset: 0;
+    -webkit-mask: var(--safety-mask) center/contain no-repeat;
+            mask: var(--safety-mask) center/contain no-repeat;
+    pointer-events: none;
+}
+
+.safety-image-fill {
+    background: var(--ink);
+}
+
+.safety-image-laser {
+    background: linear-gradient(105deg,
+        transparent 32%,
+        rgba(188, 213, 49, 0.0) 42%,
+        rgba(188, 213, 49, 0.95) 48%,
+        #ffffff 50%,
+        rgba(188, 213, 49, 0.95) 52%,
+        rgba(188, 213, 49, 0.0) 58%,
+        transparent 68%);
+    background-size: 220% 100%;
+    background-position: -120% 0;
+    animation: safety-laser-sweep 7.5s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(188, 213, 49, 0.95))
+            drop-shadow(0 0 12px rgba(188, 213, 49, 0.55));
+}
+
+@keyframes safety-laser-sweep {
+    0%   { background-position: -120% 0; }
+    100% { background-position: 220% 0; }
+}
+
+/* Dark mode: brighter laser glow, lighter shadow falloff */
+[data-theme="dark"] .safety-image-laser {
+    filter: drop-shadow(0 0 5px #BCD531)
+            drop-shadow(0 0 16px rgba(207, 228, 80, 0.75))
+            drop-shadow(0 0 28px rgba(207, 228, 80, 0.35));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .safety-image-laser { animation: none; }
 }
 
 .safety-purpose {
     margin-bottom: 1em;
 }
 
-.safety-eyebrow {
+.safety-eyebrow,
+.benefits-eyebrow {
     font-family: var(--font-label);
     font-size: 0.72rem;
     font-weight: 700;
@@ -1440,13 +1606,48 @@ a:hover {
     text-align: center;
 }
 
+.benefits-closing {
+    margin-top: 14px;
+    font-style: italic;
+    color: var(--ink-faded);
+}
+
+.benefits-heads-up {
+    margin: 14px 0;
+    padding: 10px 14px 12px;
+    background: rgba(200, 16, 46, 0.08);
+    border-left: 4px solid var(--seegars-green);
+    border-radius: 3px;
+}
+
+[data-theme="dark"] .benefits-heads-up {
+    background: rgba(188, 213, 49, 0.12);
+    border-left-color: var(--seegars-green-light);
+}
+
+.benefits-heads-up-label {
+    display: block;
+    font-family: var(--font-label);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--seegars-green);
+    margin-bottom: 4px;
+}
+
+.benefits-heads-up-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
 .safety-subheading {
     font-family: var(--font-label);
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
     margin-bottom: 8px;
 }
 
@@ -1493,6 +1694,38 @@ a:hover {
 /* ─── Employee Spotlight ─── */
 .spotlight-article {
     padding-top: 4px;
+}
+
+/* Sidebar article — depth + subtle lime accent strip on the left edge */
+.sidebar-article {
+    position: relative;
+    padding: 4px 0 4px 14px;
+    border-radius: 4px;
+}
+
+.sidebar-article::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 3px;
+    background: linear-gradient(180deg,
+        var(--seegars-green) 0%,
+        var(--seegars-green-light) 55%,
+        var(--seegars-green) 100%);
+    border-radius: 2px;
+    opacity: 0.85;
+}
+
+/* Buttons + interactive elements — lime hover accent */
+.rightnow-btn:hover,
+.skybox-link:hover .skybox-text,
+.party-gallery-toggle:hover,
+.word-search-toggle:hover,
+.word-search-clear:hover {
+    color: var(--seegars-green);
+    border-color: var(--seegars-green-light);
 }
 
 /* ─── Employee Spotlight "Coming Soon" placeholder ─── */
@@ -1575,14 +1808,173 @@ a:hover {
 .spotlight-photo {
     width: 100%;
     max-width: 350px;
-    border: 2px solid var(--sepia-rule);
-    border-radius: 12px;
-    cursor: pointer;
     object-fit: contain;
-    box-shadow:
-        0 0 0 1px rgba(29, 78, 216, 0.15),
-        0 0 18px rgba(200, 16, 46, 0.35),
-        0 6px 24px rgba(0, 0, 0, 0.18);
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.28));
+}
+
+/* ─── Spotlight media: tab toggle between video and photo ─── */
+.spotlight-media {
+    margin: 0 auto 16px;
+    text-align: center;
+}
+
+.spotlight-media-tabs {
+    display: inline-flex;
+    margin: 0 auto 12px;
+    border: 1px solid var(--sepia-rule);
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--cream);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.spotlight-media-tab {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--ink);
+    padding: 6px 18px;
+    font-family: var(--font-label);
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.spotlight-media-tab + .spotlight-media-tab {
+    border-left: 1px solid var(--sepia-rule);
+}
+
+.spotlight-media-tab.is-active {
+    background: var(--seegars-green);
+    color: #ffffff;
+}
+
+.spotlight-media-tab:hover:not(.is-active) {
+    background: rgba(188, 213, 49, 0.25);
+    color: var(--seegars-green);
+}
+
+.spotlight-media-tab:focus-visible {
+    outline: 2px solid var(--seegars-green-light);
+    outline-offset: 2px;
+}
+
+.spotlight-media-stage {
+    position: relative;
+    max-width: 350px;
+    margin: 0 auto;
+    /* Lock the stage to the cutout photo's natural aspect so video and photo render at identical dimensions */
+    aspect-ratio: 800 / 957;
+}
+
+.spotlight-media-pane {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.spotlight-media-pane.is-active {
+    display: block;
+}
+
+.spotlight-media-pane[data-pane="photo"] .spotlight-photo-wrapper {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spotlight-media-pane[data-pane="photo"] .spotlight-photo {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.spotlight-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28),
+                0 0 0 1px var(--sepia-rule);
+}
+
+.spotlight-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+    background: #000;
+}
+
+/* Custom play overlay — replaces native controls so no timer/progress shows */
+.spotlight-play-overlay {
+    position: absolute;
+    inset: 0;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.25s ease, background-color 0.25s ease;
+    padding: 0;
+}
+
+.spotlight-play-overlay:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.spotlight-play-overlay::before {
+    content: '\25B6';
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.spotlight-play-overlay:hover::before {
+    transform: scale(1.06);
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.spotlight-video-wrap.is-playing .spotlight-play-overlay {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.spotlight-video-caption {
+    margin: 10px auto 0;
+    max-width: 350px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--ink-faded);
+    text-align: center;
+    line-height: 1.4;
 }
 
 .spotlight-qa {
@@ -1936,9 +2328,9 @@ a:hover {
     margin-top: 26px;
     padding: 14px 14px 16px;
     background: var(--cream);
-    border-top: 3px double var(--ink);
-    border-bottom: 3px double var(--ink);
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .word-search-header {
@@ -1988,6 +2380,9 @@ a:hover {
     background: transparent;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
     transition: background 0.18s ease, color 0.18s ease;
     border-radius: 2px;
 }
@@ -2095,6 +2490,108 @@ a:hover {
 .word-search-toggle .word-search-toggle-hide { display: none; }
 .word-search-grid.solution-shown ~ .word-search-actions .word-search-toggle .word-search-toggle-show { display: none; }
 .word-search-grid.solution-shown ~ .word-search-actions .word-search-toggle .word-search-toggle-hide { display: inline; }
+
+/* Bigger touch targets on phones — grid stretches to nearly full width
+   so each cell becomes a comfortable finger-sized tap area. */
+@media (max-width: 600px) {
+    .word-search-grid {
+        max-width: min(420px, 96vw);
+        gap: 2px;
+        padding: 8px;
+    }
+    .word-search-cell {
+        font-size: 0.95rem;
+    }
+    .word-search-list {
+        max-width: 380px;
+        font-size: 0.85rem;
+        gap: 4px 16px;
+    }
+    .word-search-toggle,
+    .word-search-clear {
+        padding: 9px 22px;
+        font-size: 0.78rem;
+    }
+}
+
+/* ─── Word Search completion celebration ─── */
+.word-search-celebration {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 20, 24, 0.55);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+.word-search-celebration.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.word-search-celebration-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.word-search-celebration-banner {
+    position: relative;
+    z-index: 1;
+    background: var(--cream);
+    border: 3px double var(--seegars-green);
+    border-radius: 8px;
+    padding: 18px 24px 16px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+    max-width: 88%;
+    text-align: center;
+    transform: scale(0.85);
+    transition: transform 0.4s cubic-bezier(0.18, 1.15, 0.4, 1.05);
+}
+.word-search-celebration.is-visible .word-search-celebration-banner {
+    transform: scale(1);
+}
+.word-search-celebration-emoji {
+    font-size: 2.2rem;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+.word-search-celebration-title {
+    font-family: var(--font-headline);
+    font-size: 1.4rem;
+    font-weight: 800;
+    font-style: italic;
+    color: var(--seegars-green);
+    margin-bottom: 4px;
+}
+.word-search-celebration-subtitle {
+    font-family: var(--font-label);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink);
+    margin-bottom: 12px;
+}
+.word-search-celebration-close {
+    padding: 8px 22px;
+    font-family: var(--font-label);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cream);
+    background: var(--seegars-green);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.word-search-celebration-close:hover {
+    background: var(--ink);
+}
 
 /* ─── News Wire — Sidebar variant ─── */
 .news-wire-sidebar {
@@ -2342,7 +2839,7 @@ a:hover {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
     margin-top: 10px;
 }
 
@@ -2518,7 +3015,7 @@ a:hover {
     font-family: var(--font-headline);
     font-weight: 700;
     font-size: 1.15rem;
-    color: var(--seegars-green-light);
+    color: var(--seegars-green);
     margin-bottom: 8px;
 }
 
@@ -3086,140 +3583,6 @@ a:hover {
 }
 
 /* ================================================================
-   PARTY ARCADE GAME — Embedded
-   ================================================================ */
-.arcade-section {
-    padding: 0 var(--gutter) 30px;
-    text-align: center;
-}
-
-.arcade-header {
-    text-align: center;
-    margin-bottom: 18px;
-}
-
-.arcade-rule {
-    height: 1px;
-    background: var(--sepia-rule);
-    margin: 8px 0;
-}
-
-.arcade-title {
-    font-family: var(--font-headline);
-    font-size: 1.85rem;
-    font-weight: 800;
-    font-style: italic;
-    letter-spacing: 0.02em;
-    color: var(--ink);
-    margin: 6px 0 2px;
-}
-
-.arcade-subtitle {
-    font-family: var(--font-label);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--seegars-green);
-}
-
-.arcade-callout {
-    max-width: 720px;
-    margin: 0 auto 14px;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--ink);
-    text-align: center;
-}
-
-.arcade-frame {
-    position: relative;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 6px;
-    border-radius: 6px;
-    background: linear-gradient(
-        135deg,
-        #9b0b22,
-        #1e3a8a,
-        #c8102e,
-        #3b6cd9,
-        #9b0b22,
-        #1e3a8a,
-        #c8102e,
-        #9b0b22
-    );
-    background-size: 300% 300%;
-    animation: arcade-border-shift 6s ease infinite;
-    box-shadow:
-        0 0 12px rgba(30, 58, 138, 0.30),
-        0 6px 22px rgba(0, 0, 0, 0.18);
-}
-
-@keyframes arcade-border-shift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.arcade-frame iframe {
-    display: block;
-    width: 100%;
-    height: 720px;
-    border: 0;
-    border-radius: 3px;
-    background: #000;
-}
-
-.arcade-controls {
-    max-width: 1100px;
-    margin: 14px auto 0;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 10px 18px;
-}
-
-.arcade-btn {
-    display: inline-block;
-    padding: 9px 22px;
-    font-family: var(--font-label);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--cream);
-    background: var(--seegars-green);
-    border-radius: 999px;
-    text-decoration: none;
-    box-shadow: 0 2px 6px rgba(200, 16, 46, 0.25);
-    transition: background 0.2s ease, transform 0.15s ease;
-}
-
-.arcade-btn:hover {
-    background: var(--seegars-green-dark);
-    transform: translateY(-1px);
-    color: var(--cream);
-}
-
-.arcade-hint {
-    font-family: var(--font-body);
-    font-size: 0.82rem;
-    font-style: italic;
-    color: var(--ink-faded);
-}
-
-@media (max-width: 900px) {
-    .arcade-frame iframe { height: 600px; }
-}
-
-@media (max-width: 600px) {
-    .arcade-title { font-size: 1.4rem; }
-    .arcade-frame iframe { height: 480px; }
-}
-
-/* ================================================================
    THE FUNNIES — Comic Strip
    ================================================================ */
 .funnies-section {
@@ -3551,5 +3914,299 @@ a:hover {
     .login-title {
         font-size: 2rem;
     }
+}
+
+/* ================================================================
+   TECH TALK — Claude chat demo
+   ================================================================ */
+.tech-talk-section {
+    padding: 0 var(--gutter) 30px;
+}
+
+.tech-talk-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tech-talk-rule {
+    height: 1px;
+    background: var(--sepia-rule);
+    margin: 8px 0;
+}
+
+.tech-talk-eyebrow {
+    font-family: var(--font-label);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--seegars-green);
+    margin: 6px 0 2px;
+}
+
+.tech-talk-byline {
+    font-family: var(--font-label);
+    font-size: 0.78rem;
+    color: var(--ink-faded);
+    margin: 0 0 8px;
+}
+
+.tech-talk-byline .byline-title {
+    color: var(--seegars-green);
+    font-weight: 600;
+}
+
+.tech-talk-body {
+    max-width: 760px;
+    margin: 0 auto;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink);
+}
+
+.tech-talk-body p {
+    margin: 0 0 1em;
+}
+
+.tech-talk-chat {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 22px 0;
+    padding: 18px 16px;
+    background: var(--surface-warm);
+    border: 1px solid var(--sepia-rule);
+    border-radius: 12px;
+}
+
+.chat-message {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.chat-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.chat-message-user {
+    flex-direction: row-reverse;
+}
+
+.chat-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-avatar-user {
+    border: 2px solid var(--cream);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.chat-avatar-claude {
+    background: #c97d56; /* Anthropic clay */
+    color: #fff;
+}
+
+.chat-avatar-mark {
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.chat-bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    line-height: 1.5;
+    font-size: 0.98rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.chat-message-user .chat-bubble {
+    background: var(--seegars-green);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-message-claude .chat-bubble {
+    background: var(--surface-elevated);
+    color: var(--ink);
+    border-bottom-left-radius: 4px;
+}
+
+.chat-bubble p {
+    margin: 0;
+}
+
+.chat-bubble p + p {
+    margin-top: 8px;
+}
+
+.typing-indicator {
+    display: inline-flex;
+    gap: 5px;
+    padding: 4px 2px;
+}
+
+.typing-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #b0b0b0;
+    animation: typing-bounce 1.2s infinite;
+}
+
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.chat-response p {
+    margin: 0;
+}
+
+.chat-response p + p {
+    margin-top: 8px;
+}
+
+.chat-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    vertical-align: text-bottom;
+    background: var(--ink);
+    margin-left: 1px;
+    animation: chat-cursor-blink 0.9s steps(1) infinite;
+}
+
+@keyframes chat-cursor-blink {
+    50% { opacity: 0; }
+}
+
+@media (max-width: 600px) {
+    .tech-talk-title { font-size: 1.45rem; }
+    .chat-bubble { max-width: 82%; font-size: 0.95rem; }
+    .chat-avatar { width: 34px; height: 34px; }
+}
+
+/* ================================================================
+   THEME TOGGLE — light/dark switch in the masthead-nav
+   ================================================================ */
+.theme-toggle {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    line-height: 0;
+    transition: transform 0.18s ease, filter 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Star-Wars-style tooltip — only shown over Vader (light mode) */
+.theme-toggle::before,
+.theme-toggle::after {
+    pointer-events: none;
+    opacity: 0;
+    z-index: 100;
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 0.85, 0.42, 1.05);
+}
+
+.theme-toggle::after {
+    content: 'Come over to the dark side';
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 14px);
+    transform: translateY(-50%) translateX(8px);
+    background: rgba(8, 8, 12, 0.96);
+    color: #ff4444;
+    font-family: var(--font-label);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    padding: 8px 14px;
+    border-radius: 3px;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 70, 70, 0.55);
+    box-shadow:
+        0 0 4px rgba(255, 60, 60, 0.9),
+        0 0 14px rgba(255, 60, 60, 0.6),
+        0 0 32px rgba(255, 50, 50, 0.4),
+        0 0 56px rgba(255, 40, 40, 0.22),
+        0 4px 14px rgba(0, 0, 0, 0.55);
+    text-shadow: 0 0 8px rgba(255, 80, 80, 0.85);
+}
+
+.theme-toggle:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Obi-Wan tooltip — Jedi lightsaber blue */
+[data-theme="dark"] .theme-toggle::after {
+    content: 'Return to the light side';
+    color: #66c5ff;
+    border-color: rgba(120, 195, 255, 0.55);
+    text-shadow: 0 0 8px rgba(150, 215, 255, 0.85);
+    box-shadow:
+        0 0 4px rgba(120, 195, 255, 0.9),
+        0 0 14px rgba(90, 175, 255, 0.6),
+        0 0 32px rgba(70, 160, 255, 0.4),
+        0 0 56px rgba(60, 145, 255, 0.22),
+        0 4px 14px rgba(0, 0, 0, 0.55);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.08) rotate(-3deg);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--seegars-green);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.theme-toggle:active {
+    transform: scale(0.96);
+}
+
+.theme-toggle-img {
+    height: 44px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+/* Light mode: show Vader (click → switch to dark) */
+.theme-toggle-img-todark  { display: block; }
+.theme-toggle-img-tolight { display: none; }
+
+/* Dark mode: show Obi-Wan (click → switch to light) */
+[data-theme="dark"] .theme-toggle-img-todark  { display: none; }
+[data-theme="dark"] .theme-toggle-img-tolight { display: block; }
+
+.masthead-nav {
+    display: inline-flex;
+    align-items: center;
 }
 

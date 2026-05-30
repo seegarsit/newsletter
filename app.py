@@ -118,26 +118,11 @@ def get_live_news():
     return _news_cache["national"], _news_cache["sports"]
 
 
-_PARTY_PHOTOS_DIR = os.path.join(os.path.dirname(__file__), "static", "images", "party_photos")
-_PARTY_HERO = "IMG_7482_20260423_200454-wm.jpg"
-
-
-def _list_party_photos():
-    """Return all party photo paths (relative to /static/images/), excluding the hero."""
-    if not os.path.isdir(_PARTY_PHOTOS_DIR):
-        return []
-    files = sorted(
-        f for f in os.listdir(_PARTY_PHOTOS_DIR)
-        if f.lower().endswith((".jpg", ".jpeg", ".png")) and f != _PARTY_HERO
-    )
-    return [f"party_photos/{f}" for f in files]
-
-
 NEWSLETTER = {
-    "month": "May",
+    "month": "June",
     "year": 2026,
     "volume": "LXXVII",
-    "issue": 4,
+    "issue": 5,
     "location": "North Carolina \u2022 South Carolina \u2022 Georgia",
     "edition": "MORNING EDITION",
     "motto": "Changing the world one linear foot at a time.",
@@ -151,212 +136,211 @@ NEWSLETTER = {
         "headshot": "ben.png",
         "dateline": "GOLDSBORO, N.C.",
         "content": [
-            "We closed out Q1 in a strong position, especially considering how tough January and February were. That did not happen by accident. It came from grit, discipline, and a team that knows how to execute when conditions are not ideal.",
-            "We carried that momentum straight into April. Our backlog has been strong, and it is showing up in the numbers. We have sold roughly 2.00 for every 1.00 of charges. That is how you build a pipeline that fuels the future. Charges came in a little below goal, but still ahead of last April, so we are moving in the right direction with real traction.",
-            "Take a step back for a moment. This is how winning organizations operate. They stack wins. They build backlog. They stay disciplined on execution. Q2 is shaping up well because of what you are doing right now. Keep pushing. Great work, team!",
-            "For this month\u2019s SPIRIT focus, I want to share something that stuck with me from a sermon I heard over Easter from the Gospel of Luke 24:13 to 35, the road to Emmaus. Two disciples were walking away from Jerusalem on resurrection day. They were discouraged, confused, and trying to process everything that had just happened. Then Jesus comes alongside them, but they do not recognize Him at first. He walks with them, talks with them, and reminds them of what had been said all along. He meets them right where they are and also challenges their lack of faith.",
-            "Here is what stands out to me. He met them while they were moving. They were not sitting still. They were walking, talking, trying to figure things out, and that is when He showed up.",
-            "After they realized who He was, they immediately turned around and went seven miles back to Jerusalem to share the news. That is renewed purpose. That is clarity. That is action.",
-            "There are two takeaways here that apply directly to us. First, the Lord meets us where we are, but we have to be open to Him. If we are looking, listening, and willing to let Him in, He will guide us and renew us. Second, action matters. When we move forward, especially with prayerful direction, we put ourselves in position to be led. Clarity often comes after we step out, not before.",
-            "That is a powerful way to think about both life and work. We do not wait for perfect conditions. We move with purpose, stay grounded in our values, and trust the direction will become clear as we go. Let\u2019s carry that mindset into May. Stay focused. Stay safe. Take care of each other. Keep building something we are proud of, one linear foot at a time.",
+            "May has been a great month for Seegars Fence Company. We have continued to see strong sales, and just as importantly, we have been building a lot of fences!",
+            "We have continued to build on the backlog of work that carried over from the first quarter. Charges are ahead of goal for the current quarter, and we have nearly filled the hole from the first quarter, with year-to-date charges now very close to goal. That is a strong accomplishment, especially in tough market conditions where residential work remains slower than normal and fuel prices are sky high.",
+            "Even with those headwinds, our team continues to excel. Thank you for the effort, commitment, and pride you bring to your work every day. We are blessed beyond measure, and I do not take for granted the people who make this company what it is.",
+            "We are also excited to welcome Dana Mull to our team as our new People and Culture Manager. Dana\u2019s role will be focused on helping our people make the most out of being part of the Seegars team. That includes making sure you fully understand and take advantage of all our benefits, as well as work on recruitment, training, growth opportunities, advancement, and continuing to strengthen the culture that has carried this company for generations. She has hit the ground running and is making office visits to meet everyone, learn more about each location, and begin building strong relationships across the company.",
+            "Veronica has been working hard on our upcoming health insurance renewal, and we are excited about a new opportunity to partner with Gravie. I know, it is a funny name, but they are bringing us very good rates and benefits for our July 1 renewal. With this new Gravie partnership, along with Seegars increasing the monthly insurance contribution from $475 to $500, just about everyone will see better rates and benefits than we have had in a while. That is a big win for our team and families.",
+            "For this month\u2019s devotion, I want to reflect on Matthew 7:13\u201314, where Jesus teaches about the narrow gate and the difficult road that leads to life. The easy road is wide, crowded, and tempting, but it does not lead where we truly want to go. The narrow road requires discipline, humility, patience, and faithfulness. That applies to our spiritual lives, but it also applies to leadership, work, family, and the way we carry ourselves each day. Great teams are not built by taking shortcuts. Great companies are not built by doing what is easiest. Great lives are not built by drifting. They are built by choosing discipline over regret, responsibility over excuses, and faithfulness over convenience. Every day, each of us gets to choose which road we are walking. My prayer is that we continue to choose the narrow road together, doing the right things the right way, trusting that God honors steady, faithful work done with the right heart.",
+            "Thank you for all you do. I hope everyone has a great month ahead!",
         ],
-        "pull_quote": "He met them while they were moving. They were not sitting still. They were walking, talking, trying to figure things out, and that is when He showed up.",
-    },
-
-    "company_party": {
-        "eyebrow": "Company Party — April 23, 2026",
-        "title": "An Evening Together",
-        "main_photo": "party_photos/" + _PARTY_HERO,
-        "main_photo_alt": "Six teammates from SFC Goldsboro at the company party photo booth",
-        "intro": [
-            "On Thursday, April 23, the Seegars family came together for an evening of food, fellowship, and celebration. Once an annual tradition, our company party now comes around every other year — and the wait makes it that much sweeter."
-        ],
-        "gallery": _list_party_photos(),
+        "pull_quote": "Great teams are not built by taking shortcuts. Great companies are not built by doing what is easiest. Great lives are not built by drifting.",
     },
 
     "hr_corner": {
-        "title": "Q1 2026 Awards",
-        "author": "Bobby Batchelor",
-        "author_title": "COO",
-        "headshot": "bobby.png",
+        "title": "Meet Dana Mull",
+        "author": "Dana Mull",
+        "author_title": "People and Culture Manager",
+        "headshot": "dana_mull.png",
         "dateline": "GOLDSBORO, N.C.",
         "content": [
-            "The first quarter of 2026 was quite surprising \u2014 enthusiasm was low in the beginning, but the quarter shaped up to deliver. Both sales percentage KPIs exceeded goal, allowing us to generate a substantial backlog. Our charges came in close to goal and outpaced Q1 2025.",
-            "In the end, several of our branches exceeded their goal (note that we now have 13 branches since Cary and Durham have rolled up into Raleigh), and a healthy share of our estimators exceeded their goal as well. Our net promoter score remained strong. We have so much to be thankful for and are blessed to roll into 2026 with this kind of momentum.",
-            "Now let\u2019s recognize our high achievers for Q1. Please take a moment to congratulate them for their great work."
+            "I\u2019m excited to join the Seegars team as the new People and Culture Manager and to support all our locations with workforce development and organizational growth initiatives. My experience in organizational leadership, talent development, business ownership, and culture\u2011building, combined with years of leading sales, marketing, and HR teams across the US, has shaped my approach to supporting people and strengthening workplaces.",
+            "I look forward to working closely with each branch, listening first, and understanding what your teams need to thrive. My goal is to support strong leadership, clear communication, and a consistent employee experience across the company.",
+            "I\u2019m truly grateful for the warm welcome so far and look forward to building relationships, supporting your teams, and contributing to the strong culture that makes Seegars special. If we haven\u2019t met in person yet, I look forward to doing so very soon.",
         ],
-        "sections": [
-            {
-                "heading": "Quad Club",
-                "subheading": "Obtaining a 4.0+ Profit Ratio for the quarter",
-                "content": [
-                    "This group will receive a bonus on top of P4P, provided they meet all the criteria for the bonus. Their names will also go into a hat for a nice surprise at the annual company party."
-                ],
-                "value_label": "Ratio",
-                "show_rank": True,
-                "awards": [
-                    {"rank": 1,  "name": "Thomas Lashford", "location": "Spartanburg",  "value": "35.19"},
-                    {"rank": 2,  "name": "Tony Smith",      "location": "Raleigh",      "value": "12.98"},
-                    {"rank": 3,  "name": "Evan Corson",     "location": "Columbia",     "value": "11.01"},
-                    {"rank": 4,  "name": "Alec Pittman",    "location": "Greensboro",   "value": "9.27"},
-                    {"rank": 5,  "name": "Blue Francis",    "location": "Jacksonville", "value": "5.59"},
-                    {"rank": 6,  "name": "Michael Winford", "location": "Columbia",     "value": "4.65"},
-                    {"rank": 7,  "name": "Dusty Tant",      "location": "Rocky Mount",  "value": "4.56"},
-                    {"rank": 8,  "name": "Ken Manning",     "location": "Raleigh",      "value": "4.22"},
-                    {"rank": 9,  "name": "Scottie Sumner",  "location": "Greensboro",   "value": "4.22"},
-                    {"rank": 10, "name": "Gary Norwood",    "location": "Fayetteville", "value": "4.02"},
-                ]
-            },
-            {
-                "heading": "35X Club",
-                "subheading": "Obtaining a 3.5+ Profit Ratio for the quarter",
-                "content": [
-                    "This group will receive a bonus on top of P4P, provided they meet all the criteria for the bonus. Each recipient\u2019s name will also be entered into a drawing."
-                ],
-                "value_label": "Ratio",
-                "awards": [
-                    {"name": "Joe Marks",    "location": "Rocky Mount", "value": "3.98"},
-                    {"name": "Josh Doughty", "location": "Greenville",  "value": "3.80"},
-                    {"name": "Jeremy Moore", "location": "Raleigh",     "value": "3.70"},
-                ]
-            },
-            {
-                "heading": "Neal Seegars \u2018MVP\u2019 Award",
-                "subheading": "Highest Percent-to-Goal for the quarter",
-                "content": [
-                    "Congratulations to <strong>Emily Atella</strong> in New Hanover! Emily is invited to attend Fence Tech in Phoenix, enjoying a weekend on Seegars Fence of New Hanover while attending classes and brushing up on new products in the industry. This award also places Emily\u2019s name in the drawing held at our annual company party."
-                ],
-                "value_label": "% to Goal",
-                "awards": [
-                    {"name": "Emily Atella", "location": "New Hanover", "value": "243%"},
-                ]
-            },
-            {
-                "heading": "125 Club Award",
-                "subheading": "Crews with production rates at or above 125%",
-                "content": [
-                    "Each eligible crew has its name entered into a drawing at the company party for the annual prize. The winning crew receives a bonus and an SFC gift pack. The crew must still be with the company, and the helpers associated with the crew must have worked with the foreman for the majority of the quarter in which they became eligible to receive the bonus."
-                ],
-                "value_label": "Production",
-                "awards": [
-                    {"name": "Johnny Worthington", "location": "Wayne",        "value": "146%"},
-                    {"name": "Sam Vines",          "location": "Fayetteville", "value": "134%"},
-                    {"name": "Caleb Blood",        "location": "Rocky Mount",  "value": "132%", "crew": ["Weeks Worley"]},
-                    {"name": "Devin Wagner",       "location": "Wayne",        "value": "129%"},
-                    {"name": "Larry Johnston",     "location": "Rocky Mount",  "value": "129%", "crew": ["Zack Richardson", "Matthew Denton"]},
-                    {"name": "Jordan Bailey",      "location": "Wayne",        "value": "126%"},
-                ]
-            }
-        ]
     },
 
     "safety": {
-        "eyebrow": "Toolbox Topics \u2014 General Safety",
-        "title": "Cuts and Burns",
+        "eyebrow": "Toolbox Topics \u2014 Drug-Free Workplace",
+        "title": "Zero Tolerance for Drugs and Alcohol",
         "author": "Chanda Best",
         "author_title": "Safety Manager",
         "headshot": "chanda.png",
-        "image": "first_aid.svg",
+        "image": "no_to_drugs.png",
         "intro": [
-            "Nicks, cuts, scratches, and burns \u2014 minor injuries that can happen to any one of us, no matter how careful we are. They are easy to ignore, but it is worth remembering that skin is a vital organ. Not only is it the largest organ in the body, it also keeps the good stuff in and the bad stuff out.",
-            "So what do you do when you get a minor injury? If you are like many of us, you realize a doctor\u2019s visit is not necessary and try to treat the injury yourself. How do you know when to seek professional treatment? And how do you treat injuries that do not require a doctor\u2019s visit?"
+            "It is the policy of Seegars Fence Company that its workplace be free from the illegal use, possession of, or distribution of controlled substances, by all employees of Seegars Fence Company. The possession and distribution of controlled substances will be dealt with promptly in accordance with legal and administrative disciplinary procedures. However, the policy\u2019s primary goal is to ensure that illegal drug use is eliminated, and that Seegars Fence Company\u2019s workplace be safe, healthful, productive, and secure."
         ],
         "sections": [
             {
-                "heading": "Cuts",
-                "intro_paragraphs": ["Cuts require immediate professional attention if:"],
-                "entries": [
-                    "There is severe bleeding, especially arterial wounds, which literally pump blood from the body.",
-                    "It is a puncture wound, such as one caused by a rusty nail or animal bite \u2014 these will require a tetanus booster shot.",
-                    "The cut is more than one half inch long and one quarter inch deep, which will require stitches."
-                ],
-                "numbered": False,
-                "outro_paragraphs": [
-                    "To treat any cut, first stop the bleeding and then treat to prevent infection. Place a sterile gauze (or, if you do not have any gauze, a clean cloth) over the wound and hold it until the bleeding stops. Apply pressure continuously. If the gauze or cloth soaks through, simply place another cloth over the first and resume the pressure. When the bleeding has stopped, wash the cut with soap and water and apply a clean dressing. If the bleeding does not stop, get professional treatment.",
-                    "After the cut is clean, look for any foreign objects in the wound and remove them. If you do not, a serious infection may set in. To keep the wound clean while it heals, you can cover it with a bandage \u2014 but remember the bandage will need attention too. Change it twice daily and use an antibiotic cream to prevent further infection. Keep in mind that wounds exposed to air heal faster, but it is also important to keep a wound clean and dry to prevent infection.",
-                    "Treatment for a scrape is the same, except you do not have to worry about stopping blood flow, as there is very little."
-                ]
-            },
-            {
-                "heading": "Burns",
+                "heading": "Drug Screening Program",
                 "intro_paragraphs": [
-                    "Burns are classified as first, second, or third degree. A first degree burn causes redness. Blistering is caused by a second degree burn. Charred, blackened, or blanched skin are signs of a third degree burn. Burns can be caused by heat (thermal burns) or by contact with chemicals.",
-                    "Seek professional medical treatment for:"
+                    "The Seegars Fence Company Drug Screening program includes the following types of drug testing:"
                 ],
                 "entries": [
-                    "All third degree burns.",
-                    "Second degree burns involving more than one fifth of the body, or any burn affecting the face, hands, feet, or genitalia."
+                    "Pre-employment testing.",
+                    "Random testing of all employees and employees in safety sensitive positions.",
+                    "Reasonable-suspicion testing \u2014 includes post accident when applicable.",
+                    "Involvement in accidents or unsafe-practices.",
+                    "Voluntary testing.",
+                    "Testing as part of and as a follow-up to counseling or rehabilitation.",
                 ],
                 "numbered": False,
                 "outro_paragraphs": [
-                    "First aid treatment for a burn focuses on relief of pain, prevention of infection, and treatment or prevention of shock. If a burn begins to blister, cool it by placing your hand or foot in cold, still (not running) water. For other parts of the body, use an ice pack. Gently clean the burn and cover the area with a sterile, non-stick gauze. Change the dressing twice a day. Never puncture a blister \u2014 this just opens the door for infection. Never use butter, oils, or petroleum jelly on burns.",
-                    "If the burn is due to chemical exposure, flush the burned area with running water for at least 15 minutes. While you flush, remove any contaminated clothing, especially clothing in the area of the burn. Check the first aid instructions for the chemical, which can be found on the container and/or the Material Safety Data Sheet (MSDS), and treat as specified. Cover the burn with a clean dressing and call a doctor.",
-                    "If a third degree burn is involved, get professional medical treatment quickly. Call an ambulance first. While awaiting professional help, make sure any fire is out and/or remove the victim from the burn source. <strong>Do not remove any clothing or apply any dressings.</strong> Treat for shock and make sure the victim is still breathing."
+                    "The frequency of testing will depend on the type of testing to be conducted. Generally, 10 percent of the pool shall be subject to random testing each year. However, Seegars Fence Company management reserves the right to increase or decrease the frequency and testing percentage of any category of drug testing, consistent with the duty to achieve a drug-free workplace. These testing will be determined by a company official or other competent person."
                 ]
             }
         ],
-        "closing": "Use common sense in all situations. Maintain a well-stocked first aid kit and be familiar with first aid procedures. Being knowledgeable and prepared may be the smartest first step of all."
+        "closing": "A drug-free workplace keeps every crew, every job site, and every family safer."
     },
 
     "employee_spotlight": {
         "title": "Employee Spotlight",
-        "name": "Caleb Blood",
-        "location": "Seegars Fence Company \u2014 Rocky Mount, NC",
-        "photos": ["Employee_spotlight/caleb.jpg"],
+        "name": "Chris Cook",
+        "location": "Allison Fence Co.",
+        "photos": ["Employee_spotlight/chris.png"],
+        "video": "Employee_spotlight/chris_fish.mp4",
+        "video_poster_time": 5,
         "qa": [
-            {"q": "How long have you been working at Seegars?", "a": "20 years"},
-            {"q": "What\u2019s your job position?", "a": "Foreman / Leadman"},
-            {"q": "Favorite movie or show?", "a": "My favorite in this decade would have to be Top Gun 2."},
-            {"q": "Favorite food?", "a": "Ribeye steak with asparagus and red skin mashed potatoes"},
-            {"q": "Cake or pie, and what kind?", "a": "Homemade cheesecake with graham cracker crust"},
-            {"q": "Dream vacation spot?", "a": "Somewhere in the mountains, maybe the Swiss Alps"},
-            {"q": "First thing you\u2019d do if you won the lottery?", "a": "If gifted a large sum of money, the first thing I would do is tithe. The fun thing I would do for myself would be finding time to ski a lot more."},
-            {"q": "Go-to weekend activity?", "a": "Cut grass"},
-            {"q": "Favorite way to relax after work?", "a": "Jog, read a book, watch a ballgame"},
-            {"q": "One thing most people at work don\u2019t know about you?", "a": "I\u2019m actually a pretty nice guy."},
+            {"q": "How long have you been working at Allison Fence?", "a": "4 years, 7 months"},
+            {"q": "What\u2019s your job position?", "a": "Estimator"},
+            {"q": "Favorite movie or TV show?", "a": "Remember the Titans"},
+            {"q": "Favorite food?", "a": "BBQ"},
+            {"q": "Cake or pie, and what kind?", "a": "Coconut Cake"},
+            {"q": "Dream vacation spot?", "a": "Australia"},
+            {"q": "First thing you\u2019d do if you won the lottery?", "a": "Help my family"},
+            {"q": "Go-to weekend activity?", "a": "Fishing or golfing"},
+            {"q": "Favorite way to relax after work?", "a": "Laying in my recliner"},
+            {"q": "One thing most people at work don\u2019t know about you?", "a": "Most of my friends call me Cookie."},
         ]
     },
 
+    "tech_talk": {
+        "eyebrow": "Tech Talk",
+        "title": "AI Isn’t Just for Coders",
+        "author": "Brad Wells",
+        "author_title": "IT Manager",
+        "headshot": "brad.png",
+        "intro": [
+            "AI isn’t just a tool for coders and developers — it’s also for the average everyday user. Whether you’re in the office juggling spreadsheets and emails, or out in the field measuring a long stretch of fence line, AI can save you time, do the math for you, and answer the kinds of questions you’d usually have to wing it on.",
+            "For our office staff, that looks like drafting emails faster, summarizing long documents, and pulling answers out of data without wrestling with Excel formulas. For our installers in the field, it can be even more useful — snap a photo of a job site and have it figure out post spacing, calculate materials, or help read measurements off a tape that’s tough to see in bright sun.",
+            "Here’s a quick example of what that actually looks like. I asked Claude:",
+        ],
+        "chat": {
+            "user_label": "Brad",
+            "user_avatar": "brad.png",
+            "prompt": "Claude, we have a straight line of 156 linear feet of fence. I’m showing a 10' double gate 25' from one end. With post spacing no more than 10', what should my post spacing be on both sides of the gate?",
+            "response_paragraphs": [
+                "Good setup. With the gate 25' from one end, the run breaks into two sections: a short side of 25' and a long side of 121' (156 total, minus the 10' gate opening).",
+                "Short side (25'): you need at least 3 sections to keep every gap under 10', so 25 ÷ 3 = exactly 8' 4\" between posts. That’s 2 line posts sitting between the corner and the gate.",
+                "Long side (121'): at a 10' max, you need 13 sections, so 121 ÷ 13 ≈ 9' 3¾\" between posts. That’s 12 line posts between the gate and the far corner.",
+                "Totals: 2 terminal posts, 2 gate posts, 14 line posts, plus your 10' double gate. Both runs stay just under 10' and look evenly proportioned. If you’d rather shift the gate so both sides land on round numbers, I can rerun it.",
+            ],
+        },
+        "outro": [
+            "That kind of help is just a question away — on your phone, on your laptop, anywhere you’ve got a signal. If you’ve never tried it, give it a shot the next time you’re stuck on something. You might be surprised how quickly it changes the way you work.",
+        ],
+    },
+
+    "benefits_update": {
+        "eyebrow": "Open Enrollment Begins Soon",
+        "title": "Employee Health Insurance Update",
+        "author": "Veronica Aycock",
+        "author_title": "Benefits Administrator",
+        "headshot": "veronica.png",
+        "content": [
+            "We are excited to announce that beginning with the upcoming plan year, our Employee Health Insurance program will transition to Gravie as our Third-Party Administrator (TPA) while utilizing the Cigna network for healthcare providers and services. Your new insurance card will have the Gravie name and Cigna on the card.",
+            "As part of this transition, Open Enrollment meetings will be held at each of our locations to provide employees with important information about the new plan offerings and to answer any questions you may have. Attendance is strongly encouraged so you can fully understand your benefit options before making your election.",
+        ],
+        "heads_up": "With the change in insurance carriers, we suggest refilling any prescriptions you have prior to <strong>June 30</strong>.",
+        "sections": [
+            {
+                "heading": "Medical Plan Options",
+                "intro": "Employees will have three medical plan options to choose from:",
+                "bullets": ["HSA Plan", "PPO Plan", "Comfort Fit Plan"],
+                "outro": "We encourage everyone to carefully review all available options and ask questions before selecting a plan that best fits your healthcare and financial needs.",
+            },
+            {
+                "heading": "Important Dates",
+                "bullets": [
+                    "<strong>Open Enrollment Deadline:</strong> All benefit elections must be completed by June 17, 2026.",
+                    "<strong>Payroll Deductions Begin:</strong> Insurance premium deductions will begin with the July 2, 2026 payroll.",
+                ],
+                "outro": "Additional information, including meeting schedules and enrollment instructions, will be shared at your location soon.",
+            },
+        ],
+        "closing": "Thank you for your attention and participation during this important enrollment period.",
+    },
+
     "birthdays": [
-        {"name": "James Stiller", "date": "May 1", "location": "Rocky Mount"},
-        {"name": "Omari Sweat", "date": "May 2", "location": "New Hanover"},
-        {"name": "Alexander Holland", "date": "May 6", "location": "Jacksonville"},
-        {"name": "Derek Schaffer", "date": "May 6", "location": "Raleigh"},
-        {"name": "Emily Atella", "date": "May 7", "location": "New Hanover"},
-        {"name": "Derrick Hansley", "date": "May 7", "location": "New Hanover"},
-        {"name": "Anthony Smith", "date": "May 7", "location": "Raleigh"},
-        {"name": "Martin Greathouse", "date": "May 8", "location": "Columbia"},
-        {"name": "Ryan Rouse", "date": "May 14", "location": "Newport"},
-        {"name": "Stephanie Wiggins", "date": "May 16", "location": "Goldsboro"},
-        {"name": "Caleb Bowen", "date": "May 17", "location": "Spartanburg"},
-        {"name": "Felipe Brito Cruz", "date": "May 18", "location": "Raleigh"},
-        {"name": "Lorenzo Quetzecua", "date": "May 18", "location": "Wayne Co."},
-        {"name": "Samuel Vines Jr", "date": "May 22", "location": "Fayetteville"},
-        {"name": "Cambria Richardson", "date": "May 24", "location": "Goldsboro"},
-        {"name": "Jarvis Grady", "date": "May 28", "location": "Goldsboro"},
+        {"name": "Wes Langston", "date": "June 1", "location": "Allison Fence Co."},
+        {"name": "Clevan Temple", "date": "June 1", "location": "Goldsboro"},
+        {"name": "Eric Boneske", "date": "June 3", "location": "New Hanover"},
+        {"name": "Brenda Haun", "date": "June 3", "location": "Newport"},
+        {"name": "Brandon Watson", "date": "June 3", "location": "Spartanburg"},
+        {"name": "Dylan Danner", "date": "June 6", "location": "Greensboro"},
+        {"name": "Sheree Price", "date": "June 6", "location": "Wayne County"},
+        {"name": "Charles Patterson", "date": "June 8", "location": "Spartanburg"},
+        {"name": "Osiris Ruiz", "date": "June 10", "location": "Allison Fence Co."},
+        {"name": "Daniel Smith", "date": "June 11", "location": "Goldsboro"},
+        {"name": "John Francis", "date": "June 12", "location": "Jacksonville"},
+        {"name": "Jose Rangel", "date": "June 12", "location": "Goldsboro"},
+        {"name": "Charles Major", "date": "June 13", "location": "Jacksonville"},
+        {"name": "Willard Radimer", "date": "June 13", "location": "Allison Fence Co."},
+        {"name": "Christopher Politis", "date": "June 15", "location": "Columbia"},
+        {"name": "Luis Hernandez", "date": "June 16", "location": "Raleigh"},
+        {"name": "Chris Smith", "date": "June 16", "location": "Allison Fence Co."},
+        {"name": "Terri Piercy", "date": "June 17", "location": "Allison Fence Co."},
+        {"name": "Brandon Bossolono", "date": "June 18", "location": "Greenville"},
+        {"name": "William Cotton", "date": "June 18", "location": "Columbia"},
+        {"name": "Russell Kornegay", "date": "June 19", "location": "Goldsboro"},
+        {"name": "James Truitt", "date": "June 19", "location": "Allison Fence Co."},
+        {"name": "Jean Santiago", "date": "June 20", "location": "Fayetteville"},
+        {"name": "Damadian Arrington", "date": "June 21", "location": "Rocky Mount"},
+        {"name": "Steven Eury", "date": "June 21", "location": "New Hanover"},
+        {"name": "Adam Setzco", "date": "June 24", "location": "Greenville"},
+        {"name": "Jereli Garcia", "date": "June 25", "location": "Goldsboro"},
+        {"name": "Vernon Chaffin", "date": "June 26", "location": "Greensboro"},
+        {"name": "Austin May", "date": "June 26", "location": "Rocky Mount"},
+        {"name": "Jeff Grey", "date": "June 28", "location": "Raleigh"},
+        {"name": "Julian Moore", "date": "June 28", "location": "Greensboro"},
+        {"name": "Kawaski Cobb", "date": "June 30", "location": "Jacksonville"},
+        {"name": "Evan Proctor", "date": "June 30", "location": "Wayne County"},
+        {"name": "Dustin Wetherington", "date": "June 30", "location": "Greenville"},
     ],
 
     "anniversaries": [
-        {"name": "Jairo Romero", "years": 22, "location": "Greensboro"},
-        {"name": "Ashley Alford", "years": 21, "location": "Fayetteville"},
-        {"name": "Caleb Blood", "years": 20, "location": "Rocky Mount"},
-        {"name": "Jose Garcia", "years": 19, "location": "Goldsboro"},
-        {"name": "Dustin Smith", "years": 15, "location": "Columbia"},
-        {"name": "Terry Sexton", "years": 13, "location": "Spartanburg"},
-        {"name": "Larry Johnston", "years": 11, "location": "Rocky Mount"},
-        {"name": "Chanda Best", "years": 10, "location": "Goldsboro"},
-        {"name": "Cameron Freeman", "years": 8, "location": "Fayetteville"},
-        {"name": "Joshua Doughty", "years": 6, "location": "Greenville"},
-        {"name": "Bryan Holland", "years": 6, "location": "Jacksonville"},
-        {"name": "Ricky Lee", "years": 6, "location": "Goldsboro"},
-        {"name": "Emily Atella", "years": 4, "location": "New Hanover"},
-        {"name": "Alexis Wood", "years": 4, "location": "Allison Fence Co."},
-        {"name": "Jonn Blasingame", "years": 3, "location": "New Hanover"},
-        {"name": "Peter Zelaski", "years": 3, "location": "Greenville"},
-        {"name": "Anthony Hidalgo", "years": 2, "location": "Allison Fence Co."},
-        {"name": "Nicholas Filomio", "years": 1, "location": "Allison Fence Co."},
-        {"name": "Joe Marks", "years": 1, "location": "Rocky Mount"},
-        {"name": "Qwan Starks", "years": 1, "location": "Columbia"},
+        {"name": "Ben Seegars", "years": 35, "location": "Goldsboro"},
+        {"name": "Mark Rouse", "years": 32, "location": "Raleigh"},
+        {"name": "Jennifer Rouse", "years": 30, "location": "Raleigh"},
+        {"name": "John Seegars", "years": 30, "location": "Goldsboro"},
+        {"name": "Veronica Aycock", "years": 24, "location": "Goldsboro"},
+        {"name": "Gary Norwood", "years": 21, "location": "Fayetteville"},
+        {"name": "Avery Bailey", "years": 13, "location": "Goldsboro"},
+        {"name": "Chris Smith", "years": 13, "location": "Allison Fence Co."},
+        {"name": "Anthony Nolan", "years": 9, "location": "Allison Fence Co."},
+        {"name": "Jose Santiago", "years": 9, "location": "Goldsboro"},
+        {"name": "Alex Holland", "years": 8, "location": "Jacksonville"},
+        {"name": "Jackson Frederick", "years": 7, "location": "Goldsboro"},
+        {"name": "Jordan Brown", "years": 5, "location": "Goldsboro"},
+        {"name": "Orlando Torres", "years": 5, "location": "Allison Fence Co."},
+        {"name": "Frank Claude", "years": 4, "location": "New Hanover"},
+        {"name": "Cameron Martin", "years": 4, "location": "Allison Fence Co."},
+        {"name": "Carolyn Reagan-Parliman", "years": 4, "location": "New Hanover"},
+        {"name": "Ethan Wilson", "years": 4, "location": "Allison Fence Co."},
+        {"name": "Carlos Franco", "years": 3, "location": "Goldsboro"},
+        {"name": "Dale McGinnis", "years": 3, "location": "Allison Fence Co."},
+        {"name": "David Parker", "years": 3, "location": "Rocky Mount"},
+        {"name": "Landon Bossolono", "years": 2, "location": "Greenville"},
+        {"name": "Clifton Coley", "years": 2, "location": "Goldsboro"},
+        {"name": "Brandy Goddard", "years": 2, "location": "Greenville"},
+        {"name": "Jarvis Grady", "years": 2, "location": "Goldsboro"},
+        {"name": "Jennifer Godinez-Zacarias", "years": 1, "location": "Goldsboro"},
+        {"name": "Kyle Longwith", "years": 1, "location": "Goldsboro"},
+        {"name": "Nathaniel McDonald", "years": 1, "location": "Goldsboro"},
+        {"name": "Anthony Smith", "years": 1, "location": "Spartanburg"},
+        {"name": "David Stiller", "years": 1, "location": "Rocky Mount"},
+        {"name": "Clevan Temple", "years": 1, "location": "Goldsboro"},
+        {"name": 'Stephanie "Swiggins" Wiggins', "years": 1, "location": "Goldsboro"},
     ],
 
     "news_wire": {
@@ -376,48 +360,46 @@ NEWSLETTER = {
         "title": "Word Search",
         "subtitle": "Terms from this issue",
         "grid": [
-            list("SZNRIROROAMKFI"),
-            list("RPAZUNSXOBLOOT"),
-            list("AATHGILTOPSBTC"),
-            list("GWLPARTYSESEEU"),
-            list("EAWARDSEIIMSAT"),
-            list("EIMFTBELACCHMS"),
-            list("SVPARCADEAFQKQ"),
-            list("UIOCELEBRATEVU"),
-            list("XRHANNIVERSARY"),
-            list("HTKPVPHWNKRTXU"),
-            list("BURNSYAMIUHBCY"),
-            list("QULFQYZGJJWJRL"),
-            list("FWWBIRTHDAYXOT"),
-            list("CTIRIPSDECNEFT"),
+            list("WSPIRITAOWXCKX"),
+            list("BRICEGHYPOLTJV"),
+            list("LSUHTRYEJREWSJ"),
+            list("MXNRUARCURISPA"),
+            list("TGWIEVAKNAKEOY"),
+            list("FHHSDISUENOETA"),
+            list("OMWVUERSCNOGLD"),
+            list("BAMWASENNYCAIH"),
+            list("VLWBLFVOACIRGT"),
+            list("WLFOCQIPRRESHR"),
+            list("CIGNATNYEACBTI"),
+            list("PSKJOBNZLZNNGB"),
+            list("ROUCXEAAOMEVNK"),
+            list("ANGAWYAVTQFTDG"),
         ],
-        "words": ["ANNIVERSARY", "ARCADE", "AWARDS", "BIRTHDAY", "BURNS", "CALEB", "CELEBRATE", "CUTS", "FENCE", "MAY", "PARTY", "SEEGARS", "SPIRIT", "SPOTLIGHT", "TEAM", "TOOLBOX", "TRIVIA"],
+        "words": ["ALLISON", "ANNIVERSARY", "BIRTHDAY", "CHRIS", "CIGNA", "CLAUDE", "COOKIE", "FENCE", "GRAVIE", "JUNE", "NARROW", "SEEGARS", "SPIRIT", "SPOTLIGHT", "TOLERANCE"],
         "solution": {
-            "ANNIVERSARY": [[8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10], [8, 11], [8, 12], [8, 13]],
-            "SPOTLIGHT": [[2, 10], [2, 9], [2, 8], [2, 7], [2, 6], [2, 5], [2, 4], [2, 3], [2, 2]],
-            "CELEBRATE": [[7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10], [7, 11]],
-            "BIRTHDAY": [[12, 3], [12, 4], [12, 5], [12, 6], [12, 7], [12, 8], [12, 9], [12, 10]],
-            "SEEGARS": [[6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0], [0, 0]],
-            "TOOLBOX": [[1, 13], [1, 12], [1, 11], [1, 10], [1, 9], [1, 8], [1, 7]],
-            "AWARDS": [[4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6]],
-            "ARCADE": [[6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8]],
-            "SPIRIT": [[13, 6], [13, 5], [13, 4], [13, 3], [13, 2], [13, 1]],
-            "TRIVIA": [[9, 1], [8, 1], [7, 1], [6, 1], [5, 1], [4, 1]],
-            "FENCE": [[13, 12], [13, 11], [13, 10], [13, 9], [13, 8]],
-            "PARTY": [[3, 3], [3, 4], [3, 5], [3, 6], [3, 7]],
-            "CALEB": [[5, 9], [5, 8], [5, 7], [5, 6], [5, 5]],
-            "BURNS": [[10, 0], [10, 1], [10, 2], [10, 3], [10, 4]],
-            "TEAM": [[2, 12], [3, 12], [4, 12], [5, 12]],
-            "CUTS": [[2, 13], [3, 13], [4, 13], [5, 13]],
-            "MAY": [[10, 7], [10, 6], [10, 5]],
+            "ALLISON": [[7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]],
+            "ANNIVERSARY": [[12, 6], [11, 6], [10, 6], [9, 6], [8, 6], [7, 6], [6, 6], [5, 6], [4, 6], [3, 6], [2, 6]],
+            "BIRTHDAY": [[11, 13], [10, 13], [9, 13], [8, 13], [7, 13], [6, 13], [5, 13], [4, 13]],
+            "CHRIS": [[1, 3], [2, 3], [3, 3], [4, 3], [5, 3]],
+            "CIGNA": [[10, 0], [10, 1], [10, 2], [10, 3], [10, 4]],
+            "CLAUDE": [[9, 4], [8, 4], [7, 4], [6, 4], [5, 4], [4, 4]],
+            "COOKIE": [[7, 10], [6, 10], [5, 10], [4, 10], [3, 10], [2, 10]],
+            "FENCE": [[13, 10], [12, 10], [11, 10], [10, 10], [9, 10]],
+            "GRAVIE": [[1, 5], [2, 5], [3, 5], [4, 5], [5, 5], [6, 5]],
+            "JUNE": [[2, 8], [3, 8], [4, 8], [5, 8]],
+            "NARROW": [[5, 9], [4, 9], [3, 9], [2, 9], [1, 9], [0, 9]],
+            "SEEGARS": [[3, 11], [4, 11], [5, 11], [6, 11], [7, 11], [8, 11], [9, 11]],
+            "SPIRIT": [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6]],
+            "SPOTLIGHT": [[2, 12], [3, 12], [4, 12], [5, 12], [6, 12], [7, 12], [8, 12], [9, 12], [10, 12]],
+            "TOLERANCE": [[13, 8], [12, 8], [11, 8], [10, 8], [9, 8], [8, 8], [7, 8], [6, 8], [5, 8]],
         },
     },
 
     "contributors": [
         {"name": "Ben Seegars", "title": "CEO", "section": "A Letter From Ben"},
-        {"name": "Bobby Batchelor", "title": "COO", "section": "Q1 2026 Awards"},
-        {"name": "Chanda Best", "title": "Safety Manager", "section": "Safety First"},
-        {"name": "Caleb Blood", "title": "Employee Spotlight", "section": "Employee Spotlight"},
+        {"name": "Dana Mull", "title": "People and Culture Manager", "section": "Meet Dana Mull"},
+        {"name": "Chanda Best", "title": "Safety Manager", "section": "Zero Tolerance for Drugs and Alcohol"},
+        {"name": "Chris Cook", "title": "Employee Spotlight", "section": "Employee Spotlight"},
     ],
 
     "resources": [
