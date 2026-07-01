@@ -2167,6 +2167,39 @@ a:hover {
     padding-top: 30px;
 }
 
+/* Standalone reader-poll band near the top of the page */
+.poll-band {
+    padding: 26px var(--gutter) 10px;
+}
+
+.poll-band-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    border: 2px solid var(--seegars-green);
+    background: var(--paper-bg);
+    padding: 18px 30px 22px;
+}
+
+.poll-band-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.poll-band-eyebrow {
+    display: block;
+    font-family: var(--font-label);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.7rem;
+    color: var(--seegars-green);
+    margin-bottom: 6px;
+}
+
+.poll-band .poll-question {
+    margin-bottom: 0;
+    text-align: center;
+}
+
 .poll-question {
     font-family: var(--font-headline);
     font-style: italic;

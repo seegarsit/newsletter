@@ -67,6 +67,29 @@
     <div class="masthead-rule masthead-rule-double"></div>
 </header>
 
+{# ═══════════════════════ READER POLL ═══════════════════════ #}
+<section class="poll-band section-fade" id="reader-poll">
+    <div class="poll-band-inner">
+        <div class="poll-band-header">
+            <span class="poll-band-eyebrow">Reader Poll</span>
+            <h2 class="poll-question">What would you like to see more of in The Fence Line?</h2>
+        </div>
+        <form id="pollForm" class="poll-form">
+            <div id="pollChoices" class="poll-choices">
+                {% for choice in poll_choices %}
+                <label class="poll-choice" data-choice="{{ choice }}">
+                    <input type="radio" name="poll" value="{{ choice }}">
+                    <span class="poll-choice-label">{{ choice }}</span>
+                    <span class="poll-bar-track"><span class="poll-bar-fill"></span></span>
+                    <span class="poll-choice-count">0</span>
+                </label>
+                {% endfor %}
+            </div>
+            <button type="submit" id="pollVoteBtn" class="poll-vote-btn">Vote</button>
+        </form>
+    </div>
+</section>
+
 {# ═══════════════════════ ABOVE THE FOLD: SPIRIT CONTEST + HR CORNER ═══════════════════════ #}
 <section class="above-fold">
     <div class="lead-story-area">

@@ -473,7 +473,7 @@ def index():
     NEWSLETTER["news_wire"]["sports"] = sports
 
     login_error = session.pop("login_error", None)
-    return render_template("index.html", n=NEWSLETTER, reader_count=reader_count, logged_in=logged_in, login_error=login_error)
+    return render_template("index.html", n=NEWSLETTER, poll_choices=POLL_CHOICES, reader_count=reader_count, logged_in=logged_in, login_error=login_error)
 
 
 @app.route("/api/poll/results")
