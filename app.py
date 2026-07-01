@@ -53,7 +53,12 @@ class PageView(db.Model):
 
 
 with app.app_context():
-    db.create_all()
+    try:
+        db.create_all()
+    except Exception as e:
+        # DB (e.g. Render Postgres) may be unreachable — don't take the whole
+        # newsletter down over it. Poll + reader-count degrade gracefully.
+        app.logger.warning("Database unavailable at startup; poll/analytics disabled: %s", e)
 
 
 def _voter_id():
@@ -449,13 +454,18 @@ def index():
     # Only count page views for authenticated visitors
     reader_count = 0
     if logged_in:
-        current_month = datetime.now(timezone.utc).strftime("%Y-%m")
-        visitor = _voter_id()
-        existing = PageView.query.filter_by(visitor_id=visitor, month=current_month).first()
-        if not existing:
-            db.session.add(PageView(visitor_id=visitor, month=current_month))
-            db.session.commit()
-        reader_count = PageView.query.filter_by(month=current_month).count()
+        try:
+            current_month = datetime.now(timezone.utc).strftime("%Y-%m")
+            visitor = _voter_id()
+            existing = PageView.query.filter_by(visitor_id=visitor, month=current_month).first()
+            if not existing:
+                db.session.add(PageView(visitor_id=visitor, month=current_month))
+                db.session.commit()
+            reader_count = PageView.query.filter_by(month=current_month).count()
+        except Exception as e:
+            db.session.rollback()
+            app.logger.warning("Reader-count unavailable (DB down): %s", e)
+            reader_count = 0
 
     # Inject live headlines into the news wire
     national, sports = get_live_news()
@@ -470,17 +480,22 @@ def index():
 @login_required
 def poll_results():
     counts = {c: 0 for c in POLL_CHOICES}
-    rows = db.session.execute(
-        db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
-    ).all()
-    for choice, count in rows:
-        if choice in counts:
-            counts[choice] = count
+    try:
+        rows = db.session.execute(
+            db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
+        ).all()
+        for choice, count in rows:
+            if choice in counts:
+                counts[choice] = count
 
-    voter = _voter_id()
-    has_voted = db.session.query(
-        PollVote.query.filter_by(voter_id=voter).exists()
-    ).scalar()
+        voter = _voter_id()
+        has_voted = db.session.query(
+            PollVote.query.filter_by(voter_id=voter).exists()
+        ).scalar()
+    except Exception as e:
+        db.session.rollback()
+        app.logger.warning("Poll results unavailable (DB down): %s", e)
+        has_voted = False
 
     return jsonify({"counts": counts, "has_voted": has_voted})
 
@@ -494,21 +509,26 @@ def poll_vote():
     if choice not in POLL_CHOICES:
         return jsonify({"error": "Invalid choice"}), 400
 
-    voter = _voter_id()
-    existing = PollVote.query.filter_by(voter_id=voter).first()
-    if existing:
-        return jsonify({"error": "Already voted"}), 409
+    try:
+        voter = _voter_id()
+        existing = PollVote.query.filter_by(voter_id=voter).first()
+        if existing:
+            return jsonify({"error": "Already voted"}), 409
 
-    db.session.add(PollVote(choice=choice, voter_id=voter))
-    db.session.commit()
+        db.session.add(PollVote(choice=choice, voter_id=voter))
+        db.session.commit()
 
-    counts = {c: 0 for c in POLL_CHOICES}
-    rows = db.session.execute(
-        db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
-    ).all()
-    for c, count in rows:
-        if c in counts:
-            counts[c] = count
+        counts = {c: 0 for c in POLL_CHOICES}
+        rows = db.session.execute(
+            db.select(PollVote.choice, db.func.count()).group_by(PollVote.choice)
+        ).all()
+        for c, count in rows:
+            if c in counts:
+                counts[c] = count
+    except Exception as e:
+        db.session.rollback()
+        app.logger.warning("Poll vote failed (DB down): %s", e)
+        return jsonify({"error": "Poll temporarily unavailable"}), 503
 
     return jsonify({"counts": counts, "has_voted": True})
 
