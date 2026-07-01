@@ -235,7 +235,7 @@ NEWSLETTER = {
         "title": "Employee Spotlight",
         "name": "Dusty Horne",
         "location": "Raleigh",
-        "photos": ["Employee_spotlight/dusty_horne.jpg"],
+        "photos": ["Employee_spotlight/dusty_horne.png"],
         "qa": [
             {"q": "How long have you been working at Seegars?", "a": "I\u2019ve been working at Seegars for 16 years."},
             {"q": "What\u2019s your job position?", "a": "I am a Superintendent for Seegars Fence of Raleigh."},
