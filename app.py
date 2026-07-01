@@ -30,7 +30,6 @@ db = SQLAlchemy(app)
 
 POLL_CHOICES = [
     "Completed Job Highlights",
-    "Employee of the Month",
     "New Hire Announcements",
     "Company News & Updates",
     "Employee Spotlight",
