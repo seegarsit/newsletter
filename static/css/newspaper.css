@@ -3,36 +3,43 @@
    Seegars Fence Company, April 2026
    ================================================================ */
 
-/* ─── CSS Custom Properties — SeegarsONE palette ─── */
+/* ─── CSS Custom Properties — Americana / 250th palette ─── */
 :root {
-    /* Brand colors */
-    --seegars-green: #008752;        /* SEEGARS GREEN — primary brand */
-    --seegars-green-light: #BCD531;  /* SEEGARS LIME — accent */
-    --seegars-green-dark: #006a40;   /* deeper green for hover/active */
+    /* Old Glory color anchors */
+    --usa-blue: #0A3161;             /* Old Glory Blue */
+    --usa-blue-bright: #15428B;      /* brighter navy for hovers/links */
+    --usa-red: #B31942;              /* Old Glory Red */
+    --usa-red-bright: #C8102E;       /* vivid flag red */
+    --usa-white: #FCFCFB;
+
+    /* Brand colors (variable names kept for compatibility; now patriotic) */
+    --seegars-green: #0A3161;        /* PRIMARY — now Old Glory Blue */
+    --seegars-green-light: #B31942;  /* ACCENT — now Old Glory Red */
+    --seegars-green-dark: #07223F;   /* deeper navy for hover/active */
 
     /* Surfaces & paper */
-    --paper-bg: #FCFCFB;             /* near-white body bg */
-    --paper-bg-dark: #DEE0D9;        /* Seegars Gray — outer surround */
-    --cream: #F5F6F4;                /* Seegars BG — primary panel surface */
+    --paper-bg: #FFFFFF;             /* pure white paper / container */
+    --paper-bg-dark: #ECEDEF;        /* very light grey outer surround */
+    --cream: #F4F6FB;               /* faintly blue-white panel surface */
     --surface-elevated: #ffffff;     /* nested boxes (chat bubble, etc.) */
-    --surface-warm: #f5f1e6;         /* tinted panels (Tech Talk wrap) */
+    --surface-warm: #F3F1F4;         /* lightly tinted panels (Tech Talk wrap) */
 
     /* Ink (text) */
-    --ink: #231F20;                  /* SEEGARS BLACK */
-    --ink-light: #3A3635;
-    --ink-faded: #6B6764;
+    --ink: #14213D;                  /* deep navy text */
+    --ink-light: #2A3A5C;
+    --ink-faded: #5B6B8A;
 
     /* Accent aliases (variable names kept for backward compatibility) */
-    --sepia: #008752;                /* aliases brand green */
-    --sepia-light: #00A164;
-    --sepia-rule: #DEE0D9;           /* Seegars Gray rule */
-    --purple: #008752;               /* eyebrow color */
-    --purple-light: #00A164;
+    --sepia: #B31942;                /* red accents & links */
+    --sepia-light: #C8102E;
+    --sepia-rule: #C9D3E6;           /* soft blue-gray rule */
+    --purple: #B31942;               /* eyebrow color — now red */
+    --purple-light: #C8102E;
 
     /* Rules */
-    --rule-thin: 1px solid #3A3635;
-    --rule-thick: 3px solid #231F20;
-    --rule-double: 4px double #3A3635;
+    --rule-thin: 1px solid #2A3A5C;
+    --rule-thick: 3px solid #0A3161;
+    --rule-double: 4px double #B31942;
     --rule-sepia: 1px solid var(--sepia-rule);
 
     --font-masthead: 'UnifrakturMaguntia', cursive;
@@ -114,10 +121,13 @@ a:hover {
     margin: 0 auto;
     background-color: var(--paper-bg);
     position: relative;
+    /* Lifted off the light-grey body — a crisp halo on all edges (so the
+       sides read as raised) plus a soft downward cast for depth. */
     box-shadow:
-        0 0 0 1px rgba(0,0,0,.08),
-        0 4px 20px rgba(0,0,0,.15),
-        0 20px 60px rgba(0,0,0,.1);
+        0 0 0 1px rgba(20, 33, 61, 0.06),
+        0 0 13px rgba(20, 33, 61, 0.18),
+        0 14px 34px rgba(20, 33, 61, 0.16),
+        0 30px 80px rgba(20, 33, 61, 0.12);
 }
 
 /* Paper texture overlay */
@@ -382,11 +392,35 @@ a:hover {
     font-family: var(--font-headline);
     font-size: clamp(2.8rem, 8vw, 5.5rem);
     font-weight: 900;
-    color: var(--ink);
     text-align: center;
     line-height: 1;
     letter-spacing: 0.06em;
     text-transform: uppercase;
+
+    /* Waving American flag filling the letters (original letterforms, no distortion) */
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: url('../images/american_flag.jpg');
+    background-size: 118% 118%;
+    background-position: 0% 50%;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 1px 1px rgba(10, 33, 57, 0.45));
+    animation: nameplate-flag-fly 16s ease-in-out infinite;
+}
+
+@keyframes nameplate-flag-fly {
+    0%   { background-position: 0% 42%; }
+    50%  { background-position: 100% 58%; }
+    100% { background-position: 0% 42%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nameplate-title {
+        animation: none;
+        background-position: 35% 50%;
+    }
 }
 
 .nameplate-ornament {
@@ -645,8 +679,8 @@ a:hover {
     color: var(--purple);
     text-align: center;
     background: linear-gradient(90deg,
-        rgba(188, 213, 49, 0.10) 0%,
-        rgba(188, 213, 49, 0.02) 30%,
+        rgba(10, 49, 97, 0.08) 0%,
+        rgba(179, 25, 66, 0.05) 30%,
         transparent 70%);
 }
 
@@ -660,7 +694,7 @@ a:hover {
     margin: 4px 12px 8px 0;
     padding: 0;
     border-radius: 50%;
-    filter: grayscale(100%) drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.35));
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.35));
     shape-outside: margin-box;
     transition: filter 0.25s ease;
 }
@@ -728,8 +762,8 @@ a:hover {
    ================================================================ */
 .skybox-banner {
     background: linear-gradient(180deg,
-        rgba(0, 135, 82, 0.10) 0%,
-        rgba(0, 135, 82, 0.04) 100%);
+        rgba(10, 49, 97, 0.10) 0%,
+        rgba(179, 25, 66, 0.06) 100%);
     border-top: 3px solid var(--seegars-green);
     border-bottom: 3px solid var(--seegars-green-light);
     padding: 5px var(--gutter);
@@ -1028,6 +1062,12 @@ a:hover {
     margin-top: 2em;
 }
 
+/* Ornament removed — drop the empty space below the rule so the next
+   section pulls up to fill the gap. */
+.inner-article-divider-bare {
+    padding-bottom: 0;
+}
+
 /* ─── HR Corner structured content ─── */
 .hr-subtitle {
     font-family: var(--font-headline);
@@ -1073,6 +1113,106 @@ a:hover {
     color: var(--ink-faded);
     margin: -2px 0 10px;
     letter-spacing: 0.02em;
+}
+
+/* Eric Church "six strings" pillar list */
+.hr-pillar-list {
+    margin: 0.6em 0 1.1em;
+    padding-left: 1.4em;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    list-style: none;
+}
+
+.hr-pillar-list li {
+    position: relative;
+    margin-bottom: 0.7em;
+    padding-left: 0.2em;
+}
+
+.hr-pillar-list li::before {
+    content: "\1F3B8"; /* guitar */
+    position: absolute;
+    left: -1.4em;
+    top: 0;
+    font-size: 0.9em;
+}
+
+.hr-pillar-list li strong {
+    color: var(--seegars-green);
+}
+
+/* YouTube video card (embedding disabled on source, links out) */
+.hr-video-card {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin: 1em 0 0.4em;
+    border: var(--rule-sepia);
+    background: #000;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hr-video-card:hover,
+.hr-video-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+.hr-video-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* hqdefault has black bars; nudge scale to fill the 16:9 card */
+    transform: scale(1.36);
+}
+
+.hr-video-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 68px;
+    height: 48px;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.72);
+    border-radius: 12px;
+    transition: background 0.18s ease;
+}
+
+.hr-video-play::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-42%, -50%);
+    border-style: solid;
+    border-width: 11px 0 11px 19px;
+    border-color: transparent transparent transparent #fff;
+}
+
+.hr-video-card:hover .hr-video-play,
+.hr-video-card:focus-visible .hr-video-play {
+    background: #c00;
+}
+
+.hr-video-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-family: var(--font-label);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.72);
+    padding: 4px 8px;
+    border-radius: 3px;
 }
 
 .awards-table {
@@ -1279,6 +1419,20 @@ a:hover {
     margin-top: 30px;
     padding: 4px;
     border: 2px solid var(--ink);
+}
+
+/* America's 250th sticker (transparent PNG + CSS shadow, no white box) */
+.anniversary-sticker {
+    text-align: center;
+    margin: 10px 0 2px;
+}
+
+.anniversary-sticker img {
+    display: inline-block;
+    width: 100%;
+    max-width: 290px;
+    height: auto;
+    filter: drop-shadow(0 7px 11px rgba(10, 33, 57, 0.30));
 }
 
 .ad-border {
@@ -1561,17 +1715,17 @@ a:hover {
 .safety-image-laser {
     background: linear-gradient(105deg,
         transparent 32%,
-        rgba(188, 213, 49, 0.0) 42%,
-        rgba(188, 213, 49, 0.95) 48%,
+        rgba(255, 94, 20, 0.0) 42%,
+        rgba(255, 94, 20, 0.95) 48%,
         #ffffff 50%,
-        rgba(188, 213, 49, 0.95) 52%,
-        rgba(188, 213, 49, 0.0) 58%,
+        rgba(255, 59, 36, 0.95) 52%,
+        rgba(255, 59, 36, 0.0) 58%,
         transparent 68%);
     background-size: 220% 100%;
     background-position: -120% 0;
     animation: safety-laser-sweep 7.5s linear infinite;
-    filter: drop-shadow(0 0 4px rgba(188, 213, 49, 0.95))
-            drop-shadow(0 0 12px rgba(188, 213, 49, 0.55));
+    filter: drop-shadow(0 0 4px rgba(255, 94, 20, 0.95))
+            drop-shadow(0 0 12px rgba(255, 59, 36, 0.55));
 }
 
 @keyframes safety-laser-sweep {
@@ -1581,9 +1735,9 @@ a:hover {
 
 /* Dark mode: brighter laser glow, lighter shadow falloff */
 [data-theme="dark"] .safety-image-laser {
-    filter: drop-shadow(0 0 5px #BCD531)
-            drop-shadow(0 0 16px rgba(207, 228, 80, 0.75))
-            drop-shadow(0 0 28px rgba(207, 228, 80, 0.35));
+    filter: drop-shadow(0 0 5px #FF5E14)
+            drop-shadow(0 0 16px rgba(255, 94, 20, 0.75))
+            drop-shadow(0 0 28px rgba(255, 59, 36, 0.35));
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1856,7 +2010,7 @@ a:hover {
 }
 
 .spotlight-media-tab:hover:not(.is-active) {
-    background: rgba(188, 213, 49, 0.25);
+    background: rgba(179, 25, 66, 0.18);
     color: var(--seegars-green);
 }
 
@@ -1994,7 +2148,7 @@ a:hover {
     font-weight: 700;
     font-size: 0.85rem;
     color: var(--ink);
-    flex: 1;
+    flex: 0 1 auto;
 }
 
 .spotlight-answer {
@@ -2003,7 +2157,7 @@ a:hover {
     font-style: italic;
     color: var(--ink-faded);
     text-align: right;
-    flex: 1;
+    flex: 1 1 60%;
 }
 
 /* ================================================================
@@ -2789,6 +2943,34 @@ a:hover {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+/* Inline variant — sits inside the anniversaries column, sized to fill it */
+.celebrate-sign-inline {
+    margin-top: 28px;
+}
+
+.celebrate-sign-inline .celebrate-sign-inner {
+    padding: 16px 12px;
+}
+
+.celebrate-sign-inline .celebrate-sign-heading {
+    font-size: 1.3rem;
+}
+
+.celebrate-sign-inline .celebrate-sign-amp {
+    font-size: 1.05rem;
+    margin: 2px 0;
+}
+
+.celebrate-sign-inline .celebrate-sign-from {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    margin-top: 8px;
+}
+
+.celebrate-sign-inline .celebrate-sign-rule {
+    margin: 6px auto;
 }
 
 .celebrate-sign-border {
@@ -3772,9 +3954,22 @@ a:hover {
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(26, 26, 26, 0.3);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background:
+        radial-gradient(120% 90% at 50% 0%, rgba(21, 66, 139, 0.55) 0%, transparent 60%),
+        linear-gradient(180deg, #0A1D38 0%, #06101F 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Waving-flag accent stripe across the top of the login card */
+.login-card-stripe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: url('../images/american_flag.jpg') center / cover no-repeat;
+    border-bottom: 1px solid rgba(10, 33, 57, 0.15);
 }
 
 /* Split light/dark INSIDE the login card — pure site colors, no red/blue tint */
@@ -3968,11 +4163,13 @@ a:hover {
 .login-card {
     width: 100%;
     max-width: 420px;
-    background: var(--cream);
+    background: #ffffff;
     border: 1px solid var(--sepia-rule);
+    border-radius: 8px;
+    overflow: hidden;
     box-shadow:
-        0 8px 40px rgba(0, 0, 0, 0.25),
-        0 2px 12px rgba(0, 0, 0, 0.15);
+        0 18px 50px rgba(6, 16, 31, 0.45),
+        0 2px 12px rgba(6, 16, 31, 0.25);
     padding: 48px 40px 36px;
     text-align: center;
     position: relative;
@@ -4109,9 +4306,19 @@ a:hover {
     font-family: var(--font-headline);
     font-size: 2.4rem;
     font-weight: 900;
-    color: var(--ink);
     line-height: 1.1;
     margin-bottom: 8px;
+
+    /* Waving American flag filling the letters */
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: url('../images/american_flag.jpg');
+    background-size: 130% 130%;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 1px 1px rgba(10, 33, 57, 0.4));
 }
 
 .login-subtitle {
@@ -4407,6 +4614,8 @@ a:hover {
    THEME TOGGLE — light/dark switch in the masthead-nav
    ================================================================ */
 .theme-toggle {
+    /* Dark mode hidden for the Americana edition */
+    display: none !important;
     appearance: none;
     -webkit-appearance: none;
     padding: 0;
@@ -4415,7 +4624,6 @@ a:hover {
     cursor: pointer;
     line-height: 0;
     transition: transform 0.18s ease, filter 0.2s ease;
-    display: inline-flex;
     align-items: center;
     justify-content: center;
     position: relative;

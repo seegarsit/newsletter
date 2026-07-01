@@ -35,7 +35,7 @@
     <a href="#employee-spotlight" class="skybox-link">
         <span class="skybox-label">Spotlight</span>
         <span class="skybox-sep">|</span>
-        <span class="skybox-text">This month&rsquo;s featured employee is <strong>Chris Cook</strong> &mdash; Allison Fence Co.</span>
+        <span class="skybox-text">This month&rsquo;s featured employee is <strong>Dusty Horne</strong> &mdash; Raleigh.</span>
     </a>
 </div>
 
@@ -131,89 +131,54 @@
         </article>
         {% endif %}
 
-        {# Divider between CEO Letter (or Company Party) and HR Corner #}
+        {# Divider between CEO Letter (or Company Party) and Benefits Update #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
 
-        {# HR CORNER — Left column #}
-        <article class="sidebar-article section-fade" id="hr-corner">
-            <h3 class="headline headline-feature">{{ n.hr_corner.title }}</h3>
+        {# BENEFITS UPDATE — Left column #}
+        <article class="sidebar-article section-fade" id="benefits-update">
+            {% if n.benefits_update.eyebrow %}
+                <p class="benefits-eyebrow">{{ n.benefits_update.eyebrow }}</p>
+            {% endif %}
+            <h3 class="headline headline-feature">{{ n.benefits_update.title }}</h3>
             <div class="article-meta">
-                <span class="byline">By <strong>{{ n.hr_corner.author }}</strong>, <span class="byline-title">{{ n.hr_corner.author_title }}</span></span>
+                <span class="byline">By <strong>{{ n.benefits_update.author }}</strong>, <span class="byline-title">{{ n.benefits_update.author_title }}</span></span>
             </div>
             <div class="article-body">
-                <img src="{{ url_for('static', filename='images/' + n.hr_corner.headshot) }}" alt="{{ n.hr_corner.author }}" class="contributor-headshot">
-                {% if n.hr_corner.phone or n.hr_corner.email %}
-                    <p class="hr-contact-info">
-                        {% if n.hr_corner.phone %}{{ n.hr_corner.phone }}{% endif %}
-                        {% if n.hr_corner.phone and n.hr_corner.email %} &bull; {% endif %}
-                        {% if n.hr_corner.email %}<a href="mailto:{{ n.hr_corner.email }}">{{ n.hr_corner.email }}</a>{% endif %}
-                    </p>
-                {% endif %}
-
-                {% if n.hr_corner.content %}
-                    {% for paragraph in n.hr_corner.content %}
-                        {% if loop.first %}
-                            <p>&mdash; {{ paragraph|safe }}</p>
-                        {% else %}
-                            <p>{{ paragraph|safe }}</p>
+                <img src="{{ url_for('static', filename='images/' + n.benefits_update.headshot) }}" alt="{{ n.benefits_update.author }}" class="contributor-headshot">
+                {% for paragraph in n.benefits_update.content %}
+                    {% if loop.first %}
+                        <p>&mdash; {{ paragraph|safe }}</p>
+                        {% if n.benefits_update.heads_up %}
+                            <div class="benefits-heads-up">
+                                <span class="benefits-heads-up-label">Heads Up</span>
+                                <span class="benefits-heads-up-text">{{ n.benefits_update.heads_up|safe }}</span>
+                            </div>
                         {% endif %}
-                    {% endfor %}
-                {% endif %}
-
-                {% for section in n.hr_corner.sections %}
+                    {% else %}
+                        <p>{{ paragraph|safe }}</p>
+                    {% endif %}
+                {% endfor %}
+                {% for section in n.benefits_update.sections %}
                     <h4 class="hr-section-heading">{{ section.heading }}</h4>
-                    {% if section.subheading %}
-                        <p class="hr-section-subheading">{{ section.subheading }}</p>
-                    {% endif %}
-                    {% if section.content %}
-                        {% for paragraph in section.content %}
-                            <p>{{ paragraph|safe }}</p>
-                        {% endfor %}
-                    {% endif %}
+                    {% if section.intro %}<p>{{ section.intro|safe }}</p>{% endif %}
                     {% if section.bullets %}
                         <ul class="hr-bullet-list">
                             {% for item in section.bullets %}
-                                <li>{{ item }}</li>
+                                <li>{{ item|safe }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    {% if section.awards %}
-                        <table class="awards-table">
-                            <thead>
-                                <tr>
-                                    {% if section.show_rank %}<th class="awards-rank">#</th>{% endif %}
-                                    <th class="awards-name">Recipient</th>
-                                    <th class="awards-location">Location</th>
-                                    <th class="awards-value">{{ section.value_label or '' }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for a in section.awards %}
-                                    <tr>
-                                        {% if section.show_rank %}<td class="awards-rank">{{ a.rank }}</td>{% endif %}
-                                        <td class="awards-name">
-                                            <strong>{{ a.name }}</strong>
-                                            {% if a.crew %}
-                                                <div class="awards-crew">with {{ a.crew|join(', ') }}</div>
-                                            {% endif %}
-                                        </td>
-                                        <td class="awards-location">{{ a.location }}</td>
-                                        <td class="awards-value">{{ a.value }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    {% endif %}
-                    {% if section.after %}
-                        <p>{{ section.after }}</p>
-                    {% endif %}
+                    {% if section.outro %}<p>{{ section.outro|safe }}</p>{% endif %}
                 {% endfor %}
+                {% if n.benefits_update.closing %}
+                    <p class="benefits-closing">{{ n.benefits_update.closing }}</p>
+                {% endif %}
             </div>
         </article>
 
-        {# Divider between HR Corner and Tech Talk #}
+        {# Divider between Benefits Update and Employee Spotlight #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
@@ -272,54 +237,117 @@
             </div>
         </article>
 
-        {% if n.benefits_update %}
-        {# Divider between Employee Spotlight and Benefits Update #}
+        {# Divider between Employee Spotlight and HR Corner #}
         <div class="inner-article-divider">
             <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
         </div>
 
-        {# BENEFITS UPDATE — Left column #}
-        <article class="sidebar-article section-fade" id="benefits-update">
-            {% if n.benefits_update.eyebrow %}
-                <p class="benefits-eyebrow">{{ n.benefits_update.eyebrow }}</p>
+        {# HR CORNER — Left column #}
+        <article class="sidebar-article section-fade" id="hr-corner">
+            <h3 class="headline headline-feature">{{ n.hr_corner.title }}</h3>
+            {% if n.hr_corner.subtitle %}
+                <p class="headline-subtitle">{{ n.hr_corner.subtitle }}</p>
             {% endif %}
-            <h3 class="headline headline-feature">{{ n.benefits_update.title }}</h3>
             <div class="article-meta">
-                <span class="byline">By <strong>{{ n.benefits_update.author }}</strong>, <span class="byline-title">{{ n.benefits_update.author_title }}</span></span>
+                <span class="byline">By <strong>{{ n.hr_corner.author }}</strong>, <span class="byline-title">{{ n.hr_corner.author_title }}</span></span>
             </div>
             <div class="article-body">
-                <img src="{{ url_for('static', filename='images/' + n.benefits_update.headshot) }}" alt="{{ n.benefits_update.author }}" class="contributor-headshot">
-                {% for paragraph in n.benefits_update.content %}
-                    {% if loop.first %}
-                        <p>&mdash; {{ paragraph|safe }}</p>
-                        {% if n.benefits_update.heads_up %}
-                            <div class="benefits-heads-up">
-                                <span class="benefits-heads-up-label">Heads Up</span>
-                                <span class="benefits-heads-up-text">{{ n.benefits_update.heads_up|safe }}</span>
-                            </div>
+                <img src="{{ url_for('static', filename='images/' + n.hr_corner.headshot) }}" alt="{{ n.hr_corner.author }}" class="contributor-headshot">
+                {% if n.hr_corner.phone or n.hr_corner.email %}
+                    <p class="hr-contact-info">
+                        {% if n.hr_corner.phone %}{{ n.hr_corner.phone }}{% endif %}
+                        {% if n.hr_corner.phone and n.hr_corner.email %} &bull; {% endif %}
+                        {% if n.hr_corner.email %}<a href="mailto:{{ n.hr_corner.email }}">{{ n.hr_corner.email }}</a>{% endif %}
+                    </p>
+                {% endif %}
+
+                {% if n.hr_corner.content %}
+                    {% for paragraph in n.hr_corner.content %}
+                        {% if loop.first %}
+                            <p>&mdash; {{ paragraph|safe }}</p>
+                        {% else %}
+                            <p>{{ paragraph|safe }}</p>
                         {% endif %}
-                    {% else %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if n.hr_corner.pillars %}
+                    <ul class="hr-pillar-list">
+                        {% for pillar in n.hr_corner.pillars %}
+                            <li>{{ pillar|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if n.hr_corner.content_after %}
+                    {% for paragraph in n.hr_corner.content_after %}
                         <p>{{ paragraph|safe }}</p>
-                    {% endif %}
-                {% endfor %}
-                {% for section in n.benefits_update.sections %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if n.hr_corner.youtube_id %}
+                    <a class="hr-video-card"
+                       href="https://www.youtube.com/watch?v={{ n.hr_corner.youtube_id }}"
+                       target="_blank" rel="noopener"
+                       aria-label="Watch on YouTube: {{ n.hr_corner.youtube_title or 'video' }}">
+                        <img class="hr-video-thumb"
+                             src="https://i.ytimg.com/vi/{{ n.hr_corner.youtube_id }}/hqdefault.jpg"
+                             alt="{{ n.hr_corner.youtube_title or 'Video thumbnail' }}" loading="lazy">
+                        <span class="hr-video-play" aria-hidden="true"></span>
+                        <span class="hr-video-badge">Watch on YouTube</span>
+                    </a>
+                {% endif %}
+
+                {% for section in n.hr_corner.sections %}
                     <h4 class="hr-section-heading">{{ section.heading }}</h4>
-                    {% if section.intro %}<p>{{ section.intro|safe }}</p>{% endif %}
+                    {% if section.subheading %}
+                        <p class="hr-section-subheading">{{ section.subheading }}</p>
+                    {% endif %}
+                    {% if section.content %}
+                        {% for paragraph in section.content %}
+                            <p>{{ paragraph|safe }}</p>
+                        {% endfor %}
+                    {% endif %}
                     {% if section.bullets %}
                         <ul class="hr-bullet-list">
                             {% for item in section.bullets %}
-                                <li>{{ item|safe }}</li>
+                                <li>{{ item }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    {% if section.outro %}<p>{{ section.outro|safe }}</p>{% endif %}
+                    {% if section.awards %}
+                        <table class="awards-table">
+                            <thead>
+                                <tr>
+                                    {% if section.show_rank %}<th class="awards-rank">#</th>{% endif %}
+                                    <th class="awards-name">Recipient</th>
+                                    <th class="awards-location">Location</th>
+                                    <th class="awards-value">{{ section.value_label or '' }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in section.awards %}
+                                    <tr>
+                                        {% if section.show_rank %}<td class="awards-rank">{{ a.rank }}</td>{% endif %}
+                                        <td class="awards-name">
+                                            <strong>{{ a.name }}</strong>
+                                            {% if a.crew %}
+                                                <div class="awards-crew">with {{ a.crew|join(', ') }}</div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="awards-location">{{ a.location }}</td>
+                                        <td class="awards-value">{{ a.value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                    {% if section.after %}
+                        <p>{{ section.after }}</p>
+                    {% endif %}
                 {% endfor %}
-                {% if n.benefits_update.closing %}
-                    <p class="benefits-closing">{{ n.benefits_update.closing }}</p>
-                {% endif %}
             </div>
         </article>
-        {% endif %}
 
     </div>
 
@@ -329,10 +357,8 @@
             <div class="weather-loading">Loading weather...</div>
         </div>
 
-        {# Divider above Safety section #}
-        <div class="inner-article-divider">
-            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-        </div>
+        {# Divider above Safety section (line only — ornament removed) #}
+        <div class="inner-article-divider inner-article-divider-bare"></div>
 
         {# SAFETY FIRST — Right column #}
         <article class="safety-article section-fade" id="safety">
@@ -406,24 +432,14 @@
             </div>
         </article>
 
-        {# Fake vintage ad #}
-        <div class="vintage-ad">
-            <div class="ad-border">
-                <div class="ad-inner">
-                    <div class="ad-stars">&#10029; &#10029; &#10029;</div>
-                    <div class="ad-company">Seegars Fence Co.</div>
-                    <div class="ad-tagline">SETTING THE STANDARD SINCE 1949</div>
-                    <div class="ad-rule"></div>
-                    <div class="ad-body">Built Right<br>Backed By Values<br>Trusted For Generations</div>
-                    <div class="ad-stars">&#10029; &#10029; &#10029;</div>
-                </div>
-            </div>
+        {# America's 250th sticker (temporary — replaces the vintage ad) #}
+        <div class="anniversary-sticker">
+            <img src="{{ url_for('static', filename='images/sticker_250.png') }}"
+                 alt="Celebrating America's 250th &mdash; Seegars Fence Company">
         </div>
 
-        {# Divider above News & Sports Wire #}
-        <div class="inner-article-divider">
-            <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-        </div>
+        {# Divider above News & Sports Wire (line only — ornament removed) #}
+        <div class="inner-article-divider inner-article-divider-bare"></div>
 
         {# NEWS & SPORTS WIRE — Sidebar, stacked vertically #}
         <div class="news-wire-sidebar section-fade" id="news-wire">
@@ -533,80 +549,28 @@
                 </div>
                 {% endfor %}
             </div>
-        </div>
-    </div>
 
-    <div class="celebrate-sign celebrate-sign-full">
-        <div class="celebrate-sign-border">
-            <div class="celebrate-sign-inner">
-                <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
-                <div class="celebrate-sign-rule"></div>
-                <p class="celebrate-sign-heading">Happy Birthday</p>
-                <p class="celebrate-sign-amp">&amp;</p>
-                <p class="celebrate-sign-heading">Happy Anniversary</p>
-                <div class="celebrate-sign-rule"></div>
-                <p class="celebrate-sign-from">From the Seegars Fence Company Team</p>
-                <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<div class="section-divider">
-    <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
-</div>
-
-{# ═══════════════════════ TECH TALK ═══════════════════════ #}
-{% if n.tech_talk %}
-<section class="tech-talk-section section-fade" id="tech-talk">
-    <div class="tech-talk-header">
-        <div class="tech-talk-rule"></div>
-        {% if n.tech_talk.eyebrow %}
-            <p class="tech-talk-eyebrow">{{ n.tech_talk.eyebrow }}</p>
-        {% endif %}
-        <h2 class="headline headline-feature">{{ n.tech_talk.title }}</h2>
-        <p class="tech-talk-byline">By <strong>{{ n.tech_talk.author }}</strong>, <span class="byline-title">{{ n.tech_talk.author_title }}</span></p>
-        <div class="tech-talk-rule"></div>
-    </div>
-
-    <div class="tech-talk-body">
-        <img src="{{ url_for('static', filename='images/' + n.tech_talk.headshot) }}" alt="{{ n.tech_talk.author }}" class="contributor-headshot">
-        {% for paragraph in n.tech_talk.intro %}
-            <p>{{ paragraph|safe }}</p>
-        {% endfor %}
-
-        <div class="tech-talk-chat" data-response='{{ n.tech_talk.chat.response_paragraphs|tojson }}'>
-            <div class="chat-message chat-message-user">
-                <img src="{{ url_for('static', filename='images/' + n.tech_talk.chat.user_avatar) }}"
-                     alt="{{ n.tech_talk.chat.user_label }}"
-                     class="chat-avatar chat-avatar-user">
-                <div class="chat-bubble">
-                    <p>{{ n.tech_talk.chat.prompt }}</p>
-                </div>
-            </div>
-            <div class="chat-message chat-message-claude">
-                <div class="chat-avatar chat-avatar-claude" aria-hidden="true"><span class="chat-avatar-mark">&#10033;</span></div>
-                <div class="chat-bubble">
-                    <div class="typing-indicator">
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
+            <div class="celebrate-sign celebrate-sign-inline">
+                <div class="celebrate-sign-border">
+                    <div class="celebrate-sign-inner">
+                        <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
+                        <div class="celebrate-sign-rule"></div>
+                        <p class="celebrate-sign-heading">Happy Birthday</p>
+                        <p class="celebrate-sign-amp">&amp;</p>
+                        <p class="celebrate-sign-heading">Happy Anniversary</p>
+                        <div class="celebrate-sign-rule"></div>
+                        <p class="celebrate-sign-from">From the Seegars Fence Company Team</p>
+                        <div class="celebrate-sign-stars">&#10029; &#10029; &#10029;</div>
                     </div>
-                    <div class="chat-response"></div>
                 </div>
             </div>
         </div>
-
-        {% for paragraph in n.tech_talk.outro %}
-            <p>{{ paragraph|safe }}</p>
-        {% endfor %}
     </div>
 </section>
 
 <div class="section-divider">
     <span class="divider-ornament">&#10087;&ensp;&#9830;&#xFE0E;&ensp;&#10087;</span>
 </div>
-{% endif %}
 
 {# ═══════════════════════ RESOURCES / CLASSIFIEDS ═══════════════════════ #}
 <section class="classifieds-section section-fade" id="resources">
@@ -658,57 +622,32 @@
 {% if not logged_in %}
 {# ═══════════════════════ LOGIN OVERLAY ═══════════════════════ #}
 <div class="login-overlay">
-    <div class="login-card login-card-split">
-        <div class="login-card-bg login-card-bg-light" aria-hidden="true"></div>
-        <div class="login-card-bg login-card-bg-dark" aria-hidden="true"></div>
-        <div class="login-card-saber" aria-hidden="true"></div>
+    <div class="login-card">
+        <div class="login-card-stripe" aria-hidden="true"></div>
+        <div class="login-header">
+            <p class="login-company">Seegars Fence Company</p>
+            <h1 class="login-title">The Fence Line</h1>
+            <p class="login-subtitle">{{ n.month }} {{ n.year }} &mdash; Team Newsletter</p>
+        </div>
 
-        <div class="login-card-inner">
-            <div class="login-header">
-                <p class="login-company">Seegars Fence Company</p>
-                <h1 class="login-title">The Fence Line</h1>
-                <p class="login-subtitle">{{ n.month }} {{ n.year }} &mdash; Team Newsletter</p>
+        {% if login_error %}
+        <div class="login-error">{{ login_error }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}" class="login-form">
+            <div class="login-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+            </div>
+            <div class="login-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
             </div>
 
-            {% if login_error %}
-            <div class="login-error">{{ login_error }}</div>
-            {% endif %}
+            <button type="submit" class="login-btn">Enter</button>
+        </form>
 
-            <form method="POST" action="{{ url_for('login') }}" class="login-form">
-                <div class="login-field">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" autocomplete="username" required autofocus>
-                </div>
-                <div class="login-field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" autocomplete="current-password" required>
-                </div>
-
-                <fieldset class="login-side-pick">
-                    <legend>Choose a side</legend>
-                    <div class="login-side-pick-row">
-                        <label class="login-side-option login-side-option-light">
-                            <input type="radio" name="side" value="light" required>
-                            <span class="login-side-option-card">
-                                <img src="{{ url_for('static', filename='images/light.png') }}" alt="">
-                                <span class="login-side-option-label">Light Side</span>
-                            </span>
-                        </label>
-                        <label class="login-side-option login-side-option-dark">
-                            <input type="radio" name="side" value="dark" required>
-                            <span class="login-side-option-card">
-                                <img src="{{ url_for('static', filename='images/dark.png') }}" alt="">
-                                <span class="login-side-option-label">Dark Side</span>
-                            </span>
-                        </label>
-                    </div>
-                </fieldset>
-
-                <button type="submit" class="login-btn">Enter</button>
-            </form>
-
-            <p class="login-footer">Internal use only &mdash; Seegars Fence Co. Est. {{ n.established }}</p>
-        </div>
+        <p class="login-footer">Internal use only &mdash; Seegars Fence Co. Est. {{ n.established }}</p>
     </div>
 </div>
 {% endif %}
