@@ -3316,6 +3316,13 @@ a:hover {
     color: var(--ink-faded);
 }
 
+.footer-tagline {
+    font-family: var(--font-label);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+}
+
 .footer-top-link {
     font-family: var(--font-label);
     font-size: 0.7rem;
